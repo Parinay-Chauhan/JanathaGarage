@@ -1,0 +1,165 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum UserRole {
+  CUSTOMER
+  TECHNICIAN
+  ADMIN
+}
+
+enum BookingType {
+  PHYSICAL_VISIT
+  REMOTE_VIDEO_ASSIST
+  REMOTE_CHAT_ASSIST
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  EN_ROUTE
+  ARRIVED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum VerificationStatus {
+  NOT_SUBMITTED
+  SUBMITTED
+  UNDER_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+// ==========================================
+// USER & PROFILE MODELS
+// ==========================================
+
+model User {
+  id        String   @id @default(uuid())
+  phone     String   @unique
+  fullName  String
+  role      UserRole @default(CUSTOMER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customerProfile   CustomerProfile?
+  technicianProfile TechnicianProfile?
+
+  @@map("users")
+}
+
+model CustomerProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address   String?
+  latitude  Float?
+  longitude Float?
+
+  bookings  Booking[]
+
+  @@map("customer_profiles")
+}
+
+model TechnicianProfile {
+  id                 String             @id @default(uuid())
+  userId             String             @unique
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  bio                String?
+  experienceYears    Int                @default(0)
+  baseVisitingCharge Decimal            @db.Decimal(10, 2)
+  serviceRadiusKm    Float              @default(10.0)
+  
+  latitude           Float?
+  longitude          Float?
+  isOnline           Boolean            @default(false)
+  isAvailable        Boolean            @default(true)
+  
+  kycStatus          VerificationStatus @default(NOT_SUBMITTED)
+  docType            String?
+  docNumber          String?
+  docUrl             String?
+
+  servicesOffered    TechnicianService[]
+  bookings           Booking[]
+
+  @@map("technician_profiles")
+}
+
+// ==========================================
+// SERVICE CATALOG
+// ==========================================
+
+model ServiceCategory {
+  id          String    @id @default(uuid())
+  name        String    @unique // e.g. Electrical, Plumbing
+  slug        String    @unique
+  services    Service[]
+
+  @@map("service_categories")
+}
+
+model Service {
+  id           String            @id @default(uuid())
+  categoryId   String
+  category     ServiceCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  title        String            // e.g. Fan Repair, Wiring
+  defaultPrice Decimal           @db.Decimal(10, 2)
+
+  technicianServices TechnicianService[]
+  bookings           Booking[]
+
+  @@map("services")
+}
+
+model TechnicianService {
+  technicianId String
+  technician   TechnicianProfile @relation(fields: [technicianId], references: [id], onDelete: Cascade)
+  serviceId    String
+  service      Service           @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  customPrice  Decimal?          @db.Decimal(10, 2)
+
+  @@id([technicianId, serviceId])
+  @@map("technician_services")
+}
+
+// ==========================================
+// BOOKING ENGINE
+// ==========================================
+
+model Booking {
+  id                 String        @id @default(uuid())
+  bookingNumber      String        @unique
+  
+  customerId         String
+  customer           CustomerProfile @relation(fields: [customerId], references: [id])
+  
+  technicianId       String?
+  technician         TechnicianProfile? @relation(fields: [technicianId], references: [id])
+  
+  serviceId          String
+  service            Service       @relation(fields: [serviceId], references: [id])
+  
+  status             BookingStatus @default(PENDING)
+  problemDescription String
+  scheduledAt        DateTime
+  startOtp           String?
+  
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@map("bookings")
+}
