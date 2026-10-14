@@ -20,10 +20,10 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
       where: { id: decodedToken?.id },
       select: {
         id: true,
-        name: true,
+        fullName: true,
         phone: true,
         role: true,
-        status: true,
+        isActive: true,
       },
     });
 
