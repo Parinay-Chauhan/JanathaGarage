@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser"
 
 const app = express();
 
@@ -13,12 +14,24 @@ app.use(
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
+app.use(cookieParser())
 
-// Health check route
-app.get("/api/health", (req, res) => {
-  res
-    .status(200)
-    .json({ status: "OK", message: "Server is running smoothly!" });
-});
+// ----------- routes --------------
 
+
+// ----------- import routes ----------
+
+
+// import healthcheckRouter from "./routes/healthcheck.routes.js"
+import { ErrorHandler } from "./middleware/Error.middleware.js";
+
+// ---------- routes declaration ------------
+
+// app.get("/api/health", healthcheckRouter)
+
+
+
+
+
+app.use(ErrorHandler);
 export { app };
