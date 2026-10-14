@@ -52,6 +52,11 @@ model User {
   fullName  String
   role      UserRole @default(CUSTOMER)
   isActive  Boolean  @default(true)
+  
+  // External Auth Provider IDs (Option A ke liye added)
+  clerkId     String?  @unique
+  firebaseUid String?  @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
