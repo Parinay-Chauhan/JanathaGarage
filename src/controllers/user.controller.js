@@ -2,56 +2,99 @@ import { prisma } from "../db/index.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/auth.js";
 
-// 1. User ko sync/create karna (Jab frontend se Clerk/Firebase login ke baad request aaye)
-const syncUser = asyncHandler(async (req, res) => {
-  const { phone, fullName, clerkId, firebaseUid, email } = req.body;
+// Helper function for tokens
+const generateAccessAndRefreshTokens = async (userId) => {
+  try {
+    const accessToken = generateAccessToken(userId);
+    const refreshToken = generateRefreshToken(userId);
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong while generating tokens");
+  }
+};
+
+// Customer Signup / Login via Phone & OTP (Firebase/Auth handled on frontend, backend syncs user)
+export const syncUser = asyncHandler(async (req, res) => {
+  const { phone, fullName, firebaseUid, clerkId } = req.body;
 
   if (!phone) {
-    throw new ApiError(400, "Phone number is required");
+    throw new ApiError(400, "Mobile number is required");
   }
 
-  // Check karo ki user pehle se database mein hai ya nahi (phone ya external IDs se)
   let user = await prisma.user.findFirst({
     where: {
       OR: [
         { phone },
-        ...(clerkId ? [{ clerkId }] : []),
         ...(firebaseUid ? [{ firebaseUid }] : []),
+        ...(clerkId ? [{ clerkId }] : []),
       ],
     },
   });
 
   if (user) {
-    // Agar user mil gaya, toh external IDs update kar sakte hain agar missing ho
     user = await prisma.user.update({
       where: { id: user.id },
       data: {
-        clerkId: clerkId || user.clerkId,
         firebaseUid: firebaseUid || user.firebaseUid,
+        clerkId: clerkId || user.clerkId,
         fullName: fullName || user.fullName,
       },
     });
   } else {
-    // Agar naya user hai, toh create kar do
+    if (!fullName) {
+      throw new ApiError(400, "Full name is required for registration");
+    }
+
     user = await prisma.user.create({
       data: {
         phone,
-        fullName: fullName || "Janta User",
-        clerkId,
+        fullName,
+        role: "CUSTOMER",
         firebaseUid,
+        clerkId,
       },
     });
   }
 
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user.id
+  );
+
+  // Cookie options for security
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  };
+
+  // JSON body ki jagah cookies mein tokens set karke response bhejna
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "User synchronized successfully"));
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: {
+            id: user.id,
+            phone: user.phone,
+            fullName: user.fullName,
+            role: user.role,
+          },
+          // Agar chaho toh yahan se tokens hata bhi sakte ho kyunki ab ye cookies mein chale gaye hain
+        },
+        "User authenticated successfully"
+      )
+    );
 });
 
-// 2. Current Logged-in User ki details nikalna
-const getCurrentUser = asyncHandler(async (req, res) => {
-  const userId = req.user?.id; // Yeh auth middleware se aayega
+// Current Logged-in User (Har protected request par fresh database se data fetch karega)
+export const getCurrentUser = asyncHandler(async (req, res) => {
+  const userId = req.user?.id; // verifyJWT middleware se aayega
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -70,16 +113,15 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "Current user fetched successfully"));
 });
 
-// 3. User Profile Update karna
-const updateProfile = asyncHandler(async (req, res) => {
+// Profile Update (Name ya basic details)
+export const updateProfile = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
-  const { fullName, phone } = req.body;
+  const { fullName } = req.body;
 
   const updatedUser = await prisma.user.update({
     where: { id: userId },
     data: {
       fullName,
-      phone,
     },
   });
 
@@ -87,10 +129,3 @@ const updateProfile = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
 });
-
-
-export {
-    syncUser,
-    getCurrentUser,
-    updateProfile
-}
