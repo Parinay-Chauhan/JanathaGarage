@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 // import bcrypt from 'bcrypt';
 
 //  ---------- Clerk use ker rehe hai ---------------
@@ -13,26 +13,16 @@ import jwt from 'jsonwebtoken';
 //   return await bcrypt.compare(enteredPassword, hashedPassword);
 // };
 
-
 // Access Token generator
-export const generateAccessToken = (user) => {
-  return jwt.sign(
-    {
-      id: user.id,
-      phone: user.phone,
-      fullName: user.name,
-      role: user.role,
-    },
-    process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION }
-  );
+
+export const generateAccessToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: process.env.ACCESS_TOKEN_EXPIRATION || "1d",
+  });
 };
 
-// Refresh Token generator
-export const generateRefreshToken = (user) => {
-  return jwt.sign(
-    { id: user.id },
-    process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION }
-  );
+export const generateRefreshToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || "7d",
+  });
 };
