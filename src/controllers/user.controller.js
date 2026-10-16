@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/auth.js";
 import { firebaseAdmin } from "../utils/firebase.js";
+
 // Helper function for tokens
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -19,7 +20,6 @@ const generateAccessAndRefreshTokens = async (userId) => {
 const syncUser = asyncHandler(async (req, res) => {
   const { firebaseIdToken, fullName, authProvider } = req.body;
 
-  // Clerk flow ko abhi temporarily disable rakha hai jab tak proper SDK verification na lag jaye
   if (authProvider === "clerk") {
     throw new ApiError(
       400,
@@ -37,7 +37,6 @@ const syncUser = asyncHandler(async (req, res) => {
 
   let decodedToken;
   try {
-    // Firebase token verify karo
     decodedToken = await firebaseAdmin.auth().verifyIdToken(firebaseIdToken);
   } catch (error) {
     throw new ApiError(401, "Invalid or expired Firebase token");
@@ -46,7 +45,6 @@ const syncUser = asyncHandler(async (req, res) => {
   const firebaseUid = decodedToken.uid;
   const verifiedPhone = decodedToken.phone_number;
 
-  // Agar Firebase token mein phone number claim nahi hai, request reject karo
   if (!verifiedPhone) {
     throw new ApiError(
       400,
@@ -54,13 +52,11 @@ const syncUser = asyncHandler(async (req, res) => {
     );
   }
 
-  // Account matching: Pehle Firebase UID se user dhoondo
   let user = await prisma.user.findUnique({
     where: { firebaseUid },
   });
 
   if (user) {
-    // User pehle se exist karta hai, naam update kar sakte hain agar diya ho
     if (fullName && fullName.trim() !== "") {
       user = await prisma.user.update({
         where: { id: user.id },
@@ -68,13 +64,11 @@ const syncUser = asyncHandler(async (req, res) => {
       });
     }
   } else {
-    // Agar Firebase UID se nahi mila, toh check karo ki ye verified phone pehle se registered hai kya
     user = await prisma.user.findUnique({
       where: { phone: verifiedPhone },
     });
 
     if (user) {
-      // Phone match ho gaya, ab secure tarike se is account ko current Firebase UID se link karo
       user = await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -85,7 +79,6 @@ const syncUser = asyncHandler(async (req, res) => {
         },
       });
     } else {
-      // Naya user hai toh full name required hona chahiye
       if (!fullName || typeof fullName !== "string" || fullName.trim() === "") {
         throw new ApiError(400, "Full name is required for new registration");
       }
@@ -94,14 +87,13 @@ const syncUser = asyncHandler(async (req, res) => {
         data: {
           phone: verifiedPhone,
           fullName: fullName.trim(),
-          role: "CUSTOMER", // Backend khud default CUSTOMER set karega
+          role: "CUSTOMER",
           firebaseUid,
         },
       });
     }
   }
 
-  // Tokens generate karo
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
     user.id
   );
@@ -160,7 +152,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "Current user fetched successfully"));
 });
 
-// Profile Update with validation
+// Profile Update (updateMe)
 const updateProfile = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   const { fullName } = req.body;
@@ -188,9 +180,4 @@ const updateProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
 });
 
-export {
-  generateAccessAndRefreshTokens,
-  syncUser,
-  getCurrentUser,
-  updateProfile,
-};
+export { syncUser, getCurrentUser, updateProfile };
