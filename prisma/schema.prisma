@@ -47,15 +47,14 @@ enum VerificationStatus {
 // ==========================================
 
 model User {
-  id        String   @id @default(uuid())
-  phone     String   @unique
-  fullName  String
-  role      UserRole @default(CUSTOMER)
-  isActive  Boolean  @default(true)
-  
-  // External Auth Provider IDs (Option A ke liye added)
-  clerkId     String?  @unique
-  firebaseUid String?  @unique
+  id       String   @id @default(uuid())
+  phone    String   @unique
+  fullName String
+  role     UserRole @default(CUSTOMER)
+  isActive Boolean  @default(true)
+
+  clerkId     String? @unique
+  firebaseUid String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -67,40 +66,42 @@ model User {
 }
 
 model CustomerProfile {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String  @id @default(uuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   address   String?
   latitude  Float?
   longitude Float?
 
-  bookings  Booking[]
+  bookings Booking[]
+  reviews  Review[]
 
   @@map("customer_profiles")
 }
 
 model TechnicianProfile {
-  id                 String             @id @default(uuid())
-  userId             String             @unique
-  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  bio                String?
-  experienceYears    Int                @default(0)
-  baseVisitingCharge Decimal            @db.Decimal(10, 2)
-  serviceRadiusKm    Float              @default(10.0)
-  
-  latitude           Float?
-  longitude          Float?
-  isOnline           Boolean            @default(false)
-  isAvailable        Boolean            @default(true)
-  
-  kycStatus          VerificationStatus @default(NOT_SUBMITTED)
-  docType            String?
-  docNumber          String?
-  docUrl             String?
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  servicesOffered    TechnicianService[]
-  bookings           Booking[]
+  bio                String?
+  experienceYears    Int     @default(0)
+  baseVisitingCharge Decimal @db.Decimal(10, 2)
+  serviceRadiusKm    Float   @default(10.0)
+
+  latitude    Float?
+  longitude   Float?
+  isOnline    Boolean @default(false)
+  isAvailable Boolean @default(true)
+
+  kycStatus VerificationStatus @default(NOT_SUBMITTED)
+  docType   String?
+  docNumber String?
+  docUrl    String?
+
+  servicesOffered TechnicianService[]
+  bookings        Booking[]
+  reviews         Review[]
 
   @@map("technician_profiles")
 }
@@ -110,20 +111,20 @@ model TechnicianProfile {
 // ==========================================
 
 model ServiceCategory {
-  id          String    @id @default(uuid())
-  name        String    @unique // e.g. Electrical, Plumbing
-  slug        String    @unique
-  services    Service[]
+  id       String    @id @default(uuid())
+  name     String    @unique
+  slug     String    @unique
+  services Service[]
 
   @@map("service_categories")
 }
 
 model Service {
-  id           String            @id @default(uuid())
+  id           String          @id @default(uuid())
   categoryId   String
-  category     ServiceCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  title        String            // e.g. Fan Repair, Wiring
-  defaultPrice Decimal           @db.Decimal(10, 2)
+  category     ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  title        String
+  defaultPrice Decimal         @db.Decimal(10, 2)
 
   technicianServices TechnicianService[]
   bookings           Booking[]
@@ -147,30 +148,55 @@ model TechnicianService {
 // ==========================================
 
 model Booking {
-  id                 String          @id @default(uuid())
-  bookingNumber      String          @unique
-  customerId         String
-  customer           CustomerProfile @relation(fields: [customerId], references: [id])
-  
-  technicianId       String?
-  technician         TechnicianProfile? @relation(fields: [technicianId], references: [id])
-  
-  serviceId          String
-  service            Service         @relation(fields: [serviceId], references: [id])
-  
-  status             BookingStatus   @default(PENDING)
+  id            String          @id @default(uuid())
+  bookingNumber String          @unique
+  customerId    String
+  customer      CustomerProfile @relation(fields: [customerId], references: [id])
+
+  technicianId String?
+  technician   TechnicianProfile? @relation(fields: [technicianId], references: [id])
+
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  status             BookingStatus @default(PENDING)
   problemDescription String
   scheduledAt        DateTime
   startOtp           String?
-  
-  // Snapshot fields (Added for production safety)
-  agreedPrice        Float           @default(0.0)
-  serviceAddress     String?
-  latitude           Float?
-  longitude          Float?
 
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
+  agreedPrice    Float   @default(0.0)
+  serviceAddress String?
+  latitude       Float?
+  longitude      Float?
+
+  review Review? // <-- Added relation
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("bookings")
+}
+
+// ==========================================
+// REVIEWS & RATINGS
+// ==========================================
+
+model Review {
+  id      String  @id @default(uuid())
+  rating  Int
+  comment String?
+
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  customerId String
+  customer   CustomerProfile @relation(fields: [customerId], references: [id])
+
+  technicianId String
+  technician   TechnicianProfile @relation(fields: [technicianId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reviews")
 }
