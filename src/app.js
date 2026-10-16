@@ -21,7 +21,7 @@ app.use(cookieParser());
 // ----------- import routes ----------
 
 import userRoutes from "./routes/user.routes.js";
-import { categoryRouter } from "./routes/category.routes.js";
+import categoryRouter  from "./routes/category.routes.js";
 // import healthcheckRouter from "./routes/healthcheck.routes.js"
 import { ErrorHandler } from "./middleware/Error.middleware.js";
 
