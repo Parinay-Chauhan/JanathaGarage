@@ -94,11 +94,11 @@ model TechnicianProfile {
   isOnline    Boolean @default(false)
   isAvailable Boolean @default(true)
 
-  kycStatus VerificationStatus @default(NOT_SUBMITTED)
-  docType   String?
-  docNumber String?
-  docUrl    String?
-
+  kycStatus       VerificationStatus  @default(NOT_SUBMITTED)
+  docType         String?
+  docNumber       String?
+  docUrl          String?
+  rejectionReason String?
   servicesOffered TechnicianService[]
   bookings        Booking[]
   reviews         Review[]
@@ -169,8 +169,8 @@ model Booking {
   latitude       Float?
   longitude      Float?
 
-  review Review? // <-- Added relation
-  payment        Payment?      // <-- Ye relation add karna hai
+  review  Review? // <-- Added relation
+  payment Payment? // <-- Ye relation add karna hai
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -224,19 +224,19 @@ enum PaymentMethod {
 // ==========================================
 
 model Payment {
-  id             String        @id @default(uuid())
-  bookingId      String        @unique
-  booking        Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  
-  amount         Decimal       @db.Decimal(10, 2)
-  method         PaymentMethod @default(ONLINE)
-  status         PaymentStatus @default(PENDING)
-  
-  transactionId  String?       @unique // Gateway transaction reference ID
-  invoiceUrl     String?       // Generated invoice PDF link (optional)
+  id        String  @id @default(uuid())
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  amount Decimal       @db.Decimal(10, 2)
+  method PaymentMethod @default(ONLINE)
+  status PaymentStatus @default(PENDING)
+
+  transactionId String? @unique // Gateway transaction reference ID
+  invoiceUrl    String? // Generated invoice PDF link (optional)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("payments")
 }
