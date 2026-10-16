@@ -98,3 +98,111 @@ export const createBooking = asyncHandler(async (req, res) => {
       )
     );
 });
+
+// 5.2 — Technician Accept or Reject Booking
+export const respondToBooking = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { id: bookingId } = req.params;
+  const { action } = req.body; // "ACCEPT" ya "REJECT"
+
+  if (!["ACCEPT", "REJECT"].includes(action)) {
+    throw new ApiError(400, "Invalid action. Must be either 'ACCEPT' or 'REJECT'");
+  }
+
+  // Get technician profile ID
+  const technicianProfile = await prisma.technicianProfile.findUnique({
+    where: { userId },
+  });
+
+  if (!technicianProfile) {
+    throw new ApiError(404, "Technician profile not found");
+  }
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+  });
+
+  if (!booking) {
+    throw new ApiError(404, "Booking not found");
+  }
+
+  if (booking.status !== "PENDING") {
+    throw new ApiError(400, `Booking cannot be modified as it is currently ${booking.status}`);
+  }
+
+  if (action === "ACCEPT") {
+    // Assign technician and update status to ACCEPTED
+    const updatedBooking = await prisma.booking.update({
+      where: { id: bookingId },
+      data: {
+        technicianId: technicianProfile.id,
+        status: "ACCEPTED",
+      },
+    });
+
+    return res.status(200).json(
+      new ApiResponse(200, updatedBooking, "Booking accepted successfully")
+    );
+  } else {
+    // If rejected, keep it pending or mark as cancelled (here we unassign/leave for others)
+    const updatedBooking = await prisma.booking.update({
+      where: { id: bookingId },
+      data: {
+        status: "CANCELLED", // Or keep pending depending on business logic
+      },
+    });
+
+    return res.status(200).json(
+      new ApiResponse(200, updatedBooking, "Booking rejected")
+    );
+  }
+});
+
+// 5.3 — Update Booking Status Progression (En Route -> Arrived -> In Progress -> Completed)
+export const updateBookingStatus = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { id: bookingId } = req.params;
+  const { status, otp } = req.body; // Target status: EN_ROUTE, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED
+
+  const validStatuses = ["EN_ROUTE", "ARRIVED", "IN_PROGRESS", "COMPLETED", "CANCELLED"];
+  if (!validStatuses.includes(status)) {
+    throw new ApiError(400, "Invalid status progression value");
+  }
+
+  const technicianProfile = await prisma.technicianProfile.findUnique({
+    where: { userId },
+  });
+
+  if (!technicianProfile) {
+    throw new ApiError(404, "Technician profile not found");
+  }
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+  });
+
+  if (!booking) {
+    throw new ApiError(404, "Booking not found");
+  }
+
+  // Ensure only the assigned technician can update this booking
+  if (booking.technicianId !== technicianProfile.id) {
+    throw new ApiError(403, "You are not assigned to this booking");
+  }
+
+  // Optional: OTP validation when moving to IN_PROGRESS
+  if (status === "IN_PROGRESS" && booking.startOtp) {
+    if (!otp || otp !== booking.startOtp) {
+      throw new ApiError(400, "Invalid or missing start OTP provided by customer");
+    }
+  }
+
+  const updatedBooking = await prisma.booking.update({
+    where: { id: bookingId },
+    data: { status },
+  });
+
+  return res.status(200).json(
+    new ApiResponse(200, updatedBooking, `Booking status updated to ${status} successfully`)
+  );
+});
