@@ -35,15 +35,24 @@ const syncUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Firebase ID token is required");
   }
 
-  let decodedToken;
-  try {
-    decodedToken = await firebaseAuth.verifyIdToken(firebaseIdToken);
-  } catch (error) {
-    throw new ApiError(401, "Invalid or expired Firebase token");
-  }
+  let verifiedPhone;
+  let firebaseUid;
 
-  const firebaseUid = decodedToken.uid;
-  const verifiedPhone = decodedToken.phone_number;
+  // --- POSTMAN TESTING BYPASS (Jab tak frontend na ho) ---
+  if (firebaseIdToken === "test_token_123") {
+    verifiedPhone = "9876543210";
+    firebaseUid = "test_firebase_uid_abc123";
+  } else {
+    let decodedToken;
+    try {
+      decodedToken = await firebaseAuth.verifyIdToken(firebaseIdToken);
+    } catch (error) {
+      throw new ApiError(401, "Invalid or expired Firebase token");
+    }
+
+    firebaseUid = decodedToken.uid;
+    verifiedPhone = decodedToken.phone_number;
+  }
 
   if (!verifiedPhone) {
     throw new ApiError(
