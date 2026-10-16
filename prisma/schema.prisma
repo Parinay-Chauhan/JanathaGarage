@@ -147,9 +147,8 @@ model TechnicianService {
 // ==========================================
 
 model Booking {
-  id                 String        @id @default(uuid())
-  bookingNumber      String        @unique
-  
+  id                 String          @id @default(uuid())
+  bookingNumber      String          @unique
   customerId         String
   customer           CustomerProfile @relation(fields: [customerId], references: [id])
   
@@ -157,15 +156,21 @@ model Booking {
   technician         TechnicianProfile? @relation(fields: [technicianId], references: [id])
   
   serviceId          String
-  service            Service       @relation(fields: [serviceId], references: [id])
+  service            Service         @relation(fields: [serviceId], references: [id])
   
-  status             BookingStatus @default(PENDING)
+  status             BookingStatus   @default(PENDING)
   problemDescription String
   scheduledAt        DateTime
   startOtp           String?
   
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
+  // Snapshot fields (Added for production safety)
+  agreedPrice        Float           @default(0.0)
+  serviceAddress     String?
+  latitude           Float?
+  longitude          Float?
+
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
 
   @@map("bookings")
 }
