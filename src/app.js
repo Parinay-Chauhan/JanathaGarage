@@ -23,6 +23,7 @@ app.use(cookieParser());
 import userRoutes from "./routes/user.routes.js";
 import categoryRouter  from "./routes/category.routes.js";
 import serviceRouter from "./routes/service.routes.js";
+import technicianRouter from "./routes/technician.routes.js"
 // import healthcheckRouter from "./routes/healthcheck.routes.js"
 import { ErrorHandler } from "./middleware/Error.middleware.js";
 
@@ -31,6 +32,7 @@ import { ErrorHandler } from "./middleware/Error.middleware.js";
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/services", serviceRouter);
+app.use("/api/v1/technicians", technicianRouter);
 // app.get("/api/health", healthcheckRouter)
 
 app.use(ErrorHandler);
