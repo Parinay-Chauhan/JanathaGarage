@@ -149,3 +149,93 @@ export const updateTechnicianServices = asyncHandler(async (req, res) => {
       )
     );
 });
+
+
+// 4.3 — Update Technician Availability and Online Status
+export const updateAvailability = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { isOnline, isAvailable } = req.body;
+
+  // Validation: At least one field must be provided
+  if (isOnline === undefined && isAvailable === undefined) {
+    throw new ApiError(400, "Provide at least 'isOnline' or 'isAvailable' to update");
+  }
+
+  const data = {};
+  if (isOnline !== undefined) {
+    if (typeof isOnline !== "boolean") {
+      throw new ApiError(400, "'isOnline' must be a boolean value");
+    }
+    data.isOnline = isOnline;
+  }
+
+  if (isAvailable !== undefined) {
+    if (typeof isAvailable !== "boolean") {
+      throw new ApiError(400, "'isAvailable' must be a boolean value");
+    }
+    data.isAvailable = isAvailable;
+  }
+
+  const technicianProfile = await prisma.technicianProfile.update({
+    where: { userId },
+    data,
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        technicianProfile,
+        "Technician status updated successfully"
+      )
+    );
+});
+
+
+// 4.4 — Submit KYC Documents (Technician)
+export const submitKYC = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { docType, docNumber, docUrl } = req.body;
+
+  if (!docType || typeof docType !== "string" || docType.trim() === "") {
+    throw new ApiError(400, "Document type is required (e.g., AADHAAR, PAN)");
+  }
+
+  if (!docNumber || typeof docNumber !== "string" || docNumber.trim() === "") {
+    throw new ApiError(400, "Document number is required");
+  }
+
+  if (!docUrl || typeof docUrl !== "string" || docUrl.trim() === "") {
+    throw new ApiError(400, "Document image/file URL is required");
+  }
+
+  const technicianProfile = await prisma.technicianProfile.findUnique({
+    where: { userId },
+  });
+
+  if (!technicianProfile) {
+    throw new ApiError(404, "Technician profile not found. Complete onboarding first.");
+  }
+
+  // Update KYC details and set status to SUBMITTED
+  const updatedProfile = await prisma.technicianProfile.update({
+    where: { userId },
+    data: {
+      docType: docType.trim().toUpperCase(),
+      docNumber: docNumber.trim(),
+      docUrl: docUrl.trim(),
+      kycStatus: "SUBMITTED", // Automatically set to SUBMITTED for admin review
+    },
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedProfile,
+        "KYC documents submitted successfully. Pending admin review."
+      )
+    );
+});
