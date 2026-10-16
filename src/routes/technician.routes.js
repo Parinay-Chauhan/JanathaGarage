@@ -2,6 +2,8 @@ import { Router } from "express";
 import {
   onboardTechnician,
   updateTechnicianServices,
+  updateAvailability,
+  submitKYC,
 } from "../controllers/technician.controller.js";
 import { verifyJWT, authorizeRoles } from "../middleware/Auth.middleware.js";
 
@@ -16,5 +18,15 @@ router
 router
   .route("/me/services")
   .put(verifyJWT, authorizeRoles("TECHNICIAN"), updateTechnicianServices);
+
+// Availability Route
+router
+  .route("/me/availability")
+  .patch(verifyJWT, authorizeRoles("TECHNICIAN"), updateAvailability);
+
+// KYC Submission Route
+router
+  .route("/me/kyc")
+  .post(verifyJWT, authorizeRoles("TECHNICIAN"), submitKYC);
 
 export default router;
