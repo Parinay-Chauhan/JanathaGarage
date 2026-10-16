@@ -170,6 +170,7 @@ model Booking {
   longitude      Float?
 
   review Review? // <-- Added relation
+  payment        Payment?      // <-- Ye relation add karna hai
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -199,4 +200,43 @@ model Review {
   updatedAt DateTime @updatedAt
 
   @@map("reviews")
+}
+
+// ==========================================
+// ENUM FOR PAYMENTS
+// ==========================================
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  ONLINE
+  CASH
+  UPI
+}
+
+// ==========================================
+// PAYMENTS & INVOICES
+// ==========================================
+
+model Payment {
+  id             String        @id @default(uuid())
+  bookingId      String        @unique
+  booking        Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  amount         Decimal       @db.Decimal(10, 2)
+  method         PaymentMethod @default(ONLINE)
+  status         PaymentStatus @default(PENDING)
+  
+  transactionId  String?       @unique // Gateway transaction reference ID
+  invoiceUrl     String?       // Generated invoice PDF link (optional)
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@map("payments")
 }
