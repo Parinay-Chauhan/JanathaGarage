@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: jantagaraj_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_secure_password
+      POSTGRES_DB: jantagaraj_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: jantagaraj_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - POSTGRES_URI=postgresql://postgres:your_secure_password@postgres-db:5432/jantagaraj_db?schema=public
+      - DIRECT_URL=postgresql://postgres:your_secure_password@postgres-db:5432/jantagaraj_db?schema=public
+      - JWT_SECRET=your_jwt_secret_key
+    depends_on:
+      - postgres-db
+
+volumes:
+  postgres_data:
