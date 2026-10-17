@@ -10,48 +10,48 @@ export const AboutPage: React.FC = () => {
         <span className="text-xs font-bold uppercase tracking-wider text-brand-500">
           The JantaGaraj Mission
         </span>
-        <h1 className="text-4xl sm:text-5xl font-extrabold font-display tracking-tight text-stone-900 dark:text-white">
+        <h1 className="text-4xl sm:text-5xl font-extrabold font-display tracking-tight text-stone-900 dark:text-[#FDF6EE]">
           Reinventing Vehicle Repair For Every Indian Citizen
         </h1>
-        <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
+        <p className="text-stone-600 dark:text-[#A89C90] text-sm sm:text-base leading-relaxed">
           Built to empower local skilled mechanics with digital discovery and to protect vehicle owners from opaque workshop pricing and sudden highway breakdowns.
         </p>
       </div>
 
       {/* 3 Pillars */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="space-y-3">
+        <Card className="space-y-3 border-stone-200/80 dark:border-[#261E18]">
           <div className="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center">
             <ShieldCheck className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold font-display text-stone-900 dark:text-white">
+          <h3 className="text-lg font-bold font-display text-stone-900 dark:text-[#FDF6EE]">
             100% KYC Verified
           </h3>
-          <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+          <p className="text-xs text-stone-500 dark:text-[#9E938A] leading-relaxed">
             Every technician is verified with government documents (Aadhaar/DL) and police background clearance to ensure customer security at home.
           </p>
         </Card>
 
-        <Card className="space-y-3">
+        <Card className="space-y-3 border-stone-200/80 dark:border-[#261E18]">
           <div className="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center">
             <Zap className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold font-display text-stone-900 dark:text-white">
+          <h3 className="text-lg font-bold font-display text-stone-900 dark:text-[#FDF6EE]">
             30-Min Rapid Response
           </h3>
-          <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+          <p className="text-xs text-stone-500 dark:text-[#9E938A] leading-relaxed">
             Smart geographic dispatch routes your request to the closest online mechanic equipped with tools and emergency spare parts.
           </p>
         </Card>
 
-        <Card className="space-y-3">
+        <Card className="space-y-3 border-stone-200/80 dark:border-[#261E18]">
           <div className="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center">
             <HeartHandshake className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold font-display text-stone-900 dark:text-white">
+          <h3 className="text-lg font-bold font-display text-stone-900 dark:text-[#FDF6EE]">
             Zero Hidden Costs
           </h3>
-          <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+          <p className="text-xs text-stone-500 dark:text-[#9E938A] leading-relaxed">
             Transparent rate cards before job start. Secure start OTP ensures mechanics only charge for work verified and authorized by you.
           </p>
         </Card>
