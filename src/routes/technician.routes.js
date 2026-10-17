@@ -4,10 +4,15 @@ import {
   updateTechnicianServices,
   updateAvailability,
   submitKYC,
+  getTechnicians,
+  getTechnicianById,
 } from "../controllers/technician.controller.js";
 import { verifyJWT, authorizeRoles } from "../middleware/Auth.middleware.js";
 
 const router = Router();
+
+// Public Discovery Routes
+router.route("/").get(getTechnicians);
 
 // Onboarding Route (Only accessible by authenticated TECHNICIAN)
 router
@@ -28,5 +33,8 @@ router
 router
   .route("/me/kyc")
   .post(verifyJWT, authorizeRoles("TECHNICIAN"), submitKYC);
+
+// Public Single Technician Route (placed last so it doesn't collide with /onboarding or /me/*)
+router.route("/:id").get(getTechnicianById);
 
 export default router;
