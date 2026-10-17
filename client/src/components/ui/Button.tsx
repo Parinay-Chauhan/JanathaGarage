@@ -33,11 +33,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       primary:
         "bg-brand-500 hover:bg-brand-600 text-white shadow-glow hover:shadow-glow-lg focus:ring-brand-500",
       secondary:
-        "bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white focus:ring-stone-500",
+        "bg-stone-900 text-white hover:bg-stone-800 dark:bg-[#1A1613] dark:text-[#FDF6EE] dark:border dark:border-[#2C221A] dark:hover:bg-[#251E18] dark:hover:border-[#3D2E24] focus:ring-brand-500",
       outline:
-        "border border-stone-300 dark:border-stone-700 bg-transparent hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-800 dark:text-stone-100 focus:ring-brand-500",
+        "border border-stone-300 dark:border-[#2C221A] bg-transparent hover:bg-stone-100 dark:hover:bg-[#1A1613] text-stone-800 dark:text-[#FDF6EE] focus:ring-brand-500",
       ghost:
-        "bg-transparent hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 focus:ring-brand-500",
+        "bg-transparent hover:bg-stone-100 dark:hover:bg-[#1A1613] text-stone-700 dark:text-[#D1C7BD] focus:ring-brand-500",
       danger:
         "bg-rose-600 hover:bg-rose-700 text-white shadow-sm focus:ring-rose-500",
     };
