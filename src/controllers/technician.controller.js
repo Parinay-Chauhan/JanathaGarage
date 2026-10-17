@@ -239,3 +239,79 @@ export const submitKYC = asyncHandler(async (req, res) => {
       )
     );
 });
+
+// 4.5 — Get Public List of Available Technicians
+export const getTechnicians = asyncHandler(async (req, res) => {
+  const { serviceId } = req.query;
+
+  const where = {
+    isOnline: true,
+    isAvailable: true,
+    kycStatus: "VERIFIED",
+    ...(serviceId ? { servicesOffered: { some: { serviceId } } } : {}),
+  };
+
+  const technicians = await prisma.technicianProfile.findMany({
+    where,
+    include: {
+      user: { select: { id: true, fullName: true, phone: true } },
+      servicesOffered: { include: { service: true } },
+      reviews: { select: { rating: true } },
+    },
+  });
+
+  const formatted = technicians.map((tech) => {
+    const totalReviews = tech.reviews.length;
+    const avgRating =
+      totalReviews > 0
+        ? Number((tech.reviews.reduce((acc, r) => acc + r.rating, 0) / totalReviews).toFixed(1))
+        : 5.0;
+    return {
+      ...tech,
+      avgRating,
+      totalReviews,
+    };
+  });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, formatted, "Technicians fetched successfully"));
+});
+
+// 4.6 — Get Single Technician Public Profile By ID
+export const getTechnicianById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const technician = await prisma.technicianProfile.findUnique({
+    where: { id },
+    include: {
+      user: { select: { id: true, fullName: true, phone: true } },
+      servicesOffered: { include: { service: true } },
+      reviews: {
+        include: {
+          customer: { include: { user: { select: { fullName: true } } } },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
+    },
+  });
+
+  if (!technician) {
+    throw new ApiError(404, "Technician not found");
+  }
+
+  const totalReviews = technician.reviews.length;
+  const avgRating =
+    totalReviews > 0
+      ? Number((technician.reviews.reduce((acc, r) => acc + r.rating, 0) / totalReviews).toFixed(1))
+      : 5.0;
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      { ...technician, avgRating, totalReviews },
+      "Technician details fetched successfully"
+    )
+  );
+});
