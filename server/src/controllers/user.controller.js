@@ -38,10 +38,13 @@ const syncUser = asyncHandler(async (req, res) => {
   let verifiedPhone;
   let firebaseUid;
 
-  // --- POSTMAN TESTING BYPASS (Jab tak frontend na ho) ---
+  // --- DEVELOPMENT / TEST TOKEN BYPASS ---
   if (firebaseIdToken === "test_token_123") {
-    verifiedPhone = "9876543210";
-    firebaseUid = "test_firebase_uid_abc123";
+    const rawPhone = req.body.phone
+      ? String(req.body.phone).replace(/\D/g, "").slice(-10)
+      : "";
+    verifiedPhone = rawPhone || "8439616833";
+    firebaseUid = `test_uid_${verifiedPhone}`;
   } else {
     let decodedToken;
     try {
@@ -88,14 +91,15 @@ const syncUser = asyncHandler(async (req, res) => {
         },
       });
     } else {
-      if (!fullName || typeof fullName !== "string" || fullName.trim() === "") {
-        throw new ApiError(400, "Full name is required for new registration");
-      }
+      const finalName =
+        fullName && typeof fullName === "string" && fullName.trim() !== ""
+          ? fullName.trim()
+          : "JantaGaraj Customer";
 
       user = await prisma.user.create({
         data: {
           phone: verifiedPhone,
-          fullName: fullName.trim(),
+          fullName: finalName,
           role: "CUSTOMER",
           firebaseUid,
         },
