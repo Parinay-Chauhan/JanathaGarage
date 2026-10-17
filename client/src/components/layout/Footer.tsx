@@ -1,8 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Wrench, Phone, Mail, MapPin, ShieldCheck, Clock, Award } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-stone-950 text-stone-300 border-t border-stone-800">
       {/* Trust Elements Bar */}
@@ -13,8 +16,8 @@ export const Footer: React.FC = () => {
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-white text-sm">Verified Technicians</h4>
-              <p className="text-xs text-stone-400">Strict KYC & police verified mechanics</p>
+              <h4 className="font-bold text-white text-sm">{t("footer.verifiedTitle")}</h4>
+              <p className="text-xs text-stone-400">{t("footer.verifiedDesc")}</p>
             </div>
           </div>
 
@@ -23,8 +26,8 @@ export const Footer: React.FC = () => {
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-white text-sm">30-Min Fast Arrival</h4>
-              <p className="text-xs text-stone-400">Nearby doorstep breakdown assistance</p>
+              <h4 className="font-bold text-white text-sm">{t("footer.speedTitle")}</h4>
+              <p className="text-xs text-stone-400">{t("footer.speedDesc")}</p>
             </div>
           </div>
 
@@ -33,8 +36,8 @@ export const Footer: React.FC = () => {
               <Award className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-white text-sm">Transparent Pricing</h4>
-              <p className="text-xs text-stone-400">Fixed rate cards & digital OTP invoicing</p>
+              <h4 className="font-bold text-white text-sm">{t("footer.pricingTitle")}</h4>
+              <p className="text-xs text-stone-400">{t("footer.pricingDesc")}</p>
             </div>
           </div>
 
@@ -43,8 +46,8 @@ export const Footer: React.FC = () => {
               <Phone className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-white text-sm">24x7 SOS Support</h4>
-              <p className="text-xs text-stone-400">Emergency highway & roadside assistance</p>
+              <h4 className="font-bold text-white text-sm">{t("footer.supportTitle")}</h4>
+              <p className="text-xs text-stone-400">{t("footer.supportDesc")}</p>
             </div>
           </div>
         </div>
@@ -62,7 +65,7 @@ export const Footer: React.FC = () => {
             </span>
           </Link>
           <p className="text-stone-400 text-sm max-w-sm leading-relaxed">
-            India's reliable decentralized vehicle maintenance and emergency mechanic marketplace. Connecting vehicle owners with verified neighborhood mechanics.
+            {t("footer.brandDesc")}
           </p>
           <div className="flex items-center gap-3 text-xs text-stone-400 pt-2">
             <MapPin className="w-4 h-4 text-brand-500 shrink-0" />
@@ -72,7 +75,7 @@ export const Footer: React.FC = () => {
 
         <div>
           <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-4 font-display">
-            Popular Services
+            {t("footer.popularServices")}
           </h4>
           <ul className="space-y-2.5 text-sm text-stone-400">
             <li><Link to="/services" className="hover:text-brand-500 transition-colors">General Car Service</Link></li>
@@ -85,7 +88,7 @@ export const Footer: React.FC = () => {
 
         <div>
           <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-4 font-display">
-            For Technicians
+            {t("footer.forTechnicians")}
           </h4>
           <ul className="space-y-2.5 text-sm text-stone-400">
             <li><Link to="/technician/dashboard" className="hover:text-brand-500 transition-colors">Join as Mechanic</Link></li>
@@ -97,7 +100,7 @@ export const Footer: React.FC = () => {
 
         <div>
           <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-4 font-display">
-            Contact & Support
+            {t("footer.contactSupport")}
           </h4>
           <ul className="space-y-2.5 text-sm text-stone-400">
             <li className="flex items-center gap-2">
@@ -108,15 +111,15 @@ export const Footer: React.FC = () => {
               <Mail className="w-4 h-4 text-brand-500" />
               <span>support@jantagaraj.in</span>
             </li>
-            <li><Link to="/about" className="hover:text-brand-500 transition-colors">About Us</Link></li>
-            <li><Link to="/help" className="hover:text-brand-500 transition-colors">Safety Guidelines</Link></li>
+            <li><Link to="/about" className="hover:text-brand-500 transition-colors">{t("nav.aboutUs")}</Link></li>
+            <li><Link to="/about" className="hover:text-brand-500 transition-colors">Safety Guidelines</Link></li>
           </ul>
         </div>
       </div>
 
       {/* Bottom Bar */}
       <div className="border-t border-stone-900 py-6 text-center text-xs text-stone-500">
-        <p>© {new Date().getFullYear()} JantaGaraj Technologies Pvt Ltd. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} {t("footer.rights")}</p>
       </div>
     </footer>
   );
