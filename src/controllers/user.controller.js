@@ -128,7 +128,7 @@ const syncUser = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { user: safeUserData },
+        { user: safeUserData, accessToken },
         "User authenticated successfully"
       )
     );
