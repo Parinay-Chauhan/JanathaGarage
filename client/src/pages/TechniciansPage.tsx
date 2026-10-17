@@ -22,10 +22,10 @@ export const TechniciansPage: React.FC = () => {
           <ShieldCheck className="w-4 h-4 text-emerald-500" />
           <span>{t("techPage.badge")}</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-stone-900 dark:text-white">
+        <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-stone-900 dark:text-[#FDF6EE]">
           {t("techPage.title")}
         </h1>
-        <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300">
+        <p className="text-sm sm:text-base text-stone-600 dark:text-[#A89C90]">
           {t("techPage.subtitle")}
         </p>
       </div>
@@ -43,7 +43,7 @@ export const TechniciansPage: React.FC = () => {
             <Card
               key={tech.id}
               hoverable
-              className="flex flex-col justify-between border-stone-200/80 dark:border-stone-800"
+              className="flex flex-col justify-between border-stone-200/80 dark:border-[#261E18]"
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-4">
@@ -52,11 +52,11 @@ export const TechniciansPage: React.FC = () => {
                       {tech.user?.fullName?.charAt(0) || "M"}
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg font-display text-stone-900 dark:text-white flex items-center gap-1.5">
+                      <h3 className="font-bold text-lg font-display text-stone-900 dark:text-[#FDF6EE] flex items-center gap-1.5">
                         <span>{tech.user?.fullName || "Certified Mechanic"}</span>
                         <ShieldCheck className="w-4 h-4 text-emerald-500" />
                       </h3>
-                      <p className="text-xs text-stone-500 dark:text-stone-400">
+                      <p className="text-xs text-stone-500 dark:text-[#9E938A]">
                         {tech.experienceYears} {t("techPage.autoExp")}
                       </p>
                     </div>
@@ -72,16 +72,16 @@ export const TechniciansPage: React.FC = () => {
 
                 {/* Rating & Bio */}
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 font-bold text-xs">
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 dark:bg-[#251A13] text-amber-600 dark:text-amber-400 font-bold text-xs border border-transparent dark:border-[#3A2619]">
                     <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     <span>{tech.avgRating || 4.9}</span>
                   </div>
-                  <span className="text-xs text-stone-400">
+                  <span className="text-xs text-stone-400 dark:text-[#8C8075]">
                     ({tech.totalReviews || 12} {t("techPage.reviews")})
                   </span>
                 </div>
 
-                <p className="text-xs text-stone-600 dark:text-stone-300 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-stone-600 dark:text-[#A89C90] line-clamp-2 leading-relaxed">
                   {tech.bio}
                 </p>
 
@@ -91,25 +91,25 @@ export const TechniciansPage: React.FC = () => {
                     tech.servicesOffered.slice(0, 3).map((s) => (
                       <span
                         key={s.serviceId}
-                        className="text-[10px] font-semibold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2 py-0.5 rounded-md"
+                        className="text-[10px] font-semibold bg-stone-100 dark:bg-[#1E1712] text-stone-700 dark:text-[#D1C7BD] border border-transparent dark:border-[#2C221A] px-2 py-0.5 rounded-md"
                       >
                         {ts(s.service?.title || "Auto Repair")}
                       </span>
                     ))
                   ) : (
-                    <span className="text-[10px] font-semibold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2 py-0.5 rounded-md">
+                    <span className="text-[10px] font-semibold bg-stone-100 dark:bg-[#1E1712] text-stone-700 dark:text-[#D1C7BD] border border-transparent dark:border-[#2C221A] px-2 py-0.5 rounded-md">
                       General Inspection & Repairs
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="pt-5 mt-5 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between">
+              <div className="pt-5 mt-5 border-t border-stone-100 dark:border-[#261E18] flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                  <span className="text-[10px] uppercase font-bold text-stone-400 dark:text-[#8C8075] block">
                     {t("techPage.baseVisitFee")}
                   </span>
-                  <span className="text-base font-extrabold font-mono text-stone-900 dark:text-white">
+                  <span className="text-base font-extrabold font-mono text-stone-900 dark:text-[#FDF6EE]">
                     ₹{tech.baseVisitingCharge || 199}
                   </span>
                 </div>
