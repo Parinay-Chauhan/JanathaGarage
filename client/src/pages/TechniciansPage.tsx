@@ -2,12 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Star, ShieldCheck } from "lucide-react";
 import { useGetTechniciansQuery } from "../features/technicians/api/techniciansApi";
+import { useLanguage } from "../context/LanguageContext";
 import { Card } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/Button";
 
 export const TechniciansPage: React.FC = () => {
+  const { t, ts } = useLanguage();
   const { data: techniciansData, isLoading } = useGetTechniciansQuery();
 
   const technicians = techniciansData?.data || [];
@@ -18,13 +20,13 @@ export const TechniciansPage: React.FC = () => {
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">
           <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <span>Government ID Verified</span>
+          <span>{t("techPage.badge")}</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-stone-900 dark:text-white">
-          Certified Mechanics Network
+          {t("techPage.title")}
         </h1>
         <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300">
-          Browse verified automotive technicians available for doorstep and roadside breakdown assistance in your area.
+          {t("techPage.subtitle")}
         </p>
       </div>
 
@@ -55,7 +57,7 @@ export const TechniciansPage: React.FC = () => {
                         <ShieldCheck className="w-4 h-4 text-emerald-500" />
                       </h3>
                       <p className="text-xs text-stone-500 dark:text-stone-400">
-                        {tech.experienceYears} Years Auto Experience
+                        {tech.experienceYears} {t("techPage.autoExp")}
                       </p>
                     </div>
                   </div>
@@ -64,7 +66,7 @@ export const TechniciansPage: React.FC = () => {
                     variant={tech.isOnline ? "success" : "default"}
                     size="sm"
                   >
-                    {tech.isOnline ? "Online" : "Offline"}
+                    {tech.isOnline ? t("techPage.online") : t("techPage.offline")}
                   </Badge>
                 </div>
 
@@ -75,12 +77,12 @@ export const TechniciansPage: React.FC = () => {
                     <span>{tech.avgRating || 4.9}</span>
                   </div>
                   <span className="text-xs text-stone-400">
-                    ({tech.totalReviews || 12} reviews)
+                    ({tech.totalReviews || 12} {t("techPage.reviews")})
                   </span>
                 </div>
 
                 <p className="text-xs text-stone-600 dark:text-stone-300 line-clamp-2 leading-relaxed">
-                  {tech.bio || "Specialized in 2-wheeler and 4-wheeler doorstep repair, engine tuning, electrical diagnostics, and roadside breakdown."}
+                  {tech.bio}
                 </p>
 
                 {/* Services list tags */}
@@ -91,7 +93,7 @@ export const TechniciansPage: React.FC = () => {
                         key={s.serviceId}
                         className="text-[10px] font-semibold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2 py-0.5 rounded-md"
                       >
-                        {s.service?.title || "Auto Repair"}
+                        {ts(s.service?.title || "Auto Repair")}
                       </span>
                     ))
                   ) : (
@@ -105,7 +107,7 @@ export const TechniciansPage: React.FC = () => {
               <div className="pt-5 mt-5 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-stone-400 block">
-                    Base Visit Fee
+                    {t("techPage.baseVisitFee")}
                   </span>
                   <span className="text-base font-extrabold font-mono text-stone-900 dark:text-white">
                     ₹{tech.baseVisitingCharge || 199}
@@ -113,7 +115,7 @@ export const TechniciansPage: React.FC = () => {
                 </div>
                 <Link to={`/technicians/${tech.id}`}>
                   <Button variant="outline" size="sm">
-                    View Profile
+                    {t("techPage.viewProfile")}
                   </Button>
                 </Link>
               </div>
@@ -126,14 +128,14 @@ export const TechniciansPage: React.FC = () => {
             <ShieldCheck className="w-7 h-7" />
           </div>
           <h3 className="text-xl font-bold font-display text-stone-900 dark:text-white">
-            No Verified Mechanics Available
+            {t("techPage.noMechanics")}
           </h3>
           <p className="text-xs text-stone-500 dark:text-stone-400">
             All technicians currently onboarded may be offline or undergoing KYC review. Please check back shortly or explore our service rate cards.
           </p>
           <Link to="/services">
             <Button variant="primary" size="sm">
-              Explore Services
+              {t("categories.viewServices")}
             </Button>
           </Link>
         </Card>
