@@ -121,89 +121,22 @@ export const TechniciansPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        // Demo fallback showcase if database has zero onboarded mechanics initially
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              name: "Vikram Singh",
-              exp: 8,
-              rating: 4.9,
-              reviews: 42,
-              charge: 199,
-              bio: "Expert car mechanic specializing in engine diagnostics, brake replacements, and battery jumpstarts.",
-            },
-            {
-              name: "Mohammad Irfan",
-              exp: 6,
-              rating: 4.8,
-              reviews: 31,
-              charge: 149,
-              bio: "Specialist two-wheeler technician with 6+ years experience across Honda, Royal Enfield, and TVS.",
-            },
-            {
-              name: "Sunil Verma",
-              exp: 10,
-              rating: 5.0,
-              reviews: 64,
-              charge: 249,
-              bio: "Master garage technician offering computerized OBD-II scanning, AC servicing, and emergency highway SOS.",
-            },
-          ].map((demoTech, idx) => (
-            <Card key={idx} hoverable className="flex flex-col justify-between">
-              <div>
-                <div className="flex items-start justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 font-bold flex items-center justify-center text-lg border border-brand-500/20">
-                      {demoTech.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg font-display text-stone-900 dark:text-white flex items-center gap-1.5">
-                        <span>{demoTech.name}</span>
-                        <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                      </h3>
-                      <p className="text-xs text-stone-500 dark:text-stone-400">
-                        {demoTech.exp} Years Auto Experience
-                      </p>
-                    </div>
-                  </div>
-                  <Badge variant="success" size="sm">
-                    Verified
-                  </Badge>
-                </div>
-
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 font-bold text-xs">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    <span>{demoTech.rating}</span>
-                  </div>
-                  <span className="text-xs text-stone-400">
-                    ({demoTech.reviews} reviews)
-                  </span>
-                </div>
-
-                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
-                  {demoTech.bio}
-                </p>
-              </div>
-
-              <div className="pt-5 mt-5 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-stone-400 block">
-                    Base Visit Fee
-                  </span>
-                  <span className="text-base font-extrabold font-mono text-stone-900 dark:text-white">
-                    ₹{demoTech.charge}
-                  </span>
-                </div>
-                <Link to="/services">
-                  <Button variant="primary" size="sm">
-                    Book Mechanic
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-          ))}
-        </div>
+        <Card className="p-12 text-center space-y-4 max-w-md mx-auto">
+          <div className="w-14 h-14 rounded-3xl bg-stone-100 dark:bg-stone-800 text-stone-400 flex items-center justify-center mx-auto">
+            <ShieldCheck className="w-7 h-7" />
+          </div>
+          <h3 className="text-xl font-bold font-display text-stone-900 dark:text-white">
+            No Verified Mechanics Available
+          </h3>
+          <p className="text-xs text-stone-500 dark:text-stone-400">
+            All technicians currently onboarded may be offline or undergoing KYC review. Please check back shortly or explore our service rate cards.
+          </p>
+          <Link to="/services">
+            <Button variant="primary" size="sm">
+              Explore Services
+            </Button>
+          </Link>
+        </Card>
       )}
     </div>
   );

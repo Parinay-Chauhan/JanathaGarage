@@ -242,12 +242,11 @@ export const submitKYC = asyncHandler(async (req, res) => {
 
 // 4.5 — Get Public List of Available Technicians
 export const getTechnicians = asyncHandler(async (req, res) => {
-  const { serviceId } = req.query;
+  const { serviceId, isOnline } = req.query;
 
   const where = {
-    isOnline: true,
-    isAvailable: true,
     kycStatus: "VERIFIED",
+    ...(isOnline !== undefined ? { isOnline: isOnline === "true" } : {}),
     ...(serviceId ? { servicesOffered: { some: { serviceId } } } : {}),
   };
 

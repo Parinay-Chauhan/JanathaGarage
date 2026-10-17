@@ -8,8 +8,11 @@ import {
   ArrowRight,
   Sparkles,
   CheckCircle,
+  Star,
+  ShieldCheck,
 } from "lucide-react";
 import { useGetCategoriesQuery, useGetServicesQuery } from "../features/services/api/servicesApi";
+import { useGetTechniciansQuery } from "../features/technicians/api/techniciansApi";
 import { Service } from "../types/api.types";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -29,6 +32,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
 
   const { data: categoriesData, isLoading: categoriesLoading } = useGetCategoriesQuery();
   const { data: servicesData, isLoading: servicesLoading } = useGetServicesQuery();
+  const { data: techniciansData, isLoading: techniciansLoading } = useGetTechniciansQuery();
 
   useGSAP(
     () => {
@@ -183,33 +187,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 </Link>
               ))
             ) : (
-              // Fallback cards if database catalog is newly initialized
-              [
-                { title: "Car Periodic Maintenance", desc: "Oil change, filters, brake inspection, AC tuning" },
-                { title: "Emergency Roadside SOS", desc: "Battery jumpstart, flat tyre replacement, breakdown assistance" },
-                { title: "Two-Wheeler Servicing", desc: "Full tune-up, carburetor cleaning, chain lubrication" },
-                { title: "Clutch & Brake Diagnostics", desc: "Pad replacement, brake fluid bleed, clutch cable repair" },
-              ].map((item, idx) => (
-                <Card key={idx} hoverable className="h-full flex flex-col justify-between">
-                  <div>
-                    <div className="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-950/50 text-brand-500 flex items-center justify-center mb-4">
-                      <Wrench className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-lg font-bold font-display text-stone-900 dark:text-white">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
-                      {item.desc}
-                    </p>
-                  </div>
-                  <Link
-                    to="/services"
-                    className="text-xs font-semibold text-brand-500 pt-4 mt-4 border-t border-stone-100 dark:border-stone-800 block"
-                  >
-                    View Rate Card →
-                  </Link>
-                </Card>
-              ))
+              <div className="col-span-full py-8 text-center text-sm text-stone-500 dark:text-stone-400">
+                No service categories currently available. Please check back shortly.
+              </div>
             )}
           </div>
         )}
@@ -332,6 +312,77 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </Link>
             </div>
           </div>
+
+          {/* Real Featured Mechanics Showcase */}
+          {techniciansData?.data && techniciansData.data.length > 0 && (
+            <div className="mt-10 pt-10 border-t border-stone-800">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-xl font-bold font-display text-white">
+                    Available Mechanics Near You
+                  </h3>
+                  <p className="text-xs text-stone-400 mt-0.5">
+                    Live verified mechanics ready for doorstep repair & emergency assist
+                  </p>
+                </div>
+                <Link
+                  to="/technicians"
+                  className="text-xs font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1"
+                >
+                  <span>View All ({techniciansData.data.length})</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {techniciansData.data.slice(0, 4).map((tech) => (
+                  <div
+                    key={tech.id}
+                    className="p-5 rounded-2xl bg-stone-900/90 border border-stone-800 hover:border-brand-500/50 transition-all flex flex-col justify-between gap-4"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <ShieldCheck className="w-3 h-3" />
+                          <span>KYC Verified</span>
+                        </span>
+                        <div className="flex items-center gap-1 text-amber-400 font-bold text-xs">
+                          <Star className="w-3.5 h-3.5 fill-amber-400" />
+                          <span>{tech.avgRating || 5.0}</span>
+                        </div>
+                      </div>
+
+                      <h4 className="font-bold text-base text-white font-display">
+                        {tech.user?.fullName || "Certified Technician"}
+                      </h4>
+                      <p className="text-xs text-stone-400 mt-1">
+                        {tech.experienceYears} Years Automotive Exp
+                      </p>
+                      <p className="text-xs text-stone-400 line-clamp-2 mt-2 leading-relaxed">
+                        {tech.bio}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-stone-800 flex items-center justify-between">
+                      <div>
+                        <span className="text-[9px] uppercase font-bold text-stone-500 block">
+                          Visit Fee
+                        </span>
+                        <span className="text-sm font-bold font-mono text-white">
+                          ₹{tech.baseVisitingCharge}
+                        </span>
+                      </div>
+                      <Link to={`/technicians/${tech.id}`}>
+                        <Button variant="outline" size="sm" className="text-xs py-1.5 px-3 border-stone-700 hover:bg-stone-800 text-white">
+                          Profile
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
