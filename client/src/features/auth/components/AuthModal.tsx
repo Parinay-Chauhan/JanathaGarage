@@ -7,6 +7,13 @@ import { useSyncUserMutation } from "../api/authApi";
 import { useAppDispatch } from "../../../app/hooks";
 import { setCredentials } from "../authSlice";
 import { useLanguage } from "../../../context/LanguageContext";
+import {
+  auth,
+  isFirebaseConfigured,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  ConfirmationResult,
+} from "../utils/firebase";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -24,10 +31,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [errorMsg, setErrorMsg] = useState("");
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
 
   const effectivePhone = phone.trim() || "8439616833";
 
-  const handleSendOtp = (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!phone || phone.length < 10) {
       setErrorMsg(
@@ -38,6 +47,37 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       return;
     }
     setErrorMsg("");
+
+    // Real Firebase Phone Auth if configured
+    if (isFirebaseConfigured && auth) {
+      setIsSendingOtp(true);
+      try {
+        const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+          size: "invisible",
+        });
+        const cleanPhone = phone.replace(/\D/g, "").slice(-10);
+        const confirmation = await signInWithPhoneNumber(
+          auth,
+          `+91${cleanPhone}`,
+          verifier
+        );
+        setConfirmationResult(confirmation);
+        setStep("otp");
+      } catch (err: any) {
+        console.error("Firebase send OTP error:", err);
+        setErrorMsg(
+          err?.message ||
+            (isHi
+              ? "SMS भेजने में विफल। कृपया पुनः प्रयास करें।"
+              : "Failed to dispatch SMS. Please try again.")
+        );
+      } finally {
+        setIsSendingOtp(false);
+      }
+      return;
+    }
+
+    // Dev Fallback
     setStep("otp");
   };
 
@@ -54,9 +94,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
     try {
       setErrorMsg("");
+      let firebaseToken = "test_token_123";
+
+      if (confirmationResult) {
+        const userCredential = await confirmationResult.confirm(otp);
+        firebaseToken = await userCredential.user.getIdToken();
+      }
+
       const res = await syncUser({
-        firebaseIdToken: "test_token_123",
-        fullName: fullName.trim() || "JantaGaraj Customer",
+        firebaseIdToken: firebaseToken,
+        fullName: fullName.trim() || "Parinay Chauhan",
         phone: effectivePhone,
         authProvider: "firebase",
       }).unwrap();
@@ -72,7 +119,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       }
     } catch (err: any) {
       setErrorMsg(
-        err?.data?.message || (isHi ? "प्रमाणीकरण विफल रहा।" : "Failed to authenticate. Try 1-click login.")
+        err?.data?.message || err?.message || (isHi ? "प्रमाणीकरण विफल रहा।" : "Failed to authenticate.")
       );
     }
   };
@@ -161,26 +208,35 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             }
           />
 
-          <Button type="submit" variant="primary" className="w-full" size="lg">
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-full"
+            size="lg"
+            isLoading={isSendingOtp}
+          >
             {isHi ? "OTP कोड भेजें" : "Send OTP Code"}
           </Button>
+          <div id="recaptcha-container"></div>
         </form>
       ) : (
         <div className="space-y-4">
-          {/* Clear Dev Mode Notice explaining why telecom SMS is not sent */}
-          <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs space-y-1.5">
-            <div className="flex items-center gap-2 font-semibold">
-              <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-              <span>
-                {isHi ? "डेवलपमेंट मोड: SMS गेटवे सैंडबॉक्स में है" : "Dev Mode: SMS Gateway is in Sandbox"}
-              </span>
+          {/* Show Dev Mode Notice only when real Firebase Web credentials are not configured */}
+          {!isFirebaseConfigured && (
+            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs space-y-1.5">
+              <div className="flex items-center gap-2 font-semibold">
+                <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                <span>
+                  {isHi ? "डेवलपमेंट मोड: SMS गेटवे सैंडबॉक्स में है" : "Dev Mode: SMS Gateway is in Sandbox"}
+                </span>
+              </div>
+              <p className="text-[11.5px] leading-relaxed text-stone-600 dark:text-stone-400">
+                {isHi
+                  ? "लाइव टेलीकॉम SMS अभी कनेक्ट नहीं है, इसलिए सिम कार्ड पर SMS नहीं आएगा। टेस्टिंग के लिए टेस्ट OTP 123456 का उपयोग करें या नीचे बटन दबाएं।"
+                  : "Live telecom SMS is not dispatched in dev environment. Use test OTP: 123456 or click Auto-Fill below."}
+              </p>
             </div>
-            <p className="text-[11.5px] leading-relaxed text-stone-600 dark:text-stone-400">
-              {isHi
-                ? "लाइव टेलीकॉम SMS अभी कनेक्ट नहीं है, इसलिए सिम कार्ड पर SMS नहीं आएगा। टेस्टिंग के लिए टेस्ट OTP 123456 का उपयोग करें या नीचे बटन दबाएं।"
-                : "Live telecom SMS is not dispatched in dev environment. Use test OTP: 123456 or click Auto-Fill below."}
-            </p>
-          </div>
+          )}
 
           <form onSubmit={handleVerifyOtp} className="space-y-3">
             <div className="space-y-1.5">
