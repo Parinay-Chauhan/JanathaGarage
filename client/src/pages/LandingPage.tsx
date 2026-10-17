@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Wrench,
   Clock,
   Car,
   ChevronRight,
@@ -34,7 +33,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
 
   const { data: categoriesData, isLoading: categoriesLoading } = useGetCategoriesQuery();
   const { data: servicesData, isLoading: servicesLoading } = useGetServicesQuery();
-  const { data: techniciansData, isLoading: techniciansLoading } = useGetTechniciansQuery();
+  const { data: techniciansData } = useGetTechniciansQuery();
 
   useGSAP(
     () => {
