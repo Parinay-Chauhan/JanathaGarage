@@ -51,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel dark:glass-panel-dark border-b border-stone-200/80 dark:border-stone-800 transition-colors">
+    <header className="sticky top-0 z-40 w-full glass-panel dark:glass-panel-dark border-b border-stone-200/80 dark:border-[#221A14] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
@@ -59,17 +59,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
             <Wrench className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div>
-            <span className="text-2xl font-extrabold font-display tracking-tight text-stone-900 dark:text-white">
+            <span className="text-2xl font-extrabold font-display tracking-tight text-stone-900 dark:text-[#FDF6EE]">
               Janta<span className="text-brand-500">Garaj</span>
             </span>
-            <span className="hidden sm:block text-[10px] tracking-wider uppercase font-semibold text-stone-600 dark:text-stone-300">
+            <span className="hidden sm:block text-[10px] tracking-wider uppercase font-semibold text-stone-600 dark:text-[#9E938A]">
               {t("nav.tagline")}
             </span>
           </div>
         </Link>
 
         {/* Location Selector (GPS / City) */}
-        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100/90 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 text-xs font-medium text-stone-700 dark:text-stone-300">
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100/90 dark:bg-[#181411] border border-stone-200 dark:border-[#281F18] text-xs font-medium text-stone-700 dark:text-[#D1C7BD]">
           <MapPin className="w-4 h-4 text-brand-500 shrink-0" />
           <span className="max-w-[140px] truncate">{location.city}</span>
           <button
@@ -83,22 +83,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
         </div>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-stone-600 dark:text-stone-300">
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-stone-600 dark:text-[#D1C7BD]">
           <Link
             to="/services"
-            className="hover:text-brand-500 transition-colors"
+            className="hover:text-brand-500 dark:hover:text-[#F97316] transition-colors"
           >
             {t("nav.allServices")}
           </Link>
           <Link
             to="/technicians"
-            className="hover:text-brand-500 transition-colors"
+            className="hover:text-brand-500 dark:hover:text-[#F97316] transition-colors"
           >
             {t("nav.findMechanics")}
           </Link>
           <Link
             to="/about"
-            className="hover:text-brand-500 transition-colors"
+            className="hover:text-brand-500 dark:hover:text-[#F97316] transition-colors"
           >
             {t("nav.aboutUs")}
           </Link>
@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
           {/* Language Switcher Button */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/60 hover:bg-stone-100 dark:hover:bg-stone-800 hover:border-brand-500/50 text-xs font-bold text-stone-700 dark:text-stone-200 transition-all shadow-sm active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-200 dark:border-[#281F18] bg-white/60 dark:bg-[#181411] hover:bg-stone-100 dark:hover:bg-[#231A15] hover:border-brand-500/50 text-xs font-bold text-stone-700 dark:text-[#E7DDD3] transition-all shadow-sm active:scale-95"
             title="भाषा बदलें / Switch Language"
             aria-label="Toggle between Hindi and English"
           >
@@ -122,7 +122,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
           {/* Theme Switcher */}
           <button
             onClick={toggleTheme}
-            className="p-2.5 rounded-xl text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="p-2.5 rounded-xl text-stone-500 hover:text-stone-900 dark:text-[#9E938A] dark:hover:text-[#FDF6EE] hover:bg-stone-100 dark:hover:bg-[#1E1712] transition-colors"
             aria-label="Toggle theme"
           >
             {theme === "dark" ? (
@@ -137,13 +137,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800/80 transition-colors border border-transparent hover:border-stone-200 dark:hover:border-stone-700"
+                className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full hover:bg-stone-100 dark:hover:bg-[#1C1713] transition-colors border border-transparent hover:border-stone-200 dark:hover:border-[#2C221A]"
               >
                 <div className="w-9 h-9 rounded-full bg-brand-500/10 text-brand-500 font-bold flex items-center justify-center text-sm border border-brand-500/20">
                   {user.fullName.charAt(0).toUpperCase()}
                 </div>
                 <div className="hidden sm:block text-left text-xs">
-                  <p className="font-bold text-stone-900 dark:text-white leading-tight">
+                  <p className="font-bold text-stone-900 dark:text-[#FDF6EE] leading-tight">
                     {user.fullName}
                   </p>
                   <p className="text-[10px] text-brand-500 font-semibold tracking-wider uppercase">
@@ -156,21 +156,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
               {/* Profile Menu Popup */}
               {userDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-stone-900 p-2 shadow-2xl border border-stone-200 dark:border-stone-800 text-sm z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+                  className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-[#14110E] p-2 shadow-2xl dark:shadow-chai border border-stone-200 dark:border-[#261E18] text-sm z-50 animate-in fade-in slide-in-from-top-2 duration-150"
                   onClick={() => setUserDropdownOpen(false)}
                 >
-                  <div className="px-3 py-2 border-b border-stone-100 dark:border-stone-800 mb-1">
-                    <p className="font-bold text-stone-900 dark:text-white truncate">
+                  <div className="px-3 py-2 border-b border-stone-100 dark:border-[#261E18] mb-1">
+                    <p className="font-bold text-stone-900 dark:text-[#FDF6EE] truncate">
                       {user.fullName}
                     </p>
-                    <p className="text-xs text-stone-500 dark:text-stone-400">
+                    <p className="text-xs text-stone-500 dark:text-[#9E938A]">
                       {user.phone}
                     </p>
                   </div>
 
                   <Link
                     to={getDashboardLink()}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-stone-700 dark:text-[#D1C7BD] hover:bg-stone-100 dark:hover:bg-[#1E1712] transition-colors"
                   >
                     <LayoutDashboard className="w-4 h-4 text-brand-500" />
                     <span>
@@ -185,7 +185,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
                   {user.role === "CUSTOMER" && (
                     <Link
                       to="/customer/bookings"
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-stone-700 dark:text-[#D1C7BD] hover:bg-stone-100 dark:hover:bg-[#1E1712] transition-colors"
                     >
                       <CalendarCheck className="w-4 h-4 text-brand-500" />
                       <span>{t("nav.customerDashboard")}</span>
@@ -195,7 +195,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
                   {user.role === "ADMIN" && (
                     <Link
                       to="/admin/technicians/verification"
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-stone-700 dark:text-[#D1C7BD] hover:bg-stone-100 dark:hover:bg-[#1E1712] transition-colors"
                     >
                       <ShieldAlert className="w-4 h-4 text-brand-500" />
                       <span>KYC Verification</span>
@@ -204,7 +204,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
 
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors text-left mt-1 border-t border-stone-100 dark:border-stone-800"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors text-left mt-1 border-t border-stone-100 dark:border-[#261E18]"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>{t("nav.logout")}</span>
@@ -226,7 +226,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
           {/* Mobile Hamburger Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2.5 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
+            className="lg:hidden p-2.5 rounded-xl text-stone-700 dark:text-[#D1C7BD] hover:bg-stone-100 dark:hover:bg-[#1E1712]"
             aria-label="Open Navigation Menu"
           >
             {mobileMenuOpen ? (
@@ -240,15 +240,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-4 pt-4 pb-6 space-y-4">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs font-medium text-stone-700 dark:text-stone-300">
+        <div className="lg:hidden border-t border-stone-200 dark:border-[#261E18] bg-white dark:bg-[#0E0C0A] px-4 pt-4 pb-6 space-y-4">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#16120F] border border-stone-200 dark:border-[#261E18] text-xs font-medium text-stone-700 dark:text-[#D1C7BD]">
             <MapPin className="w-4 h-4 text-brand-500 shrink-0" />
             <span className="truncate">{location.city} - {location.address}</span>
           </div>
 
           {/* Mobile Language Switcher Row */}
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-stone-100/80 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700">
-            <div className="flex items-center gap-2 text-xs font-bold text-stone-700 dark:text-stone-300">
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-stone-100/80 dark:bg-[#16120F] border border-stone-200 dark:border-[#261E18]">
+            <div className="flex items-center gap-2 text-xs font-bold text-stone-700 dark:text-[#D1C7BD]">
               <Languages className="w-4 h-4 text-brand-500" />
               <span>Language / भाषा</span>
             </div>
@@ -264,21 +264,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
             <Link
               to="/services"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl font-medium text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800"
+              className="px-4 py-2.5 rounded-xl font-medium text-stone-800 dark:text-[#E7DDD3] hover:bg-stone-100 dark:hover:bg-[#1E1712]"
             >
               {t("nav.allServices")}
             </Link>
             <Link
               to="/technicians"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl font-medium text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800"
+              className="px-4 py-2.5 rounded-xl font-medium text-stone-800 dark:text-[#E7DDD3] hover:bg-stone-100 dark:hover:bg-[#1E1712]"
             >
               {t("nav.findMechanics")}
             </Link>
             <Link
               to="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl font-medium text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800"
+              className="px-4 py-2.5 rounded-xl font-medium text-stone-800 dark:text-[#E7DDD3] hover:bg-stone-100 dark:hover:bg-[#1E1712]"
             >
               {t("nav.aboutUs")}
             </Link>
