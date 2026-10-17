@@ -5,6 +5,7 @@ export interface SyncUserRequest {
   firebaseIdToken: string;
   fullName?: string;
   authProvider: "firebase";
+  phone?: string;
 }
 
 export interface SyncUserResponse {
