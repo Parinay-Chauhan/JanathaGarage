@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useGetCategoriesQuery, useGetServicesQuery } from "../features/services/api/servicesApi";
 import { useGetTechniciansQuery } from "../features/technicians/api/techniciansApi";
+import { useLanguage } from "../context/LanguageContext";
 import { Service } from "../types/api.types";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -27,6 +28,7 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => {
   const heroRef = useRef<HTMLDivElement>(null);
+  const { t, tc, ts } = useLanguage();
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
@@ -61,16 +63,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
         <div className="text-center max-w-3xl mx-auto space-y-6">
           <div className="hero-elem inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-bold tracking-wide uppercase shadow-sm">
             <Sparkles className="w-4 h-4 text-brand-500" />
-            <span>India's #1 Doorstep Auto Garage Network</span>
+            <span>{t("hero.badge")}</span>
           </div>
 
           <h1 className="hero-elem text-4xl sm:text-6xl font-extrabold font-display tracking-tight text-stone-900 dark:text-white leading-[1.15]">
-            Vehicle Breakdown? <br />
-            <span className="text-gradient">Certified Mechanics</span> At Your Doorstep.
+            {t("hero.title1")}{" "}
+            <span className="text-gradient">{t("hero.titleHighlight")}</span>
           </h1>
 
           <p className="hero-elem text-base sm:text-lg text-stone-600 dark:text-stone-300 leading-relaxed font-normal max-w-2xl mx-auto">
-            Book trusted neighborhood mechanics for car & bike repair, general servicing, jumpstarts, and roadside SOS in under 30 minutes with transparent rate cards.
+            {t("hero.subtitle")}
           </p>
 
           <div className="hero-elem flex flex-wrap items-center justify-center gap-4 pt-2">
@@ -81,12 +83,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 rightIcon={<ArrowRight className="w-5 h-5" />}
                 className="px-8 shadow-glow-lg"
               >
-                Explore All Services
+                {t("hero.bookButton")}
               </Button>
             </Link>
             <Link to="/technicians">
               <Button variant="secondary" size="lg">
-                View Nearby Mechanics
+                {t("nav.findMechanics")}
               </Button>
             </Link>
           </div>
@@ -95,18 +97,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           <div className="hero-elem pt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
             <div className="p-4 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 shadow-sm backdrop-blur-sm">
               <p className="text-2xl font-extrabold text-stone-900 dark:text-white font-mono">
-                30 Min
+                {t("hero.stat1Value")}
               </p>
               <p className="text-xs text-stone-500 dark:text-stone-400 font-medium mt-0.5">
-                Avg Doorstep Arrival
+                {t("hero.stat1Label")}
               </p>
             </div>
             <div className="p-4 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 shadow-sm backdrop-blur-sm">
               <p className="text-2xl font-extrabold text-stone-900 dark:text-white font-mono">
-                100%
+                {t("hero.stat2Value")}
               </p>
               <p className="text-xs text-stone-500 dark:text-stone-400 font-medium mt-0.5">
-                KYC Verified Mechanics
+                {t("hero.stat2Label")}
               </p>
             </div>
             <div className="p-4 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 shadow-sm backdrop-blur-sm">
@@ -114,15 +116,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 4.9★
               </p>
               <p className="text-xs text-stone-500 dark:text-stone-400 font-medium mt-0.5">
-                Customer Rating
+                {t("techPage.reviews")}
               </p>
             </div>
             <div className="p-4 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 shadow-sm backdrop-blur-sm">
               <p className="text-2xl font-extrabold text-stone-900 dark:text-white font-mono">
-                ₹0
+                {t("hero.stat3Value")}
               </p>
               <p className="text-xs text-stone-500 dark:text-stone-400 font-medium mt-0.5">
-                No Hidden Surcharges
+                {t("hero.stat3Label")}
               </p>
             </div>
           </div>
@@ -134,17 +136,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-brand-500">
-              Complete Vehicle Catalog
+              {t("categories.eyebrow")}
             </span>
             <h2 className="text-3xl font-bold font-display text-stone-900 dark:text-white mt-1">
-              Popular Service Categories
+              {t("categories.title")}
             </h2>
           </div>
           <Link
             to="/services"
             className="inline-flex items-center gap-1.5 text-sm font-bold text-brand-500 hover:text-brand-600 group"
           >
-            <span>Browse Full Catalog</span>
+            <span>{t("categories.viewServices")}</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -173,14 +175,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                         <Car className="w-6 h-6" />
                       </div>
                       <h3 className="text-lg font-bold font-display text-stone-900 dark:text-white group-hover:text-brand-500 transition-colors">
-                        {category.name}
+                        {tc(category.name)}
                       </h3>
                       <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 line-clamp-2">
-                        {category.services?.length || 0} specialized repairs & diagnostic packages
+                        {category.services?.length || 0} {t("categories.specializedRepairs")}
                       </p>
                     </div>
                     <div className="flex items-center justify-between text-xs font-semibold text-brand-500 pt-4 mt-4 border-t border-stone-100 dark:border-stone-800">
-                      <span>View Services</span>
+                      <span>{t("categories.viewServices")}</span>
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </Card>
@@ -199,13 +201,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-xl mx-auto mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-500">
-            Instant Doorstep Booking
+            {t("trending.eyebrow")}
           </span>
           <h2 className="text-3xl font-bold font-display text-stone-900 dark:text-white mt-1">
-            Trending Repair Packages
+            {t("trending.title")}
           </h2>
           <p className="text-sm text-stone-500 dark:text-stone-400 mt-2">
-            Select a service below to book a nearby mechanic with secure OTP verification.
+            {t("trending.subtitle")}
           </p>
         </div>
 
@@ -225,7 +227,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="text-[11px] font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/60 px-2.5 py-1 rounded-full uppercase tracking-wider">
-                      {service.category?.name || "Maintenance"}
+                      {tc(service.category?.name || "Maintenance")}
                     </span>
                     <span className="text-lg font-mono font-extrabold text-stone-900 dark:text-white">
                       ₹{service.defaultPrice}
@@ -233,24 +235,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   </div>
 
                   <h3 className="text-lg font-bold font-display text-stone-900 dark:text-white">
-                    {service.title}
+                    {ts(service.title)}
                   </h3>
                   <p className="text-xs text-stone-500 dark:text-stone-400 mt-2 leading-relaxed">
-                    Doorstep diagnosis, certified parts, and clean execution by our nearest available technician.
+                    {t("trending.desc")}
                   </p>
                 </div>
 
                 <div className="pt-6 mt-6 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between gap-3">
                   <div className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1.5 font-medium">
                     <Clock className="w-4 h-4 text-brand-500" />
-                    <span>~45 min repair</span>
+                    <span>{t("trending.duration")}</span>
                   </div>
                   <Button
                     variant="primary"
                     size="sm"
                     onClick={() => handleBookService(service)}
                   >
-                    Book Service
+                    {t("trending.bookBtn")}
                   </Button>
                 </div>
               </Card>
@@ -267,30 +269,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
             <div className="max-w-xl space-y-4">
               <Badge variant="brand" size="sm">
-                Certified Garage Network
+                {t("mechanics.badge")}
               </Badge>
               <h2 className="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-white">
-                Meet Verified Mechanics In Your Neighborhood
+                {t("mechanics.title")}
               </h2>
               <p className="text-stone-400 text-sm leading-relaxed">
-                Every technician on JantaGaraj undergoes strict Government ID (Aadhaar / DL) KYC verification and background checks before they can accept bookings.
+                {t("mechanics.desc")}
               </p>
               <div className="grid grid-cols-2 gap-4 pt-2">
                 <div className="flex items-center gap-2 text-xs text-stone-300">
                   <CheckCircle className="w-4 h-4 text-emerald-400" />
-                  <span>Police & KYC Verified</span>
+                  <span>{t("mechanics.p1")}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-stone-300">
                   <CheckCircle className="w-4 h-4 text-emerald-400" />
-                  <span>Transparent Rate Cards</span>
+                  <span>{t("mechanics.p2")}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-stone-300">
                   <CheckCircle className="w-4 h-4 text-emerald-400" />
-                  <span>OTP Secure Job Start</span>
+                  <span>{t("mechanics.p3")}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-stone-300">
                   <CheckCircle className="w-4 h-4 text-emerald-400" />
-                  <span>Live Booking Tracking</span>
+                  <span>{t("mechanics.p4")}</span>
                 </div>
               </div>
             </div>
@@ -298,7 +300,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
             <div className="flex flex-col gap-3 min-w-[240px]">
               <Link to="/technicians">
                 <Button variant="primary" size="lg" className="w-full">
-                  Browse All Mechanics
+                  {t("mechanics.browseAll")}
                 </Button>
               </Link>
               <Link to="/technician/dashboard">
@@ -307,7 +309,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   size="lg"
                   className="w-full text-white border-stone-700 hover:bg-stone-800"
                 >
-                  Join as Technician Partner
+                  {t("mechanics.joinBtn")}
                 </Button>
               </Link>
             </div>
@@ -319,17 +321,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h3 className="text-xl font-bold font-display text-white">
-                    Available Mechanics Near You
+                    {t("mechanics.nearYou")}
                   </h3>
                   <p className="text-xs text-stone-400 mt-0.5">
-                    Live verified mechanics ready for doorstep repair & emergency assist
+                    {t("mechanics.nearYouSubtitle")}
                   </p>
                 </div>
                 <Link
                   to="/technicians"
                   className="text-xs font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1"
                 >
-                  <span>View All ({techniciansData.data.length})</span>
+                  <span>{t("mechanics.browseAll")} ({techniciansData.data.length})</span>
                   <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -344,7 +346,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                       <div className="flex items-center justify-between gap-2 mb-3">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full flex items-center gap-1">
                           <ShieldCheck className="w-3 h-3" />
-                          <span>KYC Verified</span>
+                          <span>{t("mechanics.p1")}</span>
                         </span>
                         <div className="flex items-center gap-1 text-amber-400 font-bold text-xs">
                           <Star className="w-3.5 h-3.5 fill-amber-400" />
@@ -356,7 +358,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                         {tech.user?.fullName || "Certified Technician"}
                       </h4>
                       <p className="text-xs text-stone-400 mt-1">
-                        {tech.experienceYears} Years Automotive Exp
+                        {tech.experienceYears} {t("mechanics.experience")}
                       </p>
                       <p className="text-xs text-stone-400 line-clamp-2 mt-2 leading-relaxed">
                         {tech.bio}
@@ -366,7 +368,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                     <div className="pt-3 border-t border-stone-800 flex items-center justify-between">
                       <div>
                         <span className="text-[9px] uppercase font-bold text-stone-500 block">
-                          Visit Fee
+                          {t("mechanics.visitFee")}
                         </span>
                         <span className="text-sm font-bold font-mono text-white">
                           ₹{tech.baseVisitingCharge}
@@ -374,7 +376,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                       </div>
                       <Link to={`/technicians/${tech.id}`}>
                         <Button variant="outline" size="sm" className="text-xs py-1.5 px-3 border-stone-700 hover:bg-stone-800 text-white">
-                          Profile
+                          {t("mechanics.viewProfile")}
                         </Button>
                       </Link>
                     </div>
@@ -390,10 +392,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-xl mx-auto mb-16">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-500">
-            Frictionless Process
+            {t("howItWorks.eyebrow")}
           </span>
           <h2 className="text-3xl font-bold font-display text-stone-900 dark:text-white mt-1">
-            How JantaGaraj Works
+            {t("howItWorks.title")}
           </h2>
         </div>
 
@@ -401,23 +403,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           {[
             {
               step: "01",
-              title: "Choose Service",
-              desc: "Select the required vehicle maintenance package or describe your emergency breakdown issue.",
+              title: t("howItWorks.step1Title"),
+              desc: t("howItWorks.step1Desc"),
             },
             {
               step: "02",
-              title: "Select Time & Spot",
-              desc: "Pick your preferred time slot and service location or roadside GPS pin.",
+              title: t("howItWorks.step2Title"),
+              desc: t("howItWorks.step2Desc"),
             },
             {
               step: "03",
-              title: "Mechanic Dispatched",
-              desc: "Nearest certified technician accepts the job and arrives with necessary tools and parts.",
+              title: t("howItWorks.step3Title"),
+              desc: t("howItWorks.step3Desc"),
             },
             {
               step: "04",
-              title: "OTP Verification & Pay",
-              desc: "Share your 4-digit start OTP. Pay digitally or cash after 100% satisfactory completion.",
+              title: t("howItWorks.step4Title"),
+              desc: t("howItWorks.step4Desc"),
             },
           ].map((item, idx) => (
             <div
