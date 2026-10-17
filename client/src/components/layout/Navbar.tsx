@@ -13,10 +13,12 @@ import {
   LayoutDashboard,
   CalendarCheck,
   ShieldAlert,
+  Languages,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logOut } from "../../features/auth/authSlice";
 import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 import { useLocation } from "../../context/LocationContext";
 import { Button } from "../ui/Button";
 
@@ -29,6 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const { language, toggleLanguage, t } = useLanguage();
   const { location, detectCurrentLocation, isLoadingGPS } = useLocation();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -60,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
               Janta<span className="text-brand-500">Garaj</span>
             </span>
             <span className="hidden sm:block text-[10px] tracking-wider uppercase font-semibold text-stone-600 dark:text-stone-300">
-              Auto Services & Repairs
+              {t("nav.tagline")}
             </span>
           </div>
         </Link>
@@ -75,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
             className="text-brand-500 font-semibold hover:underline text-[11px] disabled:opacity-50"
             title="Auto detect location via GPS"
           >
-            {isLoadingGPS ? "Detecting..." : "GPS"}
+            {isLoadingGPS ? t("nav.detecting") : t("nav.gpsDetect")}
           </button>
         </div>
 
@@ -85,24 +88,37 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
             to="/services"
             className="hover:text-brand-500 transition-colors"
           >
-            All Services
+            {t("nav.allServices")}
           </Link>
           <Link
             to="/technicians"
             className="hover:text-brand-500 transition-colors"
           >
-            Find Mechanics
+            {t("nav.findMechanics")}
           </Link>
           <Link
             to="/about"
             className="hover:text-brand-500 transition-colors"
           >
-            About Us
+            {t("nav.aboutUs")}
           </Link>
         </nav>
 
         {/* Right Section Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          {/* Language Switcher Button */}
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/60 hover:bg-stone-100 dark:hover:bg-stone-800 hover:border-brand-500/50 text-xs font-bold text-stone-700 dark:text-stone-200 transition-all shadow-sm active:scale-95"
+            title="भाषा बदलें / Switch Language"
+            aria-label="Toggle between Hindi and English"
+          >
+            <Languages className="w-4 h-4 text-brand-500 shrink-0" />
+            <span className={language === "hi" ? "text-brand-600 dark:text-brand-400 font-extrabold" : ""}>
+              {language === "en" ? "हिंदी" : "English"}
+            </span>
+          </button>
+
           {/* Theme Switcher */}
           <button
             onClick={toggleTheme}
@@ -157,7 +173,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
                     className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                   >
                     <LayoutDashboard className="w-4 h-4 text-brand-500" />
-                    <span>Dashboard</span>
+                    <span>
+                      {user.role === "ADMIN"
+                        ? t("nav.adminDashboard")
+                        : user.role === "TECHNICIAN"
+                        ? t("nav.technicianDashboard")
+                        : t("nav.customerDashboard")}
+                    </span>
                   </Link>
 
                   {user.role === "CUSTOMER" && (
@@ -166,7 +188,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
                       className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                     >
                       <CalendarCheck className="w-4 h-4 text-brand-500" />
-                      <span>My Bookings</span>
+                      <span>{t("nav.customerDashboard")}</span>
                     </Link>
                   )}
 
@@ -185,7 +207,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors text-left mt-1 border-t border-stone-100 dark:border-stone-800"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span>Log Out</span>
+                    <span>{t("nav.logout")}</span>
                   </button>
                 </div>
               )}
@@ -197,7 +219,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
               leftIcon={<UserIcon className="w-4 h-4" />}
               onClick={onOpenAuthModal}
             >
-              Sign In
+              {t("nav.login")}
             </Button>
           )}
 
@@ -224,27 +246,41 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
             <span className="truncate">{location.city} - {location.address}</span>
           </div>
 
+          {/* Mobile Language Switcher Row */}
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-stone-100/80 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700">
+            <div className="flex items-center gap-2 text-xs font-bold text-stone-700 dark:text-stone-300">
+              <Languages className="w-4 h-4 text-brand-500" />
+              <span>Language / भाषा</span>
+            </div>
+            <button
+              onClick={toggleLanguage}
+              className="px-3 py-1.5 rounded-xl bg-brand-500 text-white font-bold text-xs shadow-glow"
+            >
+              {language === "en" ? "हिंदी में बदलें" : "Switch to English"}
+            </button>
+          </div>
+
           <div className="grid gap-2">
             <Link
               to="/services"
               onClick={() => setMobileMenuOpen(false)}
               className="px-4 py-2.5 rounded-xl font-medium text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800"
             >
-              All Services
+              {t("nav.allServices")}
             </Link>
             <Link
               to="/technicians"
               onClick={() => setMobileMenuOpen(false)}
               className="px-4 py-2.5 rounded-xl font-medium text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800"
             >
-              Find Mechanics
+              {t("nav.findMechanics")}
             </Link>
             <Link
               to="/about"
               onClick={() => setMobileMenuOpen(false)}
               className="px-4 py-2.5 rounded-xl font-medium text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800"
             >
-              About JantaGaraj
+              {t("nav.aboutUs")}
             </Link>
           </div>
         </div>
