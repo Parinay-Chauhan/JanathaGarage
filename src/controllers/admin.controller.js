@@ -26,7 +26,6 @@ export const getPendingKYCApplications = asyncHandler(async (req, res) => {
             id: true,
             fullName: true,
             phone: true,
-            email: true,
             isActive: true,
           },
         },
@@ -64,7 +63,6 @@ export const getTechnicianKYCDetails = asyncHandler(async (req, res) => {
           id: true,
           fullName: true,
           phone: true,
-          email: true,
           createdAt: true,
         },
       },
@@ -112,7 +110,7 @@ export const updateTechnicianKYCStatus = asyncHandler(async (req, res) => {
       rejectionReason: status === "REJECTED" ? rejectionReason.trim() : null,
     },
     include: {
-      user: { select: { fullName: true, phone: true, email: true } },
+      user: { select: { fullName: true, phone: true } },
     },
   });
 
