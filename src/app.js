@@ -28,11 +28,12 @@ import bookingRouter from "./routes/booking.routes.js"
 import reviewRouter from "./routes/review.routes.js"
 import paymentRouter from "./routes/payment.routes.js"
 import adminRouter from "./routes/admin.routes.js"
-// import healthcheckRouter from "./routes/healthcheck.routes.js"
+import healthcheckRouter from "./routes/healthcheck.routes.js";
 import { ErrorHandler } from "./middleware/Error.middleware.js";
 import { swaggerDocs } from "./utils/swagger.js";
 // ---------- routes declaration ------------
 
+app.use("/api/v1/health", healthcheckRouter);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/services", serviceRouter);
@@ -41,7 +42,6 @@ app.use("/api/v1/bookings", bookingRouter);
 app.use("/api/v1", reviewRouter);
 app.use("/api/v1/payments", paymentRouter);
 app.use("/api/v1/admin", adminRouter);
-// app.get("/api/health", healthcheckRouter)
 
 app.use(ErrorHandler);
 swaggerDocs(app);
