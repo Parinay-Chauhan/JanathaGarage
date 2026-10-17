@@ -122,7 +122,7 @@ async function main() {
     },
     {
       phone: "9876500002",
-      fullName: "Mohammad Irfan",
+      fullName: "Suresh Verma",
       bio: "Master two-wheeler mechanic with 6 years experience in Royal Enfield, Honda, Yamaha, and KTM tuning. Certified for electrical wiring and high-performance clutch setups.",
       experienceYears: 6,
       baseVisitingCharge: 149.0,
