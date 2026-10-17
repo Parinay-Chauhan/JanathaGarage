@@ -4,11 +4,32 @@
 
 @layer base {
   * {
-    @apply border-stone-200 dark:border-stone-800;
+    @apply border-stone-200 dark:border-[#261E18];
   }
 
   body {
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  html.dark,
+  html.dark body {
+    background-color: #0C0A09 !important;
+    color: #FDF6EE;
+  }
+
+  html.dark body {
+    background-image: radial-gradient(ellipse 90% 55% at 50% -12%, rgba(249, 115, 22, 0.14) 0%, rgba(234, 88, 12, 0.03) 45%, transparent 70%);
+    background-repeat: no-repeat;
+  }
+
+  .dark .bg-garage-card {
+    background-color: #14110E !important;
+  }
+  .dark .hover\:bg-garage-card-hover:hover {
+    background-color: #1C1713 !important;
+  }
+  .dark .border-garage-border {
+    border-color: #261E18 !important;
   }
 }
 
@@ -21,16 +42,27 @@
   }
 
   .glass-panel-dark {
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(51, 65, 85, 0.5);
+    background: rgba(12, 10, 9, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 245, 235, 0.07);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, #F97316 0%, #EA580C 50%, #C2410C 100%);
+    background: linear-gradient(135deg, #FED7AA 0%, #F97316 45%, #EA580C 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-cream {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FDF6EE 55%, #D4C3B3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .chai-radial-glow {
+    background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(249, 115, 22, 0.16) 0%, rgba(234, 88, 12, 0.04) 45%, transparent 70%);
   }
 }
 
@@ -54,9 +86,9 @@
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #2A211B;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #3D2F26;
 }
