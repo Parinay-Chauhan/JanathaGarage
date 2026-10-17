@@ -52,12 +52,17 @@ import {
   updateBookingStatus,
   getMyBookings,
   getBookingById,
+  getAvailableJobs,
 } from "../controllers/booking.controller.js";
 import { verifyJWT, authorizeRoles } from "../middleware/Auth.middleware.js";
 
 const router = Router();
 
 // 1. Static Routes (Hamesha dynamic routes se upar hone chahiye)
+router
+  .route("/available-jobs")
+  .get(verifyJWT, authorizeRoles("TECHNICIAN"), getAvailableJobs);
+
 router
   .route("/my-bookings")
   .get(
