@@ -262,7 +262,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
 
       {/* Featured Verified Technicians Highlight */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-[#16120F] via-[#120F0D] to-[#0A0807] text-[#FDF6EE] border border-[#2A2018] shadow-2xl dark:shadow-chai relative overflow-hidden">
+        <div className="p-8 sm:p-12 rounded-3xl bg-[#14110E] text-[#FDF6EE] border border-[#261E18] shadow-2xl dark:shadow-chai relative overflow-hidden">
+          {/* Subtle Warm Chai Ambient Glow */}
           <div className="absolute right-0 top-0 w-96 h-96 bg-brand-500/10 rounded-full blur-[100px] pointer-events-none" />
 
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
@@ -298,7 +299,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
 
             <div className="flex flex-col gap-3 min-w-[240px]">
               <Link to="/technicians">
-                <Button variant="primary" size="lg" className="w-full">
+                <Button variant="primary" size="lg" className="w-full shadow-glow">
                   {t("mechanics.browseAll")}
                 </Button>
               </Link>
@@ -328,10 +329,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 </div>
                 <Link
                   to="/technicians"
-                  className="text-xs font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1"
+                  className="text-xs font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1 group"
                 >
                   <span>{t("mechanics.browseAll")} ({techniciansData.data.length})</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
 
@@ -339,34 +340,34 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 {techniciansData.data.slice(0, 4).map((tech) => (
                   <div
                     key={tech.id}
-                    className="p-5 rounded-2xl bg-[#171310] border border-[#281F18] hover:border-brand-500/50 hover:bg-[#1E1814] shadow-sm transition-all flex flex-col justify-between gap-4"
+                    className="p-5 rounded-2xl bg-[#17120E] hover:bg-[#201914] border border-[#2B2018] hover:border-brand-500/50 hover:shadow-chai-hover transition-all duration-300 flex flex-col justify-between gap-4 group"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full flex items-center gap-1">
-                          <ShieldCheck className="w-3 h-3" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300 bg-[#142316] border border-emerald-800/50 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-sm">
+                          <ShieldCheck className="w-3 h-3 text-emerald-400" />
                           <span>{t("mechanics.p1")}</span>
                         </span>
-                        <div className="flex items-center gap-1 text-amber-400 font-bold text-xs">
-                          <Star className="w-3.5 h-3.5 fill-amber-400" />
+                        <div className="flex items-center gap-1 text-amber-400 font-bold text-xs bg-[#241A12] border border-[#3A2619] px-2 py-0.5 rounded-md">
+                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                           <span>{tech.avgRating || 5.0}</span>
                         </div>
                       </div>
 
-                      <h4 className="font-bold text-base text-[#FDF6EE] font-display">
+                      <h4 className="font-bold text-base text-[#FDF6EE] group-hover:text-brand-400 font-display transition-colors">
                         {tech.user?.fullName || "Certified Technician"}
                       </h4>
-                      <p className="text-xs text-[#A89C90] mt-1">
+                      <p className="text-xs text-brand-400 font-medium mt-1">
                         {tech.experienceYears} {t("mechanics.experience")}
                       </p>
-                      <p className="text-xs text-[#A89C90] line-clamp-2 mt-2 leading-relaxed">
+                      <p className="text-xs text-[#9E938A] line-clamp-2 mt-2 leading-relaxed">
                         {tech.bio}
                       </p>
                     </div>
 
                     <div className="pt-3 border-t border-[#261E18] flex items-center justify-between">
                       <div>
-                        <span className="text-[9px] uppercase font-bold text-[#8C8075] block">
+                        <span className="text-[9px] uppercase font-bold text-[#8C8075] block tracking-wider">
                           {t("mechanics.visitFee")}
                         </span>
                         <span className="text-sm font-bold font-mono text-[#FDF6EE]">
@@ -374,9 +375,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                         </span>
                       </div>
                       <Link to={`/technicians/${tech.id}`}>
-                        <Button variant="outline" size="sm" className="text-xs py-1.5 px-3 border-[#382B21] hover:bg-[#251C16] text-[#FDF6EE]">
+                        <button className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-[#FDF6EE] bg-[#221A14] hover:bg-brand-500 hover:text-white border border-[#36271D] hover:border-brand-500 shadow-sm transition-all duration-200">
                           {t("mechanics.viewProfile")}
-                        </Button>
+                        </button>
                       </Link>
                     </div>
                   </div>
