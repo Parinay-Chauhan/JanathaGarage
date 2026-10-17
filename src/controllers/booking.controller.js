@@ -51,7 +51,7 @@ export const createBooking = asyncHandler(async (req, res) => {
     },
     include: {
       service: { include: { category: true } },
-      customer: { include: { user: { select: { fullName: true, email: true, phone: true } } } },
+      customer: { include: { user: { select: { fullName: true, phone: true } } } },
     },
   });
 
@@ -227,8 +227,8 @@ export const getBookingById = asyncHandler(async (req, res) => {
     where: { id: bookingId },
     include: {
       service: { include: { category: true } },
-      customer: { include: { user: { select: { fullName: true, email: true, phone: true } } } },
-      technician: { include: { user: { select: { fullName: true, email: true, phone: true } } } },
+      customer: { include: { user: { select: { fullName: true, phone: true } } } },
+      technician: { include: { user: { select: { fullName: true, phone: true } } } },
     },
   });
 
@@ -252,4 +252,34 @@ export const getBookingById = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, booking, "Booking details fetched successfully"));
+});
+
+// 6.2 — Get Available/Pending Jobs (Technician Feed)
+export const getAvailableJobs = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const technicianProfile = await prisma.technicianProfile.findUnique({
+    where: { userId },
+    include: { servicesOffered: true },
+  });
+
+  if (!technicianProfile) throw new ApiError(404, "Technician profile not found");
+
+  const offeredServiceIds = technicianProfile.servicesOffered.map((s) => s.serviceId);
+
+  const bookings = await prisma.booking.findMany({
+    where: {
+      status: "PENDING",
+      technicianId: null,
+      ...(offeredServiceIds.length > 0 ? { serviceId: { in: offeredServiceIds } } : {}),
+    },
+    include: {
+      service: { include: { category: true } },
+      customer: { include: { user: { select: { fullName: true, phone: true } } } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return res.status(200).json(
+    new ApiResponse(200, bookings, "Available pending jobs fetched successfully")
+  );
 });
