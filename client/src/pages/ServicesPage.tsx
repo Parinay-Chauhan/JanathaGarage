@@ -5,6 +5,7 @@ import {
   useGetCategoriesQuery,
   useGetServicesQuery,
 } from "../features/services/api/servicesApi";
+import { useLanguage } from "../context/LanguageContext";
 import { Service } from "../types/api.types";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -19,6 +20,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCategoryParam = searchParams.get("category") || "ALL";
 
+  const { t, tc, ts } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
@@ -38,7 +40,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
   };
 
   const filteredServices = (servicesData?.data || []).filter((s) => {
-    return s.title.toLowerCase().includes(searchQuery.toLowerCase());
+    return (
+      s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ts(s.title).toLowerCase().includes(searchQuery.toLowerCase())
+    );
   });
 
   return (
@@ -46,10 +51,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
       {/* Page Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-stone-900 dark:text-white">
-          Explore Auto Services
+          {t("servicesPage.title")}
         </h1>
         <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300">
-          Find certified mechanics for scheduled maintenance, emergency repairs, and full vehicle diagnostics.
+          {t("servicesPage.subtitle")}
         </p>
       </div>
 
@@ -60,7 +65,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
           <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
           <input
             type="text"
-            placeholder="Search repairs e.g. Brake, Battery, Oil Change..."
+            placeholder={t("servicesPage.searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-11 pr-4 py-3 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 shadow-sm"
@@ -77,7 +82,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 : "bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-800"
             }`}
           >
-            All Services
+            {t("servicesPage.allServices")}
           </button>
           {!catLoading &&
             categoriesData?.data?.map((cat) => (
@@ -90,7 +95,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                     : "bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-800"
                 }`}
               >
-                {cat.name}
+                {tc(cat.name)}
               </button>
             ))}
         </div>
@@ -114,7 +119,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <span className="text-[11px] font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/60 px-2.5 py-1 rounded-full uppercase tracking-wider">
-                    {service.category?.name || "Auto Service"}
+                    {tc(service.category?.name || "Auto Service")}
                   </span>
                   <span className="text-xl font-mono font-extrabold text-stone-900 dark:text-white">
                     ₹{service.defaultPrice}
@@ -122,17 +127,17 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 </div>
 
                 <h3 className="text-xl font-bold font-display text-stone-900 dark:text-white">
-                  {service.title}
+                  {ts(service.title)}
                 </h3>
                 <p className="text-xs text-stone-500 dark:text-stone-400 mt-2 leading-relaxed">
-                  Complete doorstep inspection, genuine component replacement, and quality test drive by our certified mechanic.
+                  {t("trending.desc")}
                 </p>
               </div>
 
               <div className="pt-6 mt-6 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between gap-3">
                 <div className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1.5 font-medium">
                   <Clock className="w-4 h-4 text-brand-500" />
-                  <span>30-45 min visit</span>
+                  <span>{t("servicesPage.visitDuration")}</span>
                 </div>
                 <Button
                   variant="primary"
@@ -142,7 +147,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                     setBookingModalOpen(true);
                   }}
                 >
-                  Book Service
+                  {t("trending.bookBtn")}
                 </Button>
               </div>
             </Card>
@@ -154,10 +159,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
             <AlertCircle className="w-8 h-8" />
           </div>
           <h3 className="text-xl font-bold text-stone-900 dark:text-white font-display">
-            No services found
+            {t("servicesPage.noServices")}
           </h3>
           <p className="text-sm text-stone-500 dark:text-stone-400 max-w-sm mx-auto">
-            Try searching with different keywords or switch categories.
+            {t("servicesPage.tryDifferent")}
           </p>
         </div>
       )}
