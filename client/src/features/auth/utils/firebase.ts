@@ -13,8 +13,10 @@ const firebaseConfig = {
     import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "jantagaraj.firebaseapp.com",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "jantagaraj",
   storageBucket:
-    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "jantagaraj.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "",
+    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ||
+    "jantagaraj.firebasestorage.app",
+  messagingSenderId:
+    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "523698534014",
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "",
 };
 
@@ -33,6 +35,33 @@ if (isFirebaseConfigured) {
     console.error("Failed to initialize Firebase client:", error);
   }
 }
+
+declare global {
+  interface Window {
+    recaptchaVerifier?: RecaptchaVerifier;
+  }
+}
+
+export const getRecaptchaVerifier = (authInstance: Auth): RecaptchaVerifier => {
+  if (window.recaptchaVerifier) {
+    try {
+      window.recaptchaVerifier.clear();
+    } catch {
+      // ignore cleanup error
+    }
+  }
+  window.recaptchaVerifier = new RecaptchaVerifier(
+    authInstance,
+    "recaptcha-container",
+    {
+      size: "invisible",
+      callback: () => {
+        // reCAPTCHA solved
+      },
+    }
+  );
+  return window.recaptchaVerifier;
+};
 
 export { auth, RecaptchaVerifier, signInWithPhoneNumber };
 export type { ConfirmationResult };
