@@ -10,7 +10,7 @@ import { useLanguage } from "../../../context/LanguageContext";
 import {
   auth,
   isFirebaseConfigured,
-  RecaptchaVerifier,
+  getRecaptchaVerifier,
   signInWithPhoneNumber,
   ConfirmationResult,
 } from "../utils/firebase";
@@ -52,9 +52,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     if (isFirebaseConfigured && auth) {
       setIsSendingOtp(true);
       try {
-        const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-          size: "invisible",
-        });
+        const verifier = getRecaptchaVerifier(auth);
         const cleanPhone = phone.replace(/\D/g, "").slice(-10);
         const confirmation = await signInWithPhoneNumber(
           auth,
