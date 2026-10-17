@@ -50,10 +50,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
       {/* Page Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-stone-900 dark:text-white">
+        <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-stone-900 dark:text-[#FDF6EE]">
           {t("servicesPage.title")}
         </h1>
-        <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300">
+        <p className="text-sm sm:text-base text-stone-600 dark:text-[#A89C90]">
           {t("servicesPage.subtitle")}
         </p>
       </div>
@@ -62,13 +62,13 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
       <div className="space-y-4">
         {/* Search Input */}
         <div className="max-w-md mx-auto relative">
-          <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
+          <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 dark:text-[#6E645A] pointer-events-none" />
           <input
             type="text"
             placeholder={t("servicesPage.searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 shadow-sm"
+            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-white dark:bg-[#16120F] border border-stone-200 dark:border-[#2C221A] text-sm text-stone-900 dark:text-[#FDF6EE] placeholder:text-stone-400 dark:placeholder:text-[#6E645A] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 shadow-sm"
           />
         </div>
 
@@ -79,7 +79,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               selectedCategoryParam === "ALL"
                 ? "bg-brand-500 text-white shadow-glow"
-                : "bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-800"
+                : "bg-white dark:bg-[#14110E] text-stone-600 dark:text-[#D1C7BD] hover:bg-stone-100 dark:hover:bg-[#1E1712] border border-stone-200 dark:border-[#261E18]"
             }`}
           >
             {t("servicesPage.allServices")}
@@ -92,7 +92,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                   selectedCategoryParam === cat.id
                     ? "bg-brand-500 text-white shadow-glow"
-                    : "bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-800"
+                    : "bg-white dark:bg-[#14110E] text-stone-600 dark:text-[#D1C7BD] hover:bg-stone-100 dark:hover:bg-[#1E1712] border border-stone-200 dark:border-[#261E18]"
                 }`}
               >
                 {tc(cat.name)}
@@ -114,28 +114,28 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
             <Card
               key={service.id}
               hoverable
-              className="flex flex-col justify-between border-stone-200/80 dark:border-stone-800"
+              className="flex flex-col justify-between border-stone-200/80 dark:border-[#261E18]"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="text-[11px] font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/60 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-[#251A13] border border-transparent dark:border-[#3A2619] px-2.5 py-1 rounded-full uppercase tracking-wider">
                     {tc(service.category?.name || "Auto Service")}
                   </span>
-                  <span className="text-xl font-mono font-extrabold text-stone-900 dark:text-white">
+                  <span className="text-xl font-mono font-extrabold text-stone-900 dark:text-[#FDF6EE]">
                     ₹{service.defaultPrice}
                   </span>
                 </div>
 
-                <h3 className="text-xl font-bold font-display text-stone-900 dark:text-white">
+                <h3 className="text-xl font-bold font-display text-stone-900 dark:text-[#FDF6EE]">
                   {ts(service.title)}
                 </h3>
-                <p className="text-xs text-stone-500 dark:text-stone-400 mt-2 leading-relaxed">
+                <p className="text-xs text-stone-500 dark:text-[#9E938A] mt-2 leading-relaxed">
                   {t("trending.desc")}
                 </p>
               </div>
 
-              <div className="pt-6 mt-6 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between gap-3">
-                <div className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1.5 font-medium">
+              <div className="pt-6 mt-6 border-t border-stone-100 dark:border-[#261E18] flex items-center justify-between gap-3">
+                <div className="text-xs text-stone-500 dark:text-[#9E938A] flex items-center gap-1.5 font-medium">
                   <Clock className="w-4 h-4 text-brand-500" />
                   <span>{t("servicesPage.visitDuration")}</span>
                 </div>
@@ -155,13 +155,13 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
         </div>
       ) : (
         <div className="text-center py-16 space-y-4">
-          <div className="w-16 h-16 rounded-3xl bg-stone-100 dark:bg-stone-800 text-stone-400 flex items-center justify-center mx-auto">
+          <div className="w-16 h-16 rounded-3xl bg-stone-100 dark:bg-[#181411] text-stone-400 dark:text-[#8C8075] flex items-center justify-center mx-auto">
             <AlertCircle className="w-8 h-8" />
           </div>
-          <h3 className="text-xl font-bold text-stone-900 dark:text-white font-display">
+          <h3 className="text-xl font-bold text-stone-900 dark:text-[#FDF6EE] font-display">
             {t("servicesPage.noServices")}
           </h3>
-          <p className="text-sm text-stone-500 dark:text-stone-400 max-w-sm mx-auto">
+          <p className="text-sm text-stone-500 dark:text-[#9E938A] max-w-sm mx-auto">
             {t("servicesPage.tryDifferent")}
           </p>
         </div>
