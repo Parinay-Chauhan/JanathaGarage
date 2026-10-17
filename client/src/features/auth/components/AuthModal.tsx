@@ -239,7 +239,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <form onSubmit={handleVerifyOtp} className="space-y-3">
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
-                <label className="font-semibold text-stone-700 dark:text-stone-300">
+                <label className="font-semibold text-stone-700 dark:text-[#D1C7BD]">
                   {isHi ? "6-अंकों का OTP" : "6-Digit OTP"}
                 </label>
                 <button
@@ -283,15 +283,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       )}
 
       {/* Instant 1-Click Login Action */}
-      <div className="pt-4 border-t border-stone-200 dark:border-stone-800 space-y-2">
-        <p className="text-center text-[11px] uppercase tracking-wider text-stone-500 font-semibold">
+      <div className="pt-4 border-t border-stone-200 dark:border-[#261E18] space-y-2">
+        <p className="text-center text-[11px] uppercase tracking-wider text-stone-500 dark:text-[#8C8075] font-semibold">
           {isHi ? "त्वरित टेस्ट लॉगिन" : "Instant Fast Login"}
         </p>
         <Button
           type="button"
           variant="outline"
           size="sm"
-          className="w-full border-brand-500/40 text-brand-600 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-950/30 font-medium"
+          className="w-full border-brand-500/40 text-brand-600 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-[#1C1713] font-medium"
           leftIcon={<Sparkles className="w-4 h-4 text-brand-500" />}
           isLoading={isLoading}
           onClick={handleOneClickTestLogin}
