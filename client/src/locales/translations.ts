@@ -9,6 +9,26 @@ export interface Translations {
 
 export const translations: Translations = {
   // Navigation / Header
+  "nav.services": {
+    en: "Services",
+    hi: "सेवाएं",
+  },
+  "nav.howItWorks": {
+    en: "How it Works",
+    hi: "कैसे काम करता है",
+  },
+  "nav.technicians": {
+    en: "Technicians",
+    hi: "मैकेनिक",
+  },
+  "nav.help": {
+    en: "Help",
+    hi: "सहायता",
+  },
+  "nav.bookService": {
+    en: "Book a Service",
+    hi: "सर्विस बुक करें",
+  },
   "nav.allServices": {
     en: "All Services",
     hi: "सभी सेवाएं",
@@ -60,6 +80,52 @@ export const translations: Translations = {
   "nav.adminDashboard": {
     en: "Admin Desk",
     hi: "एडमिन डेस्क",
+  },
+
+  // Common UI keys
+  "common.home": {
+    en: "Home",
+    hi: "होम",
+  },
+  "common.search": {
+    en: "Search",
+    hi: "खोजें",
+  },
+  "common.bookNow": {
+    en: "Book Now",
+    hi: "अभी बुक करें",
+  },
+  "common.viewAll": {
+    en: "View All",
+    hi: "सभी देखें",
+  },
+  "common.filters": {
+    en: "Filters",
+    hi: "फिल्टर",
+  },
+  "common.sort": {
+    en: "Sort",
+    hi: "सॉर्ट",
+  },
+  "common.clear": {
+    en: "Clear",
+    hi: "हटाएं",
+  },
+  "common.mins": {
+    en: "mins",
+    hi: "मिनट",
+  },
+  "common.exp": {
+    en: "Exp",
+    hi: "अनुभव",
+  },
+  "common.years": {
+    en: "years",
+    hi: "वर्ष",
+  },
+  "common.jobs": {
+    en: "jobs",
+    hi: "काम",
   },
 
   // Hero Section
@@ -218,48 +284,6 @@ export const translations: Translations = {
     hi: "प्रोफाइल",
   },
 
-  // How It Works Flow
-  "howItWorks.eyebrow": {
-    en: "Frictionless Process",
-    hi: "सरल और सुरक्षित प्रक्रिया",
-  },
-  "howItWorks.title": {
-    en: "How JantaGaraj Works",
-    hi: "जनतागैराज कैसे काम करता है",
-  },
-  "howItWorks.step1Title": {
-    en: "Choose Service",
-    hi: "सर्विस चुनें",
-  },
-  "howItWorks.step1Desc": {
-    en: "Select the required vehicle maintenance package or describe your emergency breakdown issue.",
-    hi: "आवश्यक व्हीकल मेंटेनेंस पैकेज चुनें या अपनी आपातकालीन ब्रेकडाउन समस्या बताएं।",
-  },
-  "howItWorks.step2Title": {
-    en: "Select Time & Spot",
-    hi: "समय और स्थान चुनें",
-  },
-  "howItWorks.step2Desc": {
-    en: "Pick your preferred time slot and service location or roadside GPS pin.",
-    hi: "अपना पसंदीदा समय, घर का पता या हाईवे/रोडसाइड GPS लोकेशन चुनें।",
-  },
-  "howItWorks.step3Title": {
-    en: "Mechanic Dispatched",
-    hi: "मैकेनिक रवाना",
-  },
-  "howItWorks.step3Desc": {
-    en: "Nearest certified technician accepts the job and arrives with necessary tools and parts.",
-    hi: "नजदीकी प्रमाणित मैकेनिक जॉब स्वीकार करता है और जरूरी औजारों के साथ पहुंचता है।",
-  },
-  "howItWorks.step4Title": {
-    en: "OTP Verification & Pay",
-    hi: "OTP सत्यापन व भुगतान",
-  },
-  "howItWorks.step4Desc": {
-    en: "Share your 4-digit start OTP. Pay digitally or cash after 100% satisfactory completion.",
-    hi: "अपना 4-अंकों का स्टार्ट OTP साझा करें। संतुष्ट होने पर ऑनलाइन या कैश में भुगतान करें।",
-  },
-
   // Services Page
   "servicesPage.title": {
     en: "Explore Auto Services",
@@ -399,6 +423,478 @@ export const translations: Translations = {
     en: "JantaGaraj Technologies. All rights reserved. Made for Indian roads.",
     hi: "जनतागैराज टेक्नोलॉजीज। सर्वाधिकार सुरक्षित। भारतीय सड़कों के लिए समर्पित।",
   },
+
+  // Landing Page Specific Keys
+  "hero.trustPill1": {
+    en: "Doorstep Local Services in 30 Minutes",
+    hi: "30 मिनट में घर पर लोकल सेवाएं",
+  },
+  "hero.trustPill2": {
+    en: "100% Verified",
+    hi: "100% सत्यापित",
+  },
+  "hero.titlePart1": {
+    en: "Your Home & Vehicle,",
+    hi: "आपके घर और वाहन की,",
+  },
+  "hero.titlePart2": {
+    en: "Professionally",
+    hi: "पेशेवर तरीके से",
+  },
+  "hero.titlePart3": {
+    en: "Taken Care Of.",
+    hi: "देखभाल और रिपेयर।",
+  },
+  "hero.mainSubtitle": {
+    en: "From emergency roadside mechanic assistance to licensed electricians, AC service, and home plumbing — book top-rated local professionals with upfront pricing and real-time arrival tracking.",
+    hi: "इमरजेंसी रोडसाइड मैकेनिक सहायता से लेकर लाइसेंस प्राप्त इलेक्ट्रीशियन, एसी सर्विस व प्लंबिंग तक — पारदर्शी तय कीमतों पर टॉप-रेटेड मैकेनिक तुरंत बुक करें।",
+  },
+  "hero.searchPlaceholder": {
+    en: "Search for service (e.g. Electrician, Brake Repair, AC)...",
+    hi: "सर्विस खोजें (उदा. इलेक्ट्रीशियन, ब्रेक रिपेयर, एसी सर्विस)...",
+  },
+  "hero.searchBtn": {
+    en: "Search",
+    hi: "खोजें",
+  },
+  "hero.bookBtn": {
+    en: "Book a Service",
+    hi: "सर्विस बुक करें",
+  },
+  "hero.findTechBtn": {
+    en: "Find Verified Technicians",
+    hi: "सत्यापित मैकेनिक खोजें",
+  },
+  "hero.statPros": {
+    en: "Verified Pros",
+    hi: "सत्यापित मैकेनिक",
+  },
+  "hero.statArrival": {
+    en: "Avg. Arrival",
+    hi: "औसत आगमन समय",
+  },
+  "hero.statRating": {
+    en: "Customer Rating",
+    hi: "कस्टमर रेटिंग",
+  },
+  "hero.statCharges": {
+    en: "Hidden Charges",
+    hi: "छुपे हुए चार्ज",
+  },
+  "hero.emergencyRepair": {
+    en: "Emergency Repair",
+    hi: "इमरजेंसी रिपेयर",
+  },
+  "hero.instantDispatch": {
+    en: "Instant Dispatch",
+    hi: "तुरंत रवानगी",
+  },
+  "hero.availableNow": {
+    en: "Available Now",
+    hi: "अभी उपलब्ध",
+  },
+  "hero.directDoorstep": {
+    en: "Direct-to-Doorstep Care",
+    hi: "डायरेक्ट डोरस्टेप सर्विस",
+  },
+  "hero.directDesc": {
+    en: "Skilled automotive mechanics & certified home technicians equipped with calibrated diagnostic tools.",
+    hi: "विशेष टूल्स और आधुनिक उपकरणों के साथ प्रमाणित ऑटो मैकेनिक व होम टेक्निशियन।",
+  },
+  "hero.reviewsCount": {
+    en: "Based on 12,400+ local bookings",
+    hi: "12,400+ लोकल बुकिंग्स के आधार पर",
+  },
+
+  // Categories Section
+  "categories.exploreTag": {
+    en: "Explore Services",
+    hi: "सर्विस कैटेगरीज",
+  },
+  "categories.popularTitle": {
+    en: "Popular Service Categories",
+    hi: "लोकप्रिय सर्विस श्रेणियां",
+  },
+  "categories.popularSubtitle": {
+    en: "Select any category to view available technicians, pricing, and guaranteed delivery times.",
+    hi: "उपलब्ध मैकेनिक, तय रेट और आगमन समय देखने के लिए कोई भी कैटेगरी चुनें।",
+  },
+  "categories.allCategories": {
+    en: "All Categories",
+    hi: "सभी श्रेणियां",
+  },
+  "categories.starts": {
+    en: "Starts",
+    hi: "शुरुआती",
+  },
+  "categories.pros": {
+    en: "Pros",
+    hi: "विशेषज्ञ",
+  },
+
+  // How It Works
+  "howItWorks.tag": {
+    en: "Simple & Transparent",
+    hi: "सरल और पारदर्शी",
+  },
+  "howItWorks.title": {
+    en: "How JantaGaraj Works",
+    hi: "जनतागैराज कैसे काम करता है",
+  },
+  "howItWorks.subtitle": {
+    en: "No endless phone calls or haggling. Get verified local technicians to your doorstep in three straightforward steps.",
+    hi: "बिना मोलभाव या अनगिनत फोन कॉल के। तीन आसान चरणों में सत्यापित मैकेनिक घर बुलाएं।",
+  },
+  "howItWorks.step1Title": {
+    en: "Choose a Service",
+    hi: "सर्विस चुनें",
+  },
+  "howItWorks.step1Desc": {
+    en: "Browse transparent rate cards for home repairs, electrical tasks, AC servicing, or emergency automotive breakdown. Upfront quotes with zero surprises.",
+    hi: "होम रिपेयर, इलेक्ट्रिकल कार्य, एसी सर्विस या आपातकालीन वाहन ब्रेकडाउन के पारदर्शी रेट कार्ड देखें। बिना किसी छुपे चार्ज के स्पष्ट कोट्स।",
+  },
+  "howItWorks.step2Title": {
+    en: "Book a Technician",
+    hi: "मैकेनिक बुक करें",
+  },
+  "howItWorks.step2Desc": {
+    en: "Select instant dispatch for emergencies or schedule a preferred time slot. You are matched with a background-checked technician within 3 minutes.",
+    hi: "इमरजेंसी के लिए तुरंत रवानगी चुनें या अपनी सुविधानुसार समय तय करें। 3 मिनट के भीतर नजदीकी सत्यापित मैकेनिक से जुड़ें।",
+  },
+  "howItWorks.step3Title": {
+    en: "Get the Work Done",
+    hi: "काम पूरा करवाएं",
+  },
+  "howItWorks.step3Desc": {
+    en: "Track arrival live on GPS. The technician inspects, finishes the repair, tests performance, and you pay securely via UPI, Card, or Cash after satisfaction.",
+    hi: "लाइव जीपीएस पर आगमन ट्रैक करें। मैकेनिक जांच कर कार्य पूरा करता है, और पूरी तरह संतुष्ट होने पर ही UPI, कार्ड या कैश से भुगतान करें।",
+  },
+
+  // Popular Services
+  "services.topBookedTag": {
+    en: "Top Booked",
+    hi: "सर्वाधिक बुक की गई",
+  },
+  "services.popularTitle": {
+    en: "Popular Services",
+    hi: "लोकप्रिय सेवाएं",
+  },
+  "services.popularSubtitle": {
+    en: "Fixed upfront prices with doorstep warranty on every booking.",
+    hi: "हर बुकिंग पर तय रेट और डोरस्टेप वारंटी का भरोसा।",
+  },
+  "services.viewAll": {
+    en: "View All Services",
+    hi: "सभी सेवाएं देखें",
+  },
+  "services.desc": {
+    en: "Doorstep execution by certified technicians with genuine parts and standardized post-service inspection.",
+    hi: "असली पार्ट्स और मानकीकृत पोस्ट-सर्विस जांच के साथ प्रमाणित टेक्निशियन द्वारा डोरस्टेप कार्य।",
+  },
+
+  // Trusted Technicians
+  "techs.tag": {
+    en: "Local Verified Talent",
+    hi: "स्थानीय प्रमाणित हुनर",
+  },
+  "techs.title": {
+    en: "Meet Our Trusted Technicians",
+    hi: "हमारे भरोसेमंद मैकेनिकों से मिलें",
+  },
+  "techs.subtitle": {
+    en: "KYC-verified mechanics and technicians with ratings above 4.8★ and verified customer history.",
+    hi: "4.8★ से अधिक रेटिंग और आधार KYC सत्यापित मैकेनिक।",
+  },
+  "techs.allTechs": {
+    en: "All Technicians",
+    hi: "सभी मैकेनिक",
+  },
+  "techs.verifiedPro": {
+    en: "Verified Pro",
+    hi: "सत्यापित प्रो",
+  },
+  "techs.visitingFee": {
+    en: "Visiting Fee",
+    hi: "विजिट फीस",
+  },
+  "techs.viewProfile": {
+    en: "View Profile",
+    hi: "प्रोफाइल देखें",
+  },
+
+  // Why Choose Us
+  "why.tag": {
+    en: "Trust & Guarantee",
+    hi: "भरोसा और गारंटी",
+  },
+  "why.title": {
+    en: "Why Homeowners & Drivers Choose JantaGaraj",
+    hi: "लोग जनतागैराज को क्यों चुनते हैं",
+  },
+  "why.subtitle": {
+    en: "We eliminate the uncertainty, inflated repair bills, and long wait times of unorganized local service markets.",
+    hi: "हम अनियंत्रित बाजार के ज्यादा बिल, अनिश्चितता और लंबे इंतजार को खत्म करते हैं।",
+  },
+  "why.f1Title": {
+    en: "100% Verified Professionals",
+    hi: "100% सत्यापित प्रोफेशनल्स",
+  },
+  "why.f1Desc": {
+    en: "Govt ID KYC, trade certifications, police verification, and rigorous practical skill assessments before joining.",
+    hi: "आधार KYC, ट्रेड सर्टिफिकेट, पुलिस वेरिफिकेशन और व्यावहारिक कौशल जांच के बाद ही ऑनबोर्डिंग।",
+  },
+  "why.f2Title": {
+    en: "Transparent Upfront Pricing",
+    hi: "पारदर्शी तय कीमतें",
+  },
+  "why.f2Desc": {
+    en: "Standardized rate cards. You approve the exact cost before work begins. No unexpected surprise bills.",
+    hi: "मानकीकृत रेट कार्ड। काम शुरू होने से पहले तय लागत आपकी मंजूरी से। कोई अप्रत्याशित बिल नहीं।",
+  },
+  "why.f3Title": {
+    en: "Live GPS Arrival Tracking",
+    hi: "लाइव जीपीएस आगमन ट्रैकिंग",
+  },
+  "why.f3Desc": {
+    en: "See real-time status when your technician is en-route. Direct in-app calling without sharing private phone numbers.",
+    hi: "जब आपका मैकेनिक रास्ते में हो तो रीयल-टाइम स्थिति देखें। फोन नंबर शेयर किए बिना डायरेक्ट इन-ऐप संपर्क।",
+  },
+  "why.f4Title": {
+    en: "24/7 Dedicated Support",
+    hi: "24/7 समर्पित कस्टमर केयर",
+  },
+  "why.f4Desc": {
+    en: "Emergency direct helpline +91 84396 16833 with doorstep warranty coverage on every repair.",
+    hi: "इमरजेंसी डायरेक्ट हेल्पलाइन +91 84396 16833 और हर रिपेयर पर डोरस्टेप वारंटी कवरेज।",
+  },
+
+  // Remote Diagnosis
+  "remote.tag": {
+    en: "Live Video & Chat Triage",
+    hi: "लाइव वीडियो व चैट सहायता",
+  },
+  "remote.title": {
+    en: "Can't Wait for a Visit? Get Instant Remote Diagnosis.",
+    hi: "विजिट का इंतजार नहीं कर सकते? तुरंत रिमोट डायग्नोसिस पाएं।",
+  },
+  "remote.desc": {
+    en: "Connect with an expert technician via HD video or live chat before they visit. Show your tripped breaker, leaking pipe, or engine noise to get immediate safety advice, troubleshooting steps, or an exact pre-visit cost estimate.",
+    hi: "विजिट से पहले एचडी वीडियो या लाइव चैट पर एक्सपर्ट मैकेनिक से जुड़ें। ट्रिप हुआ ब्रेकर, लीक होता पाइप या इंजन की आवाज दिखाकर तुरंत सेफ्टी सलाह या कोट्स पाएं।",
+  },
+  "remote.s1Title": {
+    en: "1. Instant Connect",
+    hi: "1. तुरंत संपर्क",
+  },
+  "remote.s1Desc": {
+    en: "Under 60 seconds connection",
+    hi: "60 सेकंड में लाइव कनेक्ट",
+  },
+  "remote.s2Title": {
+    en: "2. Visual Triage",
+    hi: "2. वीडियो डायग्नोसिस",
+  },
+  "remote.s2Desc": {
+    en: "Show issue via phone camera",
+    hi: "फोन कैमरे से समस्या दिखाएं",
+  },
+  "remote.s3Title": {
+    en: "3. Exact Solution",
+    hi: "3. सटीक समाधान",
+  },
+  "remote.s3Desc": {
+    en: "DIY guidance or pro dispatch",
+    hi: "घर बैठे समाधान या मैकेनिक रवानगी",
+  },
+  "remote.callBtn": {
+    en: "Call Helpline for Diagnosis",
+    hi: "डायग्नोसिस के लिए कॉल करें",
+  },
+  "remote.scheduleBtn": {
+    en: "Schedule In-Person Inspection",
+    hi: "डोरस्टेप इंस्पेक्शन शेड्यूल करें",
+  },
+  "remote.statusActive": {
+    en: "Remote Support Active",
+    hi: "रिमोट सहायता सक्रिय",
+  },
+  "remote.freeTriage": {
+    en: "100% Free Triage",
+    hi: "100% नि:शुल्क सलाह",
+  },
+  "remote.videoCap": {
+    en: "Live session with Master Auto Electrician",
+    hi: "मास्टर ऑटो इलेक्ट्रीशियन के साथ लाइव सेशन",
+  },
+  "remote.chatVoice": {
+    en: "Chat & Voice Guidance",
+    hi: "चैट व वॉइस मार्गदर्शन",
+  },
+  "remote.techsOnline": {
+    en: "Trained Technicians Online",
+    hi: "प्रशिक्षित मैकेनिक ऑनलाइन",
+  },
+
+  // Customer Reviews
+  "reviews.tag": {
+    en: "Real Experiences",
+    hi: "सच्चे अनुभव",
+  },
+  "reviews.title": {
+    en: "Verified Customer Reviews",
+    hi: "सत्यापित ग्राहकों की समीक्षाएं",
+  },
+  "reviews.subtitle": {
+    en: "Genuine feedback from homeowners and drivers across Delhi NCR, Mumbai, and Bengaluru.",
+    hi: "दिल्ली-एनसीआर, मुंबई और बेंगलुरु के वाहन मालिकों व ग्राहकों की वास्तविक समीक्षाएं।",
+  },
+  "reviews.verified": {
+    en: "Verified",
+    hi: "सत्यापित",
+  },
+
+  // Final CTA
+  "cta.tag": {
+    en: "Book in Under 60 Seconds",
+    hi: "60 सेकंड में बुकिंग",
+  },
+  "cta.title": {
+    en: "Ready for Reliable, Hassle-Free Repairs?",
+    hi: "विश्वसनीय और सुरक्षित रिपेयर के लिए तैयार हैं?",
+  },
+  "cta.subtitle": {
+    en: "No hidden fees. No endless waiting. Connect with licensed local electricians, car mechanics, plumbers, and technicians right now.",
+    hi: "कोई छुपा हुआ चार्ज नहीं। बिना लंबे इंतजार के अपने नजदीकी कुशल मैकेनिक से तुरंत जुड़ें।",
+  },
+  "cta.bookNow": {
+    en: "Book a Service Now",
+    hi: "अभी सर्विस बुक करें",
+  },
+  "cta.callHelp": {
+    en: "Call +91 84396 16833",
+    hi: "कॉल करें +91 84396 16833",
+  },
+  "cta.guarantee": {
+    en: "Guaranteed doorstep response within 30 minutes in all operational sectors.",
+    hi: "सभी मुख्य क्षेत्रों में 30 मिनट के भीतर गारंटीड डोरस्टेप रिस्पांस।",
+  },
+
+  // Services Page
+  "servicesPage.headerTitle": {
+    en: "Reliable Home & Auto Repair Services",
+    hi: "भरोसेमंद होम और ऑटो रिपेयर सेवाएं",
+  },
+  "servicesPage.headerSubtitle": {
+    en: "Verified electricians, plumbers, car/bike mechanics, and appliance technicians with guaranteed upfront pricing.",
+    hi: "सत्यापित इलेक्ट्रीशियन, प्लंबर, कार/बाइक मैकेनिक और अप्लायंस टेक्निशियन तय दरों पर।",
+  },
+  "servicesPage.filters": {
+    en: "Filters",
+    hi: "फिल्टर",
+  },
+  "servicesPage.active": {
+    en: "Active",
+    hi: "सक्रिय",
+  },
+  "servicesPage.sort": {
+    en: "Sort",
+    hi: "सॉर्ट",
+  },
+  "servicesPage.featured": {
+    en: "Featured",
+    hi: "प्रमुख",
+  },
+  "servicesPage.priceLowHigh": {
+    en: "Price: Low to High",
+    hi: "कीमत: कम से ज्यादा",
+  },
+  "servicesPage.priceHighLow": {
+    en: "Price: High to Low",
+    hi: "कीमत: ज्यादा से कम",
+  },
+  "servicesPage.rating": {
+    en: "Highest Rated",
+    hi: "सर्वोच्च रेटिंग",
+  },
+  "servicesPage.reset": {
+    en: "Reset Filters",
+    hi: "फिल्टर रीसेट करें",
+  },
+  "servicesPage.category": {
+    en: "Category",
+    hi: "श्रेणी",
+  },
+  "servicesPage.priceRange": {
+    en: "Price Range",
+    hi: "कीमत रेंज",
+  },
+  "servicesPage.under250": {
+    en: "Under ₹250",
+    hi: "₹250 से कम",
+  },
+  "servicesPage.p250to500": {
+    en: "₹250 - ₹500",
+    hi: "₹250 - ₹500",
+  },
+  "servicesPage.p500to1000": {
+    en: "₹500 - ₹1000",
+    hi: "₹500 - ₹1000",
+  },
+  "servicesPage.above1000": {
+    en: "Above ₹1000",
+    hi: "₹1000 से अधिक",
+  },
+  "servicesPage.instantOnly": {
+    en: "Instant Dispatch Only",
+    hi: "केवल त्वरित सेवा",
+  },
+  "servicesPage.showing": {
+    en: "Showing",
+    hi: "दिखा रहे हैं",
+  },
+  "servicesPage.of": {
+    en: "of",
+    hi: "कुल",
+  },
+  "servicesPage.servicesCount": {
+    en: "services",
+    hi: "सेवाएं",
+  },
+  "servicesPage.perVisit": {
+    en: "Standard Visit",
+    hi: "स्टैंडर्ड विजिट",
+  },
+  "servicesPage.instantDispatch": {
+    en: "Accepting Instant Dispatch",
+    hi: "तुरंत रवानगी उपलब्ध",
+  },
+  "servicesPage.instantDispatchSub": {
+    en: "Under 30 minutes doorstep arrival",
+    hi: "30 मिनट में घर पर आगमन",
+  },
+  "servicesPage.doorstepWarranty": {
+    en: "Doorstep Warranty",
+    hi: "डोरस्टेप वारंटी",
+  },
+  "servicesPage.warrantyDesc": {
+    en: "Every booked service is protected by JantaGaraj satisfaction guarantee and transparent invoice.",
+    hi: "प्रत्येक बुकिंग जनतागैराज संतुष्टि गारंटी और पक्के बिल से सुरक्षित है।",
+  },
+  "servicesPage.allPrices": {
+    en: "All Prices",
+    hi: "सभी कीमतें",
+  },
+  "servicesPage.retry": {
+    en: "Retry Loading Services",
+    hi: "पुनः प्रयास करें",
+  },
+  "servicesPage.noServicesMatch": {
+    en: "No services found matching your criteria",
+    hi: "आपकी खोज के अनुसार कोई सर्विस नहीं मिली",
+  },
+  "servicesPage.adjustSearch": {
+    en: "Try adjusting your search query, selecting another category, or broadening your price filter.",
+    hi: "अपनी सर्च क्वेरी बदलें, दूसरी कैटेगरी चुनें या प्राइस फिल्टर बढ़ाएं।",
+  },
 };
 
 // Category English-to-Hindi mapping dictionary
@@ -410,6 +906,18 @@ export const categoryTranslations: Record<string, string> = {
   "Battery & Electrical Diagnostics": "बैटरी व इलेक्ट्रिकल डायग्नोस्टिक्स",
   "Tyres, Wheels & Puncture Care": "टायर, व्हील व पंचर केयर",
   "Detailing, Foam Wash & Spa": "फोम वॉश, पॉलिश व डिटेलिंग स्पा",
+  "Electrician": "इलेक्ट्रीशियन",
+  "Plumbing": "प्लंबिंग",
+  "AC Repair & Service": "एसी रिपेयर व सर्विस",
+  "Appliance Repair": "अप्लायंस रिपेयर",
+  "Deep Cleaning": "डीप क्लीनिंग",
+  "Auto & Garage Repair": "ऑटो व गैराज रिपेयर",
+  "All Categories": "सभी श्रेणियां",
+  "Auto Service": "ऑटो सर्विस",
+  "AC Repair": "एसी रिपेयर",
+  "Appliance": "अप्लायंस",
+  "Cleaning": "क्लीनिंग",
+  "Service": "सर्विस",
 };
 
 // Service titles English-to-Hindi mapping dictionary
@@ -432,4 +940,14 @@ export const serviceTranslations: Record<string, string> = {
   "Wheel Balancing & Alignment Check (Doorstep)": "व्हील बैलेंसिंग व अलाइनमेंट चेकअप",
   "Doorstep Foam Wash & Deep Interior Vacuuming": "डोरस्टेप फोम वॉश व इंटीरियर वैक्यूमिंग",
   "Ceramic Coating Polish & Hydrophobic Shield": "सिरेमिक कोटिंग पॉलिश व हाइड्रोफोबिक शील्ड",
+  "General Car Inspection & Comprehensive Service": "जनरल कार इंस्पेक्शन व कम्प्लीट सर्विस",
+  "Emergency Battery Jumpstart & Diagnostic": "इमरजेंसी बैटरी जंपस्टार्ट व डायग्नोस्टिक",
+  "Split AC Deep Foam Jet Service & Gas Check": "स्प्लिट एसी डीप फोम जेट सर्विस व गैस चेक",
+  "Complete Home Electrical Short Circuit Triage": "कम्प्लीट होम शॉर्ट सर्किट रिपेयर",
+  "Bathroom Tap & Concealed Pipe Leakage Repair": "बाथरूम नल व पाइप लीकेज रिपेयर",
+  "Fully Automatic Washing Machine Drum & Motor Repair": "वॉशिंग मशीन ड्रम व मोटर रिपेयर",
+  "General Car Inspection & Comprehensive Engine Check": "जनरल कार इंस्पेक्शन व इंजन चेक",
+  "Split AC Jet Deep Foam Service": "स्प्लिट एसी जेट डीप फोम सर्विस",
+  "MCB Trip & Kitchen Wiring Repair": "एमसीबी ट्रिप व किचन वायरिंग रिपेयर",
+  "Emergency Car Jumpstart & Battery Triage": "इमरजेंसी कार जंपस्टार्ट व बैटरी सर्विस",
 };
