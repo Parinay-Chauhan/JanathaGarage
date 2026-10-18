@@ -62,17 +62,17 @@ export const Badge: React.FC<BadgeProps> = ({
 
   const variants = {
     default:
-      "bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300 border-stone-200 dark:border-stone-700",
+      "bg-[#F8F7F3] text-[#252621] dark:bg-[#1A1613] dark:text-[#F5F2EB] border-[#E7E5DF] dark:border-[#2E251E]",
     success:
-      "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
+      "bg-emerald-50 text-emerald-700 dark:bg-[#0E1F17] dark:text-[#00E599] border-emerald-200 dark:border-[#13402E] dark:shadow-[0_0_8px_rgba(0,229,153,0.15)]",
     warning:
-      "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800",
+      "bg-amber-50 text-amber-700 dark:bg-[#23170E] dark:text-[#FF9533] border-amber-200 dark:border-[#52290F]",
     danger:
-      "bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800",
+      "bg-rose-50 text-rose-700 dark:bg-[#251012] dark:text-[#FF5252] border-rose-200 dark:border-[#5C1A20]",
     info:
-      "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800",
+      "bg-sky-50 text-sky-700 dark:bg-[#0C1E2B] dark:text-[#38BDF8] border-sky-200 dark:border-[#153D5B]",
     brand:
-      "bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300 border-brand-200 dark:border-brand-800",
+      "bg-orange-50 text-[#FF771C] dark:bg-[#23170E] dark:text-[#FF771C] border-orange-200 dark:border-[#FF771C]/40",
   };
 
   const sizes = {
