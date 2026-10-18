@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Phone, User, KeyRound, Sparkles, AlertCircle, Info, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Phone, User, KeyRound, Sparkles, AlertCircle, Info, Zap, Wrench } from "lucide-react";
 import { Modal } from "../../../components/ui/Modal";
 import { Input } from "../../../components/ui/Input";
 import { Button } from "../../../components/ui/Button";
@@ -23,9 +24,11 @@ interface AuthModalProps {
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [syncUser, { isLoading }] = useSyncUserMutation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { language } = useLanguage();
   const isHi = language === "hi";
 
+  const [selectedRole, setSelectedRole] = useState<"CUSTOMER" | "TECHNICIAN">("CUSTOMER");
   const [phone, setPhone] = useState("");
   const [fullName, setFullName] = useState("");
   const [otp, setOtp] = useState("");
@@ -101,9 +104,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
       const res = await syncUser({
         firebaseIdToken: firebaseToken,
-        fullName: fullName.trim() || "Parinay Chauhan",
+        fullName: fullName.trim() || (selectedRole === "TECHNICIAN" ? "JantaGaraj Partner" : "JantaGaraj Customer"),
         phone: effectivePhone,
         authProvider: "firebase",
+        role: selectedRole,
       }).unwrap();
 
       if (res.data) {
@@ -114,6 +118,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           })
         );
         onClose();
+        if (res.data.user.role === "TECHNICIAN") {
+          navigate("/technician/dashboard");
+        } else if (res.data.user.role === "ADMIN") {
+          navigate("/admin/dashboard");
+        }
       }
     } catch (err: any) {
       setErrorMsg(
@@ -132,9 +141,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       setErrorMsg("");
       const res = await syncUser({
         firebaseIdToken: "test_token_123",
-        fullName: fullName.trim() || "Parinay Chauhan",
+        fullName: fullName.trim() || (selectedRole === "TECHNICIAN" ? "Parinay Chauhan (Partner)" : "Parinay Chauhan"),
         phone: effectivePhone,
         authProvider: "firebase",
+        role: selectedRole,
       }).unwrap();
 
       if (res.data) {
@@ -145,6 +155,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           })
         );
         onClose();
+        if (res.data.user.role === "TECHNICIAN") {
+          navigate("/technician/dashboard");
+        } else if (res.data.user.role === "ADMIN") {
+          navigate("/admin/dashboard");
+        }
       }
     } catch (err: any) {
       setErrorMsg(err?.data?.message || (isHi ? "लॉगिन विफल रहा।" : "Test login failed."));
@@ -166,9 +181,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       }
       description={
         step === "phone"
-          ? isHi
-            ? "डोरस्टेप गैराज और मैकेनिक सेवाओं के लिए अपना मोबाइल नंबर दर्ज करें"
-            : "Enter your mobile number to access doorstep garage services"
+          ? selectedRole === "CUSTOMER"
+            ? isHi
+              ? "डोरस्टेप गैराज व होम रिपेयर सेवाओं के लिए अपना मोबाइल नंबर दर्ज करें"
+              : "Enter your mobile number to access doorstep garage services"
+            : isHi
+              ? "मैकेनिक पार्टनर पोर्टल और जॉब्स एक्सेस करने के लिए नंबर दर्ज करें"
+              : "Enter your mobile number to access partner portal & jobs"
           : isHi
           ? `नंबर +91 ${effectivePhone} का सत्यापन`
           : `Verifying number +91 ${effectivePhone}`
@@ -184,9 +203,59 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
       {step === "phone" ? (
         <form onSubmit={handleSendOtp} className="space-y-4">
+          {/* Role Selection Tabs: Customer vs Service Provider */}
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-[#717167] dark:text-[#9E9488]">
+              {isHi ? "खाता प्रकार चुनें (Account Type)" : "Select Account Type"}
+            </label>
+            <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-[#F4F3EE] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D]">
+              <button
+                type="button"
+                onClick={() => setSelectedRole("CUSTOMER")}
+                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                  selectedRole === "CUSTOMER"
+                    ? "bg-[#E87532] text-white shadow-orange-glow"
+                    : "text-[#717167] dark:text-[#9E9488] hover:text-[#252621] dark:hover:text-[#F5F2EB]"
+                }`}
+              >
+                <User className="w-4 h-4" />
+                <span>{isHi ? "ग्राहक (Customer)" : "Customer"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedRole("TECHNICIAN")}
+                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                  selectedRole === "TECHNICIAN"
+                    ? "bg-[#E87532] text-white shadow-orange-glow"
+                    : "text-[#717167] dark:text-[#9E9488] hover:text-[#252621] dark:hover:text-[#F5F2EB]"
+                }`}
+              >
+                <Wrench className="w-4 h-4" />
+                <span>{isHi ? "सर्विस पार्टनर (Partner)" : "Service Partner"}</span>
+              </button>
+            </div>
+            <p className="text-[11px] text-[#8F8F85] text-center pt-0.5">
+              {selectedRole === "CUSTOMER"
+                ? isHi
+                  ? "डोरस्टेप रिपेयर बुकिंग और ट्रैकिंग के लिए ग्राहक खाता"
+                  : "Book repairs, track live arrival & view upfront quotes"
+                : isHi
+                  ? "रिपेयर अनुरोध स्वीकार करने और कमाई के लिए मैकेनिक खाता"
+                  : "Accept booking requests & manage jobs as a service provider"}
+            </p>
+          </div>
+
           <Input
             label={isHi ? "पूरा नाम (नए उपयोगकर्ताओं के लिए)" : "Full Name (for new users)"}
-            placeholder={isHi ? "उदा. परिणय चौहान" : "e.g. Parinay Chauhan"}
+            placeholder={
+              selectedRole === "TECHNICIAN"
+                ? isHi
+                  ? "अपना नाम या वर्कशॉप का नाम दर्ज करें"
+                  : "Enter your name or workshop name"
+                : isHi
+                ? "अपना पूरा नाम दर्ज करें"
+                : "Enter your full name"
+            }
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             leftIcon={<User className="w-4 h-4" />}
@@ -195,7 +264,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <Input
             label={isHi ? "मोबाइल नंबर" : "Mobile Number"}
             type="tel"
-            placeholder="84396 16833"
+            placeholder={
+              isHi
+                ? "10 अंकों का मोबाइल नंबर दर्ज करें"
+                : "Enter 10-digit mobile number"
+            }
             value={phone}
             onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
             leftIcon={<Phone className="w-4 h-4" />}
@@ -267,8 +340,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               isLoading={isLoading}
             >
               {isHi
-                ? `+91 ${effectivePhone} से लॉगिन करें`
-                : `Verify & Continue as +91 ${effectivePhone}`}
+                ? `+91 ${effectivePhone} (${selectedRole === "TECHNICIAN" ? "पार्टनर" : "ग्राहक"}) से लॉगिन करें`
+                : `Continue as ${selectedRole === "TECHNICIAN" ? "Partner" : "Customer"} (+91 ${effectivePhone})`}
             </Button>
 
             <button
@@ -297,8 +370,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           onClick={handleOneClickTestLogin}
         >
           {isHi
-            ? `1-क्लिक लॉगिन (+91 ${effectivePhone})`
-            : `1-Click Instant Login (+91 ${effectivePhone})`}
+            ? `1-क्लिक ${selectedRole === "TECHNICIAN" ? "पार्टनर" : "ग्राहक"} लॉगिन (+91 ${effectivePhone})`
+            : `1-Click ${selectedRole === "TECHNICIAN" ? "Partner" : "Customer"} Login (+91 ${effectivePhone})`}
         </Button>
       </div>
     </Modal>
