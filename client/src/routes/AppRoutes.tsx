@@ -9,18 +9,27 @@ import { AuthModal } from "../features/auth/components/AuthModal";
 // Public Pages
 import { LandingPage } from "../pages/LandingPage";
 import { ServicesPage } from "../pages/ServicesPage";
+import { ServiceDetailsPage } from "../pages/ServiceDetailsPage";
 import { TechniciansPage } from "../pages/TechniciansPage";
+import { TechnicianDetailsPage } from "../pages/TechnicianDetailsPage";
 import { AboutPage } from "../pages/AboutPage";
+import { HelpPage } from "../pages/HelpPage";
+import { LoginPage } from "../pages/LoginPage";
+import { RegisterPage } from "../pages/RegisterPage";
 
 // Customer Pages
 import { CustomerDashboardPage } from "../features/customer/pages/CustomerDashboardPage";
 import { CustomerBookingsPage } from "../features/customer/pages/CustomerBookingsPage";
 import { BookingDetailsPage } from "../features/bookings/pages/BookingDetailsPage";
 import { CustomerProfilePage } from "../features/customer/pages/CustomerProfilePage";
+import { CustomerAddressesPage } from "../features/customer/pages/CustomerAddressesPage";
+import { BookingFlowPage } from "../features/bookings/pages/BookingFlowPage";
 
 // Technician Pages
 import { TechnicianDashboardPage } from "../features/technician-dashboard/pages/TechnicianDashboardPage";
 import { TechnicianJobsPage } from "../features/technician-dashboard/pages/TechnicianJobsPage";
+import { TechnicianJobDetailsPage } from "../features/technician-dashboard/pages/TechnicianJobDetailsPage";
+import { TechnicianAvailabilityPage } from "../features/technician-dashboard/pages/TechnicianAvailabilityPage";
 import { TechnicianProfilePage } from "../features/technician-dashboard/pages/TechnicianProfilePage";
 import { TechnicianServicesPage } from "../features/technician-dashboard/pages/TechnicianServicesPage";
 import { TechnicianEarningsPage } from "../features/technician-dashboard/pages/TechnicianEarningsPage";
@@ -29,6 +38,13 @@ import { TechnicianEarningsPage } from "../features/technician-dashboard/pages/T
 import { AdminDashboardPage } from "../features/admin/pages/AdminDashboardPage";
 import { AdminKYCVerificationPage } from "../features/admin/pages/AdminKYCVerificationPage";
 import { AdminBookingsPage } from "../features/admin/pages/AdminBookingsPage";
+import { AdminUsersPage } from "../features/admin/pages/AdminUsersPage";
+import { AdminPaymentsPage } from "../features/admin/pages/AdminPaymentsPage";
+
+// Error & Common State Pages
+import { NotFoundPage } from "../pages/NotFoundPage";
+import { UnauthorizedPage } from "../pages/UnauthorizedPage";
+import { MobileBottomNav } from "../components/layout/MobileBottomNav";
 
 export const AppRoutes: React.FC = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -64,6 +80,19 @@ export const AppRoutes: React.FC = () => {
         />
 
         <Route
+          path="/services/:slug"
+          element={
+            <>
+              <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
+              <main className="min-h-screen">
+                <ServiceDetailsPage onOpenAuthModal={() => setAuthModalOpen(true)} />
+              </main>
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
           path="/technicians"
           element={
             <>
@@ -77,12 +106,56 @@ export const AppRoutes: React.FC = () => {
         />
 
         <Route
+          path="/technicians/:id"
+          element={
+            <>
+              <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
+              <main className="min-h-screen">
+                <TechnicianDetailsPage onOpenAuthModal={() => setAuthModalOpen(true)} />
+              </main>
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
           path="/about"
           element={
             <>
               <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
               <main className="min-h-screen">
                 <AboutPage />
+              </main>
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/help"
+          element={
+            <>
+              <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
+              <main className="min-h-screen">
+                <HelpPage />
+              </main>
+              <Footer />
+            </>
+          }
+        />
+
+        {/* Dedicated Auth Pages */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* Dedicated Booking Funnel */}
+        <Route
+          path="/book/:serviceId"
+          element={
+            <>
+              <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
+              <main className="min-h-screen">
+                <BookingFlowPage />
               </main>
               <Footer />
             </>
@@ -134,6 +207,19 @@ export const AppRoutes: React.FC = () => {
             <ProtectedRoute>
               <RoleGuard allowedRoles={["CUSTOMER", "ADMIN"]}>
                 <DashboardLayout>
+                  <CustomerAddressesPage />
+                </DashboardLayout>
+              </RoleGuard>
+            </ProtectedRoute>
+          }
+          path="/customer/addresses"
+        />
+
+        <Route
+          element={
+            <ProtectedRoute>
+              <RoleGuard allowedRoles={["CUSTOMER", "ADMIN"]}>
+                <DashboardLayout>
                   <CustomerProfilePage />
                 </DashboardLayout>
               </RoleGuard>
@@ -167,6 +253,32 @@ export const AppRoutes: React.FC = () => {
             </ProtectedRoute>
           }
           path="/technician/jobs"
+        />
+
+        <Route
+          element={
+            <ProtectedRoute>
+              <RoleGuard allowedRoles={["TECHNICIAN", "ADMIN"]}>
+                <DashboardLayout>
+                  <TechnicianJobDetailsPage />
+                </DashboardLayout>
+              </RoleGuard>
+            </ProtectedRoute>
+          }
+          path="/technician/jobs/:id"
+        />
+
+        <Route
+          element={
+            <ProtectedRoute>
+              <RoleGuard allowedRoles={["TECHNICIAN", "ADMIN"]}>
+                <DashboardLayout>
+                  <TechnicianAvailabilityPage />
+                </DashboardLayout>
+              </RoleGuard>
+            </ProtectedRoute>
+          }
+          path="/technician/availability"
         />
 
         <Route
@@ -248,9 +360,44 @@ export const AppRoutes: React.FC = () => {
           path="/admin/bookings"
         />
 
-        {/* Catch-All Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route
+          element={
+            <ProtectedRoute>
+              <RoleGuard allowedRoles={["ADMIN"]}>
+                <DashboardLayout>
+                  <AdminUsersPage />
+                </DashboardLayout>
+              </RoleGuard>
+            </ProtectedRoute>
+          }
+          path="/admin/users"
+        />
+
+        <Route
+          element={
+            <ProtectedRoute>
+              <RoleGuard allowedRoles={["ADMIN"]}>
+                <DashboardLayout>
+                  <AdminPaymentsPage />
+                </DashboardLayout>
+              </RoleGuard>
+            </ProtectedRoute>
+          }
+          path="/admin/payments"
+        />
+
+        {/* Unauthorized / Access Restricted Page */}
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
+        {/* Explicit 404 Route */}
+        <Route path="/404" element={<NotFoundPage />} />
+
+        {/* Catch-All 404 Fallback */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
+
+      {/* Responsive Mobile Bottom Navigation Bar */}
+      <MobileBottomNav onOpenAuthModal={() => setAuthModalOpen(true)} />
 
       {/* Global Auth Modal */}
       <AuthModal
