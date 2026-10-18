@@ -18,7 +18,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
 // Secure Customer Signup / Login via Firebase OTP
 const syncUser = asyncHandler(async (req, res) => {
-  const { firebaseIdToken, fullName, authProvider } = req.body;
+  const { firebaseIdToken, fullName, authProvider, role } = req.body;
 
   if (authProvider === "clerk") {
     throw new ApiError(
@@ -38,10 +38,13 @@ const syncUser = asyncHandler(async (req, res) => {
   let verifiedPhone;
   let firebaseUid;
 
-  // --- POSTMAN TESTING BYPASS (Jab tak frontend na ho) ---
+  // --- DEVELOPMENT / TEST TOKEN BYPASS ---
   if (firebaseIdToken === "test_token_123") {
-    verifiedPhone = "9876543210";
-    firebaseUid = "test_firebase_uid_abc123";
+    const rawPhone = req.body.phone
+      ? String(req.body.phone).replace(/\D/g, "").slice(-10)
+      : "";
+    verifiedPhone = rawPhone || "8439616833";
+    firebaseUid = `test_uid_${verifiedPhone}`;
   } else {
     let decodedToken;
     try {
@@ -63,44 +66,90 @@ const syncUser = asyncHandler(async (req, res) => {
 
   let user = await prisma.user.findUnique({
     where: { firebaseUid },
+    include: { technicianProfile: true, customerProfile: true },
   });
 
-  if (user) {
-    if (fullName && fullName.trim() !== "") {
-      user = await prisma.user.update({
-        where: { id: user.id },
-        data: { fullName: fullName.trim() },
-      });
-    }
-  } else {
+  if (!user) {
     user = await prisma.user.findUnique({
       where: { phone: verifiedPhone },
+      include: { technicianProfile: true, customerProfile: true },
     });
+  }
 
-    if (user) {
+  if (user) {
+    const updateData = {};
+    if (fullName && fullName.trim() !== "") {
+      updateData.fullName = fullName.trim();
+    }
+    if (!user.firebaseUid && firebaseUid) {
+      updateData.firebaseUid = firebaseUid;
+    }
+    // If user explicitly chooses to login/join as TECHNICIAN and was previously CUSTOMER
+    if (role === "TECHNICIAN" && user.role === "CUSTOMER") {
+      updateData.role = "TECHNICIAN";
+    }
+
+    if (Object.keys(updateData).length > 0) {
       user = await prisma.user.update({
         where: { id: user.id },
-        data: {
-          firebaseUid,
-          ...(fullName && fullName.trim() !== ""
-            ? { fullName: fullName.trim() }
-            : {}),
-        },
-      });
-    } else {
-      if (!fullName || typeof fullName !== "string" || fullName.trim() === "") {
-        throw new ApiError(400, "Full name is required for new registration");
-      }
-
-      user = await prisma.user.create({
-        data: {
-          phone: verifiedPhone,
-          fullName: fullName.trim(),
-          role: "CUSTOMER",
-          firebaseUid,
-        },
+        data: updateData,
+        include: { technicianProfile: true, customerProfile: true },
       });
     }
+
+    // Ensure technicianProfile exists if user is a TECHNICIAN
+    if (user.role === "TECHNICIAN" && !user.technicianProfile) {
+      const techProfile = await prisma.technicianProfile.create({
+        data: {
+          userId: user.id,
+          bio: "Certified technician partner at JantaGaraj.",
+          experienceYears: 2,
+          baseVisitingCharge: 199,
+          serviceRadiusKm: 15.0,
+          isOnline: true,
+          isAvailable: true,
+          kycStatus: "SUBMITTED",
+        },
+      });
+      user.technicianProfile = techProfile;
+    }
+  } else {
+    const finalRole = role === "TECHNICIAN" ? "TECHNICIAN" : "CUSTOMER";
+    const finalName =
+      fullName && typeof fullName === "string" && fullName.trim() !== ""
+        ? fullName.trim()
+        : finalRole === "TECHNICIAN"
+        ? "JantaGaraj Partner"
+        : "JantaGaraj Customer";
+
+    user = await prisma.user.create({
+      data: {
+        phone: verifiedPhone,
+        fullName: finalName,
+        role: finalRole,
+        firebaseUid,
+        ...(finalRole === "TECHNICIAN"
+          ? {
+              technicianProfile: {
+                create: {
+                  bio: "Certified technician partner at JantaGaraj.",
+                  experienceYears: 2,
+                  baseVisitingCharge: 199,
+                  serviceRadiusKm: 15.0,
+                  isOnline: true,
+                  isAvailable: true,
+                  kycStatus: "SUBMITTED",
+                },
+              },
+            }
+          : {
+              customerProfile: {
+                create: {},
+              },
+            }),
+      },
+      include: { technicianProfile: true, customerProfile: true },
+    });
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
@@ -119,6 +168,8 @@ const syncUser = asyncHandler(async (req, res) => {
     fullName: user.fullName,
     role: user.role,
     isActive: user.isActive,
+    technicianProfile: user.technicianProfile || null,
+    customerProfile: user.customerProfile || null,
   };
 
   return res

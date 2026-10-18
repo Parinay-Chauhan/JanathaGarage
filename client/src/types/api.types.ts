@@ -90,6 +90,11 @@ export interface Service {
   title: string;
   defaultPrice: number | string;
   category?: ServiceCategory;
+  description?: string | null;
+  durationMinutes?: number | null;
+  rating?: number;
+  reviewsCount?: number;
+  image?: string;
 }
 
 export interface TechnicianService {

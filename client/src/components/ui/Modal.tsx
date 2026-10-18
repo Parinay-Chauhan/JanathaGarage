@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+﻿import React, { useEffect } from "react";
 import { X } from "lucide-react";
 
 interface ModalProps {
@@ -52,11 +52,11 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Dialog */}
       <div
-        className={`relative w-full ${maxWidths[maxWidth]} rounded-3xl bg-white dark:bg-stone-900 p-6 sm:p-8 shadow-2xl border border-stone-200 dark:border-stone-800 transition-all z-10 animate-in fade-in zoom-in-95 duration-200`}
+        className={`relative w-full ${maxWidths[maxWidth]} rounded-3xl bg-white dark:bg-[#141210] p-6 sm:p-8 shadow-premium border border-[#E7E5DF] dark:border-[#2B231D] transition-all z-10 animate-in fade-in zoom-in-95 duration-200`}
       >
         <button
           onClick={onClose}
-          className="absolute right-5 top-5 p-2 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+          className="absolute right-5 top-5 p-2 rounded-full text-[#8F8F85] hover:text-[#252621] dark:hover:text-[#F5F2EB] hover:bg-[#F8F7F3] dark:hover:bg-[#1A1613] transition-colors"
           aria-label="Close dialog"
         >
           <X className="w-5 h-5" />
@@ -64,11 +64,11 @@ export const Modal: React.FC<ModalProps> = ({
 
         {title && (
           <div className="mb-5 pr-8">
-            <h3 className="text-xl font-bold font-display text-stone-900 dark:text-stone-100">
+            <h3 className="text-xl font-bold font-display text-[#252621] dark:text-[#F5F2EB]">
               {title}
             </h3>
             {description && (
-              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+              <p className="text-sm text-[#717167] dark:text-[#9E9488] mt-1">
                 {description}
               </p>
             )}

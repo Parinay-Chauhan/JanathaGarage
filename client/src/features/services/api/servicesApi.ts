@@ -13,11 +13,14 @@ export const servicesApi = baseApi.injectEndpoints({
       providesTags: (_result, _error, slug) => [{ type: "Categories", id: slug }],
     }),
 
-    getServices: builder.query<ApiResponse<Service[]>, { categoryId?: string } | void>({
+    getServices: builder.query<ApiResponse<Service[]>, { categoryId?: string; search?: string } | void>({
       query: (params) => {
         const queryParams = new URLSearchParams();
-        if (params && params.categoryId) {
+        if (params && params.categoryId && params.categoryId !== "ALL") {
           queryParams.append("categoryId", params.categoryId);
+        }
+        if (params && params.search) {
+          queryParams.append("search", params.search);
         }
         return `/services${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
       },

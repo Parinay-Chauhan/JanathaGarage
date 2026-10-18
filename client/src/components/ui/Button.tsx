@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Loader2 } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -31,15 +31,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        "bg-brand-500 hover:bg-brand-600 text-white shadow-glow hover:shadow-glow-lg focus:ring-brand-500",
+        "bg-[#FF771C] hover:bg-[#E56814] text-white shadow-[0_2px_14px_rgba(255,119,28,0.35)] focus:ring-[#FF771C]/30 font-bold",
       secondary:
-        "bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white focus:ring-stone-500",
+        "bg-[#252621] dark:bg-[#1A1613] hover:bg-[#040404] dark:hover:bg-[#231E19] text-white shadow-subtle border border-transparent dark:border-[#2E251E] focus:ring-[#FF771C]/30 font-semibold",
       outline:
-        "border border-stone-300 dark:border-stone-700 bg-transparent hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-800 dark:text-stone-100 focus:ring-brand-500",
+        "border border-[#E7E5DF] dark:border-[#2E251E] bg-white dark:bg-[#1A1613] hover:bg-[#F8F7F3] dark:hover:bg-[#231E19] text-[#252621] dark:text-[#F5F2EB] dark:hover:border-[#FF771C]/50 shadow-subtle focus:ring-[#FF771C]/20 font-semibold",
       ghost:
-        "bg-transparent hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 focus:ring-brand-500",
+        "bg-transparent hover:bg-[#F8F7F3] dark:hover:bg-[#1A1613] text-[#252621] dark:text-[#F5F2EB] font-medium",
       danger:
-        "bg-rose-600 hover:bg-rose-700 text-white shadow-sm focus:ring-rose-500",
+        "bg-rose-600 hover:bg-rose-700 text-white shadow-subtle focus:ring-rose-500 font-semibold",
     };
 
     const sizes = {

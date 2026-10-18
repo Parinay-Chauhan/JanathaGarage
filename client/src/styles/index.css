@@ -4,40 +4,232 @@
 
 @layer base {
   * {
-    @apply border-stone-200 dark:border-stone-800;
+    border-color: #E7E5DF;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   body {
+    background-color: #F8F7F3;
+    color: #252621;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    color: #252621;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* ========================================================= */
+  /* Devanagari / Hindi Specialized Typography System          */
+  /* Fixes overlapping matras, crowded letters and line collisions */
+  /* ========================================================= */
+  html[lang="hi"],
+  html[lang="hi"] body {
+    font-family: 'Noto Sans Devanagari', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    letter-spacing: 0 !important;
+    word-spacing: 0.03em;
+  }
+
+  html[lang="hi"] h1,
+  html[lang="hi"] h2,
+  html[lang="hi"] h3,
+  html[lang="hi"] h4,
+  html[lang="hi"] h5,
+  html[lang="hi"] h6,
+  html[lang="hi"] .font-display {
+    font-family: 'Noto Sans Devanagari', 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: 0 !important;
+    line-height: 1.22 !important;
+  }
+
+  /* Specific rule for large display headings: compact and tight without matra collision */
+  html[lang="hi"] .text-3xl,
+  html[lang="hi"] .text-4xl,
+  html[lang="hi"] .text-5xl,
+  html[lang="hi"] .text-6xl {
+    line-height: 1.18 !important;
+  }
+
+  /* Ensure spans inside headings inherit the tight heading line-height */
+  html[lang="hi"] h1 span,
+  html[lang="hi"] h2 span,
+  html[lang="hi"] h3 span,
+  html[lang="hi"] h4 span,
+  html[lang="hi"] h5 span,
+  html[lang="hi"] h6 span,
+  html[lang="hi"] .font-display span {
+    line-height: inherit !important;
+  }
+
+  /* Completely neutralize negative letter-spacing for Devanagari script */
+  html[lang="hi"] .tracking-tighter,
+  html[lang="hi"] .tracking-tight,
+  html[lang="hi"] .tracking-normal,
+  html[lang="hi"] [class*="tracking-"] {
+    letter-spacing: 0 !important;
+  }
+
+  /* Comfortable reading line-height for body paragraphs and list items */
+  html[lang="hi"] p,
+  html[lang="hi"] li {
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
+
+  html[lang="hi"] button,
+  html[lang="hi"] a {
+    letter-spacing: 0.01em;
+  }
+
+  /* RequestKit Ultra-Dark Design System (Background #040404) */
+  html.dark,
+  html.dark body {
+    background-color: #040404;
+    color: #F5F2EB;
+  }
+
+  html.dark h1,
+  html.dark h2,
+  html.dark h3,
+  html.dark h4,
+  html.dark h5,
+  html.dark h6 {
+    color: #F5F2EB;
+  }
+
+  html.dark * {
+    border-color: #2B231D;
+  }
+
+  /* RequestKit Card & Surface System Mappings (Universal across all project cards) */
+  html.dark .dark\:bg-\[\#22231E\],
+  html.dark [class*="dark:bg-[#22231E]"],
+  html.dark .dark\:bg-\[\#161718\],
+  html.dark [class*="dark:bg-[#161718]"] {
+    background-color: #141210 !important;
+  }
+
+  html.dark .dark\:bg-\[\#1A1B18\],
+  html.dark [class*="dark:bg-[#1A1B18]"],
+  html.dark .dark\:bg-\[\#191A16\],
+  html.dark [class*="dark:bg-[#191A16]"],
+  html.dark .dark\:bg-\[\#0E0F0F\],
+  html.dark [class*="dark:bg-[#0E0F0F]"],
+  html.dark .dark\:bg-\[\#0C0B0A\],
+  html.dark [class*="dark:bg-[#0C0B0A]"],
+  html.dark .dark\:bg-\[\#040404\],
+  html.dark [class*="dark:bg-[#040404]"] {
+    background-color: #040404 !important;
+  }
+
+  html.dark .dark\:bg-\[\#1C1D18\],
+  html.dark [class*="dark:bg-[#1C1D18]"],
+  html.dark .dark\:bg-\[\#1E1F1A\],
+  html.dark [class*="dark:bg-[#1E1F1A]"],
+  html.dark .dark\:bg-\[\#101112\],
+  html.dark [class*="dark:bg-[#101112]"] {
+    background-color: #1A1613 !important;
+  }
+
+  html.dark .dark\:border-\[\#2E2F29\],
+  html.dark [class*="dark:border-[#2E2F29]"],
+  html.dark .dark\:border-\[\#242628\],
+  html.dark [class*="dark:border-[#242628]"],
+  html.dark .dark\:border-\[\#202224\],
+  html.dark [class*="dark:border-[#202224]"] {
+    border-color: #2B231D !important;
   }
 }
 
 @layer utilities {
-  .glass-panel {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(228, 228, 231, 0.6);
+  .bg-canvas {
+    background-color: #F8F7F3;
   }
 
-  .glass-panel-dark {
-    background: rgba(15, 23, 42, 0.85);
+  .bg-card {
+    background-color: #FFFFFF;
+  }
+
+  .text-charcoal {
+    color: #252621;
+  }
+
+  .text-accent-orange {
+    color: #E87532;
+  }
+
+  .bg-accent-orange {
+    background-color: #E87532;
+  }
+
+  .border-subtle {
+    border-color: #E7E5DF;
+  }
+
+  .glass-header {
+    background: rgba(248, 247, 243, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid #E7E5DF;
+  }
+
+  .dark .glass-header {
+    background: rgba(4, 4, 4, 0.92);
+    border-bottom: 1px solid #2B231D;
+  }
+
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(51, 65, 85, 0.5);
+    border: 1px solid #E7E5DF;
+  }
+
+  .dark .glass-panel {
+    background: rgba(20, 18, 16, 0.95);
+    border: 1px solid #2B231D;
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, #F97316 0%, #EA580C 50%, #C2410C 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #FF771C;
+  }
+
+  /* RequestKit Specialized Card Utilities */
+  .dark .card-requestkit {
+    background-color: #141210;
+    border: 1px solid #2B231D;
+    box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.6);
+  }
+
+  .dark .panel-requestkit {
+    background-color: #1A1613;
+    border: 1px solid #2E251E;
+  }
+
+  .dark .tab-active-requestkit {
+    color: #FF771C;
+    border-bottom: 2px solid #FF771C;
+    font-weight: 700;
   }
 }
 
-/* Custom minimal scrollbar */
+/* Custom sleek RequestKit minimal scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -54,9 +246,10 @@
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #2F2620;
+  border-radius: 9999px;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #45382E;
 }

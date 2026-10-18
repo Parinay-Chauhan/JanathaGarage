@@ -63,6 +63,25 @@ export const techniciansApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Technicians", "User"],
     }),
+
+    updateTechnicianProfile: builder.mutation<
+      ApiResponse<TechnicianProfile>,
+      {
+        bio?: string;
+        experienceYears?: number;
+        baseVisitingCharge?: number;
+        serviceRadiusKm?: number;
+        latitude?: number;
+        longitude?: number;
+      }
+    >({
+      query: (body) => ({
+        url: "/technicians/onboarding",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Technicians", "User"],
+    }),
   }),
 });
 
@@ -72,4 +91,5 @@ export const {
   useUpdateAvailabilityMutation,
   useSubmitKYCMutation,
   useUpdateTechnicianServicesMutation,
+  useUpdateTechnicianProfileMutation,
 } = techniciansApi;

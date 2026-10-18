@@ -93,25 +93,25 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       )}
 
       {/* Pricing Summary Box */}
-      <div className="p-4 rounded-2xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-900/60 flex items-center justify-between">
+      <div className="p-4 rounded-2xl bg-brand-50 dark:bg-[#1E1712] border border-brand-200 dark:border-[#38281C] flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-brand-500 text-white flex items-center justify-center shrink-0">
             <Wrench className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="font-bold text-stone-900 dark:text-white text-sm">
+            <h4 className="font-bold text-stone-900 dark:text-[#FDF6EE] text-sm">
               {service.title}
             </h4>
-            <span className="text-xs text-brand-600 dark:text-brand-400 font-semibold">
+            <span className="text-xs text-brand-600 dark:text-brand-300 font-semibold">
               Category: {service.category?.name || "General Auto Care"}
             </span>
           </div>
         </div>
         <div className="text-right">
-          <span className="text-xs text-stone-500 dark:text-stone-400 block font-medium">
+          <span className="text-xs text-stone-500 dark:text-[#9E938A] block font-medium">
             Starting Price
           </span>
-          <span className="text-xl font-extrabold text-stone-900 dark:text-white font-mono">
+          <span className="text-xl font-extrabold text-stone-900 dark:text-[#FDF6EE] font-mono">
             ₹{service.defaultPrice}
           </span>
         </div>
@@ -119,7 +119,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 dark:text-stone-300 mb-1.5">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 dark:text-[#D1C7BD] mb-1.5">
             Describe the vehicle issue (optional)
           </label>
           <textarea
@@ -127,7 +127,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
             placeholder="e.g. Engine making unusual clicking sound, brake pads worn out..."
             value={problemDescription}
             onChange={(e) => setProblemDescription(e.target.value)}
-            className="w-full rounded-xl bg-white dark:bg-stone-900/80 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 text-sm p-3 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
+            className="w-full rounded-xl bg-white dark:bg-[#16120F] border border-stone-300 dark:border-[#2C221A] text-stone-900 dark:text-[#FDF6EE] placeholder:text-stone-400 dark:placeholder:text-[#6E645A] text-sm p-3 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
           />
         </div>
 
