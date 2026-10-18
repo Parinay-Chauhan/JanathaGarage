@@ -173,3 +173,191 @@ export const getPlatformStats = asyncHandler(async (req, res) => {
     )
   );
 });
+
+// 7.1.5 — Get All Users (Admin Only: Customer/Technician/Admin filters, search, pagination)
+export const getAllUsers = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10, role, search, isActive } = req.query;
+
+  const pageNum = parseInt(page, 10);
+  const limitNum = parseInt(limit, 10);
+  const skip = (pageNum - 1) * limitNum;
+
+  const where = {
+    ...(role && role !== "ALL" ? { role: role.toUpperCase() } : {}),
+    ...(isActive !== undefined && isActive !== "" ? { isActive: isActive === "true" } : {}),
+    ...(search
+      ? {
+          OR: [
+            { fullName: { contains: search, mode: "insensitive" } },
+            { phone: { contains: search, mode: "insensitive" } },
+          ],
+        }
+      : {}),
+  };
+
+  const [users, totalCount] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip,
+      take: limitNum,
+      orderBy: { createdAt: "desc" },
+      include: {
+        customerProfile: { select: { id: true, address: true } },
+        technicianProfile: {
+          select: {
+            id: true,
+            kycStatus: true,
+            isOnline: true,
+            isAvailable: true,
+            experienceYears: true,
+            baseVisitingCharge: true,
+          },
+        },
+      },
+    }),
+    prisma.user.count({ where }),
+  ]);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        users,
+        pagination: {
+          total: totalCount,
+          page: pageNum,
+          limit: limitNum,
+          totalPages: Math.ceil(totalCount / limitNum),
+        },
+      },
+      "Users fetched successfully"
+    )
+  );
+});
+
+// 7.1.6 — Toggle User Activation Status (Admin Only)
+export const toggleUserStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { isActive } = req.body;
+
+  if (typeof isActive !== "boolean") {
+    throw new ApiError(400, "Field 'isActive' must be a boolean");
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id },
+    data: { isActive },
+    select: {
+      id: true,
+      fullName: true,
+      phone: true,
+      role: true,
+      isActive: true,
+      updatedAt: true,
+    },
+  });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      updatedUser,
+      `User account ${isActive ? "activated" : "deactivated"} successfully`
+    )
+  );
+});
+
+// 7.1.7 — Get All Payments (Admin Only)
+export const getAllPayments = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10, status, search } = req.query;
+
+  const pageNum = parseInt(page, 10);
+  const limitNum = parseInt(limit, 10);
+  const skip = (pageNum - 1) * limitNum;
+
+  const where = {
+    ...(status && status !== "ALL" ? { status: status.toUpperCase() } : {}),
+    ...(search
+      ? {
+          OR: [
+            { transactionId: { contains: search, mode: "insensitive" } },
+            { booking: { bookingNumber: { contains: search, mode: "insensitive" } } },
+          ],
+        }
+      : {}),
+  };
+
+  const [payments, totalCount] = await Promise.all([
+    prisma.payment.findMany({
+      where,
+      skip,
+      take: limitNum,
+      orderBy: { createdAt: "desc" },
+      include: {
+        booking: {
+          select: {
+            id: true,
+            bookingNumber: true,
+            status: true,
+            agreedPrice: true,
+            customer: {
+              select: {
+                user: { select: { fullName: true, phone: true } },
+              },
+            },
+            service: { select: { title: true } },
+          },
+        },
+      },
+    }),
+    prisma.payment.count({ where }),
+  ]);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        payments,
+        pagination: {
+          total: totalCount,
+          page: pageNum,
+          limit: limitNum,
+          totalPages: Math.ceil(totalCount / limitNum),
+        },
+      },
+      "Payments fetched successfully"
+    )
+  );
+});
+
+// 7.1.8 — Process Payment Refund (Admin Only)
+export const processPaymentRefund = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { refundReason } = req.body;
+
+  const payment = await prisma.payment.findUnique({
+    where: { id },
+  });
+
+  if (!payment) {
+    throw new ApiError(404, "Payment record not found");
+  }
+
+  if (payment.status !== "SUCCESS") {
+    throw new ApiError(400, "Only successful payments can be refunded");
+  }
+
+  const refundedPayment = await prisma.payment.update({
+    where: { id },
+    data: {
+      status: "REFUNDED",
+    },
+  });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      refundedPayment,
+      `Payment ${payment.transactionId || id} marked as REFUNDED. Reason: ${refundReason || "Customer cancellation"}`
+    )
+  );
+});
