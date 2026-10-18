@@ -6,6 +6,7 @@ export interface SyncUserRequest {
   fullName?: string;
   authProvider: "firebase";
   phone?: string;
+  role?: "CUSTOMER" | "TECHNICIAN";
 }
 
 export interface SyncUserResponse {
