@@ -78,6 +78,86 @@ async function main() {
         { title: "Ceramic Coating Polish & Hydrophobic Shield", defaultPrice: 1999.0 },
       ],
     },
+    {
+      name: "Painting & Waterproofing",
+      slug: "painting-waterproofing",
+      services: [
+        { title: "Wall Dampness Treatment & Anti-Fungal Waterproofing", defaultPrice: 1799.0 },
+        { title: "Interior Wall Fresh Coat & Touch-up Painting", defaultPrice: 2499.0 },
+        { title: "Exterior Texture & Weather-Shield Protection", defaultPrice: 3299.0 },
+      ],
+    },
+    {
+      name: "Carpentry & Woodwork",
+      slug: "carpentry-woodwork",
+      services: [
+        { title: "Door Lock, Handle & Concealed Hinge Repair", defaultPrice: 249.0 },
+        { title: "Modular Kitchen Cabinet & Drawer Channel Tuning", defaultPrice: 399.0 },
+        { title: "Custom Furniture Assembly & Wooden Polish", defaultPrice: 599.0 },
+      ],
+    },
+    {
+      name: "CCTV & Smart Security",
+      slug: "cctv-smart-security",
+      services: [
+        { title: "Doorstep HD CCTV Camera Installation & Mobile App Config", defaultPrice: 499.0 },
+        { title: "Smart Video Doorbell & Digital Lock Fitting", defaultPrice: 699.0 },
+        { title: "Security DVR/NVR Wiring & Mobile App Live Config", defaultPrice: 549.0 },
+      ],
+    },
+    {
+      name: "RO Water Purifier Care",
+      slug: "ro-water-purifier",
+      services: [
+        { title: "Comprehensive RO Service & Multi-Stage Filter Replacement", defaultPrice: 349.0 },
+        { title: "Water TDS Calibration & Booster Pump Check", defaultPrice: 299.0 },
+      ],
+    },
+    {
+      name: "Car Denting & Painting",
+      slug: "car-denting-painting",
+      services: [
+        { title: "Paintless Dent Removal & Minor Scratch Buffing", defaultPrice: 799.0 },
+        { title: "Full Bumper Realignment & Spot Touch-Up", defaultPrice: 999.0 },
+      ],
+    },
+    {
+      name: "Windshield & Glass Care",
+      slug: "windshield-lights-care",
+      services: [
+        { title: "Windshield Crack Resin Repair & Headlight Polish", defaultPrice: 399.0 },
+        { title: "Headlight Lens De-Oxidizing & Buffing Polish", defaultPrice: 499.0 },
+      ],
+    },
+    {
+      name: "Electrician",
+      slug: "electrician",
+      services: [
+        { title: "Complete Home Electrical Short Circuit Triage", defaultPrice: 249.0 },
+        { title: "Ceiling Fan Installation & Regulator Switch Wiring", defaultPrice: 179.0 },
+      ],
+    },
+    {
+      name: "Plumbing",
+      slug: "plumbing",
+      services: [
+        { title: "Bathroom Tap & Concealed Pipe Leakage Repair", defaultPrice: 199.0 },
+      ],
+    },
+    {
+      name: "Appliance Repair",
+      slug: "appliance",
+      services: [
+        { title: "Fully Automatic Washing Machine Drum & Motor Repair", defaultPrice: 399.0 },
+      ],
+    },
+    {
+      name: "Deep Cleaning",
+      slug: "cleaning",
+      services: [
+        { title: "Home Deep Cleaning & Kitchen Degreasing Package", defaultPrice: 799.0 },
+      ],
+    },
   ];
 
   const createdServices = [];
@@ -214,7 +294,7 @@ async function main() {
     });
 
     // Map all created services to this technician
-    for (const service of createdServices.slice(0, 8)) {
+    for (const service of createdServices) {
       await prisma.technicianService.upsert({
         where: {
           technicianId_serviceId: {
