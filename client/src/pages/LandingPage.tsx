@@ -40,6 +40,12 @@ import {
   ApplianceRepairTradeIcon,
   CleaningTradeIcon,
   AutoGarageTradeIcon,
+  PaintingTradeIcon,
+  CarpentryTradeIcon,
+  SecurityCctvTradeIcon,
+  RoPurifierTradeIcon,
+  DentingPaintingTradeIcon,
+  WindshieldGlassTradeIcon,
 } from "../components/icons/TradeCategoryIcons";
 
 interface LandingPageProps {
@@ -167,6 +173,78 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       expertsCountHi: "64+ विशेषज्ञ",
       accentColor: "text-[#E87532] dark:text-[#E87532] group-hover:border-[#E87532]/60 group-hover:shadow-[0_0_24px_rgba(232,117,50,0.25)]",
     },
+    {
+      id: "painting",
+      name: "Painting & Waterproofing",
+      nameHi: "पेंटिंग व वॉटरप्रूफिंग",
+      desc: "Wall dampness repair, interior fresh paint, texture & exterior coat",
+      descHi: "दीवारों की सीलन रिपेयर, इंटीरियर फ्रेश पेंट, पुट्टी व वॉटरप्रूफिंग",
+      icon: PaintingTradeIcon,
+      startingPrice: "₹499",
+      expertsCount: "34+ Pros",
+      expertsCountHi: "34+ विशेषज्ञ",
+      accentColor: "text-rose-500 dark:text-rose-400 group-hover:border-rose-500/50 group-hover:shadow-[0_0_24px_rgba(244,63,94,0.25)]",
+    },
+    {
+      id: "carpentry",
+      name: "Carpentry & Woodwork",
+      nameHi: "कारपेंट्री व वुडवर्क",
+      desc: "Door lock & hinge fix, modular cabinet tuning, furniture polish",
+      descHi: "दरवाजे के लॉक व कब्जे, किचन कैबिनेट्स रिपेयर व फर्नीचर पॉलिश",
+      icon: CarpentryTradeIcon,
+      startingPrice: "₹199",
+      expertsCount: "48+ Pros",
+      expertsCountHi: "48+ विशेषज्ञ",
+      accentColor: "text-yellow-600 dark:text-yellow-500 group-hover:border-yellow-600/50 group-hover:shadow-[0_0_24px_rgba(202,138,4,0.25)]",
+    },
+    {
+      id: "cctv-security",
+      name: "CCTV & Smart Security",
+      nameHi: "सीसीटीवी व स्मार्ट सिक्योरिटी",
+      desc: "HD CCTV camera installation, smart video doorbells & digital locks",
+      descHi: "HD सीसीटीवी कैमरा फिटिंग, स्मार्ट वीडियो डोरबेल व डिजिटल लॉक सेटअप",
+      icon: SecurityCctvTradeIcon,
+      startingPrice: "₹499",
+      expertsCount: "27+ Pros",
+      expertsCountHi: "27+ विशेषज्ञ",
+      accentColor: "text-blue-500 dark:text-blue-400 group-hover:border-blue-500/50 group-hover:shadow-[0_0_24px_rgba(59,130,246,0.25)]",
+    },
+    {
+      id: "ro-water-purifier",
+      name: "RO Water Purifier Care",
+      nameHi: "आरओ वॉटर प्यूरीफायर सर्विस",
+      desc: "RO filter membrane change, sediment cleaning & TDS calibration",
+      descHi: "आरओ फिल्टर मेंब्रेन रिप्लेसमेंट, सेडिमेंट क्लीनिंग व टीडीएस जांच",
+      icon: RoPurifierTradeIcon,
+      startingPrice: "₹299",
+      expertsCount: "39+ Pros",
+      expertsCountHi: "39+ विशेषज्ञ",
+      accentColor: "text-cyan-500 dark:text-cyan-400 group-hover:border-cyan-500/50 group-hover:shadow-[0_0_24px_rgba(6,182,212,0.25)]",
+    },
+    {
+      id: "car-denting-painting",
+      name: "Car Denting & Painting",
+      nameHi: "कार डेंटिंग व पेंटिंग",
+      desc: "Paintless dent removal, scratch buffing, bumper & panel restoration",
+      descHi: "पेंटलेस डेंट रिमूवल (PDR), स्क्रैच बफिंग, बंपर व पैनल पेंटिंग",
+      icon: DentingPaintingTradeIcon,
+      startingPrice: "₹699",
+      expertsCount: "52+ Pros",
+      expertsCountHi: "52+ विशेषज्ञ",
+      accentColor: "text-violet-500 dark:text-violet-400 group-hover:border-violet-500/50 group-hover:shadow-[0_0_24px_rgba(139,92,246,0.25)]",
+    },
+    {
+      id: "windshield-lights-care",
+      name: "Windshield & Glass Care",
+      nameHi: "विंडशील्ड व ग्लास केयर",
+      desc: "Windshield chip crack repair, headlight restoration & power window",
+      descHi: "विंडशील्ड क्रैक रिपेयर, हेडलाइट डी-ऑक्सीडाइजिंग व पावर विंडो मोटर",
+      icon: WindshieldGlassTradeIcon,
+      startingPrice: "₹399",
+      expertsCount: "31+ Pros",
+      expertsCountHi: "31+ विशेषज्ञ",
+      accentColor: "text-emerald-600 dark:text-emerald-400 group-hover:border-emerald-600/50 group-hover:shadow-[0_0_24px_rgba(5,150,105,0.25)]",
+    },
   ];
 
   // Fallback high-intent services if DB empty
@@ -228,6 +306,66 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       category: { id: "appliance", name: "Appliance", description: "Appliance care" },
       defaultPrice: 399,
       durationMinutes: 50,
+      createdAt: "",
+      updatedAt: "",
+    },
+    {
+      id: "fb-7",
+      title: "Wall Dampness Treatment & Anti-Fungal Waterproofing",
+      categoryId: "painting",
+      category: { id: "painting", name: "Painting & Waterproofing", description: "Wall care" },
+      defaultPrice: 1799,
+      durationMinutes: 90,
+      createdAt: "",
+      updatedAt: "",
+    },
+    {
+      id: "fb-8",
+      title: "Door Lock, Handle & Concealed Hinge Repair",
+      categoryId: "carpentry",
+      category: { id: "carpentry", name: "Carpentry & Woodwork", description: "Carpentry" },
+      defaultPrice: 249,
+      durationMinutes: 40,
+      createdAt: "",
+      updatedAt: "",
+    },
+    {
+      id: "fb-9",
+      title: "Doorstep HD CCTV Camera Installation & Mobile App Config",
+      categoryId: "cctv-security",
+      category: { id: "cctv-security", name: "CCTV & Smart Security", description: "Security" },
+      defaultPrice: 499,
+      durationMinutes: 60,
+      createdAt: "",
+      updatedAt: "",
+    },
+    {
+      id: "fb-10",
+      title: "Comprehensive RO Service & Multi-Stage Filter Replacement",
+      categoryId: "ro-water-purifier",
+      category: { id: "ro-water-purifier", name: "RO Water Purifier Care", description: "Water purification" },
+      defaultPrice: 349,
+      durationMinutes: 45,
+      createdAt: "",
+      updatedAt: "",
+    },
+    {
+      id: "fb-11",
+      title: "Paintless Dent Removal & Minor Scratch Buffing",
+      categoryId: "car-denting-painting",
+      category: { id: "car-denting-painting", name: "Car Denting & Painting", description: "Bodywork" },
+      defaultPrice: 799,
+      durationMinutes: 60,
+      createdAt: "",
+      updatedAt: "",
+    },
+    {
+      id: "fb-12",
+      title: "Windshield Crack Resin Repair & Headlight Polish",
+      categoryId: "windshield-lights-care",
+      category: { id: "windshield-lights-care", name: "Windshield & Glass Care", description: "Glass care" },
+      defaultPrice: 399,
+      durationMinutes: 40,
       createdAt: "",
       updatedAt: "",
     },
@@ -477,7 +615,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           <div className="lg:col-span-5 relative lg:pl-4 xl:pl-8">
             <div className="hero-anim relative mx-auto max-w-md lg:max-w-none">
               {/* Main Visual Frame */}
-              <div className="relative rounded-3xl overflow-hidden bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-premium aspect-[4/4.5] flex flex-col justify-end p-6">
+              <div className="relative rounded-3xl overflow-hidden bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-premium aspect-[4/4.5] flex flex-col justify-end p-6 pb-9 sm:pb-10">
                 {/* Background Authentic Service Collage / Visual Banner */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#252621]/90 via-[#252621]/30 to-transparent z-10" />
                 <img
@@ -502,7 +640,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </div>
 
               {/* Floating HandyHub Style Service Card (Top-Right) */}
-              <div className="absolute -top-4 -right-4 sm:-right-6 p-4 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-premium z-30 max-w-[210px] hidden sm:block animate-in fade-in duration-500">
+              <div className="absolute -top-7 sm:-top-9 -right-6 sm:-right-8 lg:-right-9 p-4 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-premium z-30 max-w-[210px] hidden sm:block animate-in fade-in duration-500">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 rounded-xl bg-orange-50 dark:bg-orange-950/60 text-[#E87532] flex items-center justify-center font-bold text-xs">
                     <Wrench className="w-4 h-4" />
@@ -524,7 +662,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </div>
 
               {/* Floating Bottom Card: Rating & Reliability */}
-              <div className="absolute -bottom-5 -left-2 sm:-left-3 lg:-left-2 p-3.5 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-premium z-30 flex items-center gap-3">
+              <div className="absolute -bottom-8 -left-5 sm:-bottom-10 sm:-left-8 lg:-bottom-10 lg:-left-8 p-3.5 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-premium z-30 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center font-bold">
                   <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
                 </div>
