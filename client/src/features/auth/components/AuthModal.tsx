@@ -37,7 +37,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
 
-  const effectivePhone = phone.trim() || "8439616833";
+  const effectivePhone = phone.replace(/\D/g, "").slice(-10) || "8439616833";
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,7 +84,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!otp) {
+    const cleanOtp = otp.trim();
+    if (!cleanOtp) {
       setErrorMsg(
         isHi
           ? "कृपया 6-अंकों का OTP दर्ज करें (उदा. 123456)"
@@ -97,9 +98,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       setErrorMsg("");
       let firebaseToken = "test_token_123";
 
-      if (confirmationResult) {
-        const userCredential = await confirmationResult.confirm(otp);
-        firebaseToken = await userCredential.user.getIdToken();
+      // If test OTP 123456 is used, bypass Firebase confirmation directly
+      if (cleanOtp === "123456") {
+        firebaseToken = "test_token_123";
+      } else if (confirmationResult) {
+        try {
+          const userCredential = await confirmationResult.confirm(cleanOtp);
+          firebaseToken = await userCredential.user.getIdToken();
+        } catch (firebaseErr: any) {
+          console.warn("Firebase confirm error:", firebaseErr);
+          if (
+            firebaseErr?.code === "auth/invalid-verification-code" ||
+            firebaseErr?.message?.includes("invalid-verification-code")
+          ) {
+            setErrorMsg(
+              isHi
+                ? "अमान्य OTP कोड। कृपया अपने मोबाइल पर आया सही 6-अंकों का SMS OTP दर्ज करें या त्वरित लॉगिन के लिए 'Auto-Fill 123456' / '1-Click Login' चुनें।"
+                : "Invalid verification code. Please enter the 6-digit SMS code sent to your phone, or use 'Auto-Fill 123456' / '1-Click Login'."
+            );
+            return;
+          }
+          throw firebaseErr;
+        }
       }
 
       const res = await syncUser({
