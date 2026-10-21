@@ -292,3 +292,241 @@ export const AutoGarageTradeIcon: React.FC<IconProps> = ({ className = "w-6 h-6"
     </svg>
   );
 };
+
+/**
+ * 7. Painting & Waterproofing Trade Icon:
+ * Professional Paint Roller with textured roller sleeve, sturdy handle, and paint drip shield
+ */
+export const PaintingTradeIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Roller Cylinder Head */}
+      <rect
+        x="4"
+        y="3"
+        width="14"
+        height="6"
+        rx="2"
+        className="fill-rose-500/15 dark:fill-rose-400/20"
+        strokeWidth="1.75"
+      />
+      {/* Paint Texture Strip */}
+      <path d="M7 5v2M11 5v2M15 5v2" strokeWidth="1.25" strokeOpacity="0.7" />
+      {/* Metal Roller Axle & Arm Bracket */}
+      <path d="M18 6h2a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-8v3" strokeWidth="1.75" />
+      {/* Ergonomic Roller Handle */}
+      <rect
+        x="10.5"
+        y="15"
+        width="3"
+        height="6"
+        rx="1"
+        className="fill-rose-500/25"
+        strokeWidth="1.5"
+      />
+      {/* Fresh Waterproofing Paint Drips */}
+      <circle cx="5" cy="12" r="1" className="fill-rose-500 text-rose-500" stroke="none" />
+      <path d="M7 11c0 1-.5 2-1 2" strokeWidth="1.2" />
+    </svg>
+  );
+};
+
+/**
+ * 8. Carpentry & Woodwork Trade Icon:
+ * Fine-tooth woodworking handsaw & carpenter's angle square with timber grain
+ */
+export const CarpentryTradeIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Saw Blade Outline */}
+      <path
+        d="M7 16L19 4l2 2-9.5 12H7v-2z"
+        className="fill-yellow-600/15 dark:fill-yellow-500/20"
+        strokeWidth="1.75"
+      />
+      {/* Serrated Saw Blade Teeth */}
+      <path d="M9 14l1.5-1-1-1 1.5-1-1-1 1.5-1-1-1 1.5-1" strokeWidth="1.2" />
+      {/* Wooden Grip Handle */}
+      <path
+        d="M7 16c-1.5 0-3 1-3 2.5S5.5 21 7 21h2v-5H7z"
+        className="fill-yellow-600/30"
+        strokeWidth="1.75"
+      />
+      <circle cx="6.5" cy="18.5" r="0.75" fill="currentColor" stroke="none" />
+      {/* Carpenter Angle Joint Accent */}
+      <path d="M14 20h6M20 14v6" strokeWidth="1.5" strokeDasharray="1.5 1.5" />
+    </svg>
+  );
+};
+
+/**
+ * 9. CCTV & Smart Security Trade Icon:
+ * Wall-mounted smart surveillance camera with IR infrared ring & shield
+ */
+export const SecurityCctvTradeIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Wall Mounting Base Plate */}
+      <path d="M3 7v10M3 12h4" strokeWidth="2" />
+      {/* Articulated Camera Swivel Arm */}
+      <path d="M7 12l4-3" strokeWidth="1.75" />
+      {/* Camera Barrel Body */}
+      <path
+        d="M10 7l9-3a1 1 0 0 1 1.3.7l1.5 4.5a1 1 0 0 1-.7 1.3L12 13a2 2 0 0 1-2.5-1.2L8.8 9.5A2 2 0 0 1 10 7z"
+        className="fill-blue-500/15 dark:fill-blue-400/20"
+        strokeWidth="1.75"
+      />
+      {/* Front Optical Lens */}
+      <circle cx="18" cy="7" r="1.5" className="fill-blue-500 text-blue-500" stroke="none" />
+      {/* Live Recording Red Dot Indicator */}
+      <circle cx="14" cy="5" r="0.8" fill="#EF4444" stroke="none" />
+      {/* Protective Security Shield Accent */}
+      <path
+        d="M6 18c2 0 4 1 4 3 0 2-2 3-4 3s-4-1-4-3c0-2 2-3 4-3z"
+        strokeWidth="1.2"
+        strokeOpacity="0.5"
+      />
+    </svg>
+  );
+};
+
+/**
+ * 10. RO Water Purifier Trade Icon:
+ * Multi-stage water purification cartridge with pure mineral droplet & wave filter
+ */
+export const RoPurifierTradeIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Water Filter Canister Body */}
+      <rect
+        x="6"
+        y="6"
+        width="12"
+        height="15"
+        rx="3"
+        className="fill-cyan-500/15 dark:fill-cyan-400/20"
+        strokeWidth="1.75"
+      />
+      {/* Cartridge Cap & Inlet/Outlet Manifold */}
+      <path d="M9 3h6v3H9V3z" strokeWidth="1.5" />
+      <path d="M5 6h14" strokeWidth="1.75" />
+      {/* Filtration Wave Layers */}
+      <path d="M8 11c1 .7 2 .7 3 0s2-.7 3 0 2 .7 2 0" strokeWidth="1.2" />
+      <path d="M8 15c1 .7 2 .7 3 0s2-.7 3 0 2 .7 2 0" strokeWidth="1.2" />
+      {/* Pure Water Droplet with Sparkle */}
+      <path
+        d="M12 8a1.5 1.5 0 0 0 1.5 1.5c.8 0 1.5-.7 1.5-1.5S13.5 6 12 8z"
+        className="fill-cyan-500 text-cyan-500"
+        strokeWidth="0.8"
+      />
+    </svg>
+  );
+};
+
+/**
+ * 11. Car Denting & Painting Trade Icon:
+ * Professional High-Volume Spray Gun with automotive fender curve
+ */
+export const DentingPaintingTradeIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Gravity Feed Paint Cup */}
+      <polygon
+        points="7,3 13,3 11,8 9,8"
+        className="fill-violet-500/20 dark:fill-violet-400/25"
+        strokeWidth="1.5"
+      />
+      {/* Spray Gun Body & Trigger */}
+      <path d="M10 8h5l2 2v2h-4l-1 8h-2l1-8h-1z" strokeWidth="1.75" />
+      <path d="M13 11c0 1.5.8 2 1.5 2" strokeWidth="1.25" />
+      {/* Atomized Spray Mist Cone */}
+      <path d="M17 11l4-2.5M17 11.5h4.5M17 12l4 2.5" strokeWidth="1.2" strokeOpacity="0.8" />
+      {/* Fine Paint Droplets */}
+      <circle cx="21" cy="8.5" r="0.6" fill="currentColor" stroke="none" />
+      <circle cx="22" cy="11.5" r="0.6" fill="currentColor" stroke="none" />
+      <circle cx="21" cy="14.5" r="0.6" fill="currentColor" stroke="none" />
+      {/* Restored Fender Curve Base */}
+      <path
+        d="M3 21c2-3 5-5 9-5"
+        strokeWidth="1.75"
+        className="text-violet-500"
+      />
+    </svg>
+  );
+};
+
+/**
+ * 12. Windshield & Glass Care Trade Icon:
+ * Car windshield contour with dynamic wiper sweep & crystal clarity shine
+ */
+export const WindshieldGlassTradeIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Curved Windshield Frame */}
+      <path
+        d="M3 17l2.5-10a2 2 0 0 1 1.9-1.5h9.2a2 2 0 0 1 1.9 1.5L21 17a2 2 0 0 1-1.9 2.5H4.9A2 2 0 0 1 3 17z"
+        className="fill-emerald-500/15 dark:fill-emerald-400/20"
+        strokeWidth="1.75"
+      />
+      {/* Windshield Wiper Arm and Blade */}
+      <path d="M12 18l4-8" strokeWidth="1.75" />
+      <path d="M15 7l2 4" strokeWidth="1.5" strokeLinecap="square" />
+      {/* Wiper Sweep Arc Line */}
+      <path d="M7 11a8 8 0 0 1 10-3" strokeWidth="1.2" strokeDasharray="1.5 1.5" strokeOpacity="0.6" />
+      {/* Crystal Clarity Sparkle Accent */}
+      <path
+        d="M7 8l.7 1.3L9 10l-1.3.7L7 12l-.7-1.3L5 10l1.3-.7L7 8z"
+        className="fill-emerald-500 text-emerald-500"
+        strokeWidth="0.5"
+      />
+    </svg>
+  );
+};
