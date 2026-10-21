@@ -49,6 +49,38 @@ const categoryImages: Record<string, string> = {
     "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=600&q=80",
   mechanic:
     "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=600&q=80",
+  painting:
+    "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80",
+  "painting-waterproofing":
+    "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80",
+  carpentry:
+    "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+  "carpentry-furniture":
+    "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+  "cctv-security":
+    "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80",
+  "cctv-smart-security":
+    "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80",
+  "ro-water-purifier":
+    "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=600&q=80",
+  "car-denting-painting":
+    "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=600&q=80",
+  "windshield-lights-care":
+    "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=600&q=80",
+  "car-periodic-maintenance":
+    "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=600&q=80",
+  "emergency-roadside-sos":
+    "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80",
+  "two-wheeler-repair":
+    "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
+  "brakes-clutch-suspension":
+    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80",
+  "battery-electrical":
+    "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80",
+  "tyres-wheel-care":
+    "https://images.unsplash.com/photo-1578844251758-2f71da64c96f?auto=format&fit=crop&w=600&q=80",
+  "detailing-wash-spa":
+    "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=600&q=80",
   default:
     "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=600&q=80",
 };
@@ -175,6 +207,84 @@ const fallbackCatalog: Service[] = [
     image:
       "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=600&q=80",
   },
+  {
+    id: "srv-10",
+    title: "Wall Dampness Treatment & Anti-Fungal Waterproofing",
+    categoryId: "painting",
+    category: { id: "painting", name: "Painting & Waterproofing", slug: "painting" },
+    defaultPrice: 1799,
+    description:
+      "Deep moisture reading, wall efflorescence scrap, multi-layer polymer base coat, and waterproof barrier paint.",
+    durationMinutes: 90,
+    rating: 4.93,
+    reviewsCount: 145,
+    image: categoryImages.painting,
+  },
+  {
+    id: "srv-11",
+    title: "Door Lock, Handle & Concealed Hinge Repair",
+    categoryId: "carpentry",
+    category: { id: "carpentry", name: "Carpentry & Woodwork", slug: "carpentry" },
+    defaultPrice: 249,
+    description:
+      "Heavy-duty mortise lock fixing, soft-close hydraulic cabinet hinge alignment, and striker plate repositioning.",
+    durationMinutes: 40,
+    rating: 4.89,
+    reviewsCount: 132,
+    image: categoryImages.carpentry,
+  },
+  {
+    id: "srv-12",
+    title: "Doorstep HD CCTV Camera Installation & Mobile App Config",
+    categoryId: "cctv-security",
+    category: { id: "cctv-security", name: "CCTV & Smart Security", slug: "cctv-security" },
+    defaultPrice: 499,
+    description:
+      "Neat coaxial/Cat6 cable casing, night-vision infrared camera mounting, DVR network routing, and phone app streaming.",
+    durationMinutes: 60,
+    rating: 4.96,
+    reviewsCount: 88,
+    image: categoryImages["cctv-security"],
+  },
+  {
+    id: "srv-13",
+    title: "Comprehensive RO Service & Multi-Stage Filter Replacement",
+    categoryId: "ro-water-purifier",
+    category: { id: "ro-water-purifier", name: "RO Water Purifier Care", slug: "ro-water-purifier" },
+    defaultPrice: 349,
+    description:
+      "Sediment filter backwash, activated carbon cartridge swap, membrane pressure check, and digital TDS calibration.",
+    durationMinutes: 45,
+    rating: 4.91,
+    reviewsCount: 164,
+    image: categoryImages["ro-water-purifier"],
+  },
+  {
+    id: "srv-14",
+    title: "Paintless Dent Removal & Minor Scratch Buffing",
+    categoryId: "car-denting-painting",
+    category: { id: "car-denting-painting", name: "Car Denting & Painting", slug: "car-denting-painting" },
+    defaultPrice: 799,
+    description:
+      "High-precision metal rod PDR technique for door and fender dings without harming original factory paint finish.",
+    durationMinutes: 60,
+    rating: 4.9,
+    reviewsCount: 204,
+    image: categoryImages["car-denting-painting"],
+  },
+  {
+    id: "srv-15",
+    title: "Windshield Crack Resin Repair & Headlight Polish",
+    categoryId: "windshield-lights-care",
+    category: { id: "windshield-lights-care", name: "Windshield & Glass Care", slug: "windshield-lights-care" },
+    defaultPrice: 399,
+    description:
+      "Vacuum UV optical resin injection for stone-chip star cracks and dual-stage abrasive buffing for yellowed headlight lenses.",
+    durationMinutes: 40,
+    rating: 4.88,
+    reviewsCount: 97,
+    image: categoryImages["windshield-lights-care"],
+  },
 ];
 
 export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) => {
@@ -267,6 +377,12 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
       { id: "ac-repair", name: "AC Repair & Service", count: 1 },
       { id: "appliance", name: "Appliance Repair", count: 1 },
       { id: "cleaning", name: "Deep Cleaning", count: 1 },
+      { id: "painting", name: "Painting & Waterproofing", count: 1 },
+      { id: "carpentry", name: "Carpentry & Woodwork", count: 1 },
+      { id: "cctv-security", name: "CCTV & Smart Security", count: 1 },
+      { id: "ro-water-purifier", name: "RO Water Purifier Care", count: 1 },
+      { id: "car-denting-painting", name: "Car Denting & Painting", count: 1 },
+      { id: "windshield-lights-care", name: "Windshield & Glass Care", count: 1 },
     ];
   }, [categoriesData, allServices]);
 
