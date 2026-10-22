@@ -358,7 +358,7 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
                   >
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="w-9 h-9 rounded-full bg-[#E87532]/10 text-[#E87532] font-bold text-sm flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-transparent text-[#E87532] font-black text-lg flex items-center justify-center shrink-0">
                           {tech.user?.fullName?.charAt(0) || "T"}
                         </div>
                         <div>
