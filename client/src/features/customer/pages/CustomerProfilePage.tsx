@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   User,
@@ -110,12 +110,12 @@ export const CustomerProfilePage: React.FC = () => {
       <Card className="p-6 sm:p-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#E7E5DF] dark:border-[#2B231D]">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[#E87532] to-amber-500 text-white font-extrabold flex items-center justify-center text-2xl shadow-orange-glow shrink-0">
-              {user?.fullName?.charAt(0) || "U"}
+            <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[#FF771C] to-amber-500 text-white font-extrabold flex items-center justify-center text-2xl shadow-orange-glow shrink-0">
+              {(user?.fullName?.charAt(0) || "U").toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-xl font-bold font-display text-[#252621] dark:text-white">
+                <h2 className="text-xl font-bold font-display text-[#252621] dark:text-white capitalize">
                   {user?.fullName || "Valued Customer"}
                 </h2>
                 <Badge status={user?.role} size="sm" />
@@ -161,7 +161,7 @@ export const CustomerProfilePage: React.FC = () => {
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#E87532]" />
                 <span className="font-mono text-sm font-bold text-[#252621] dark:text-white">
-                  {user?.phone || "+91 98765 43210"}
+                  {user?.phone ? (user.phone.replace(/\D/g, "").length === 10 ? `+91 ${user.phone.replace(/\D/g, "").slice(0, 5)} ${user.phone.replace(/\D/g, "").slice(5)}` : user.phone) : "+91 98765 43210"}
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold uppercase">
                   Verified via OTP
