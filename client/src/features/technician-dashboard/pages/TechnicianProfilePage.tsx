@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ShieldCheck,
@@ -253,6 +253,11 @@ export const TechnicianProfilePage: React.FC = () => {
               <img
                 src={avatarUrl}
                 alt={fullName}
+                onError={(e) => {    
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src =
+                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80";
+                }}
                 className="w-24 h-24 rounded-2xl object-cover border-2 border-[#E87532] shadow-md"
               />
               <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white cursor-pointer">
