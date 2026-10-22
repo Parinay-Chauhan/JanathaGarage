@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ShieldCheck,
@@ -405,6 +405,11 @@ export const AdminKYCVerificationPage: React.FC = () => {
               <img
                 src={selectedTech.docUrl}
                 alt="KYC ID"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src =
+                    "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80";
+                }}
                 className="w-full max-h-96 object-contain rounded-xl mx-auto"
               />
             </div>
