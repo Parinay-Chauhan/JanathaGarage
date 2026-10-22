@@ -20,11 +20,25 @@ import {
   ExternalLink,
   MapPin,
   Radio,
+  Phone,
+  ChevronRight,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logOut } from "../../features/auth/authSlice";
 import { useTheme } from "../../context/ThemeContext";
 import { Badge } from "../ui/Badge";
+
+const formatPhoneNumber = (rawPhone?: string) => {
+  if (!rawPhone) return "No phone registered";
+  const clean = rawPhone.replace(/\D/g, "");
+  if (clean.length === 10) {
+    return `+91 ${clean.slice(0, 5)} ${clean.slice(5)}`;
+  }
+  if (clean.length === 12 && clean.startsWith("91")) {
+    return `+91 ${clean.slice(2, 7)} ${clean.slice(7)}`;
+  }
+  return rawPhone;
+};
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -113,22 +127,60 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             </button>
           </div>
 
-          {/* User Role Card */}
-          <div className="p-4 m-4 rounded-2xl bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D] shadow-2xs">
-            <div className="flex items-center justify-between mb-2">
-              <Badge status={user?.role} size="sm" />
-              <span className="text-[10px] text-stone-400 font-medium flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981] animate-pulse"></span>
-                Active
+          {/* User Profile Card */}
+          <Link
+            to={
+              user?.role === "TECHNICIAN"
+                ? "/technician/profile"
+                : user?.role === "ADMIN"
+                ? "/admin/dashboard"
+                : "/customer/profile"
+            }
+            onClick={() => setSidebarOpen(false)}
+            className="block p-4 mx-4 my-3 rounded-2xl bg-gradient-to-br from-white via-[#FCFBF9] to-[#FFF6EE] dark:from-[#171411] dark:via-[#14110E] dark:to-[#1C1611] border border-[#E7E5DF] dark:border-[#2D231B] shadow-sm hover:border-[#FF771C]/50 hover:shadow-card-hover dark:hover:border-[#FF771C]/40 transition-all duration-200 group"
+          >
+            {/* Top Status Bar */}
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <span
+                className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full border inline-flex items-center gap-1 ${
+                  user?.role === "ADMIN"
+                    ? "bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800"
+                    : user?.role === "TECHNICIAN"
+                    ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800"
+                    : "bg-[#FFF2E8] dark:bg-[#2B1B10] text-[#FF771C] border-[#FFD9C2] dark:border-[#422615]"
+                }`}
+              >
+                {user?.role || "CUSTOMER"}
+              </span>
+
+              <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 inline-flex items-center gap-1.5 shadow-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00E599] shadow-[0_0_8px_#00E599] animate-pulse" />
+                <span>Active</span>
               </span>
             </div>
-            <p className="font-bold text-[#252621] dark:text-white text-sm truncate">
-              {user?.fullName || "Authenticated User"}
-            </p>
-            <p className="text-xs text-stone-500 dark:text-stone-400 truncate">
-              {user?.phone || "No phone registered"}
-            </p>
-          </div>
+
+            {/* Profile Avatar & Details */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF771C] to-[#E56814] text-white font-extrabold text-base flex items-center justify-center shrink-0 shadow-md shadow-[#FF771C]/25 border border-white/20 transition-transform group-hover:scale-105">
+                {(user?.fullName || "U").charAt(0).toUpperCase()}
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1">
+                  <p className="font-extrabold text-sm text-[#252621] dark:text-[#F5F2EB] capitalize truncate group-hover:text-[#FF771C] transition-colors">
+                    {user?.fullName || "Authenticated User"}
+                  </p>
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                </div>
+                <p className="text-[11px] font-mono font-medium text-[#717167] dark:text-[#9E9488] flex items-center gap-1 truncate mt-0.5">
+                  <Phone className="w-2.5 h-2.5 text-[#FF771C] shrink-0" />
+                  <span>{formatPhoneNumber(user?.phone)}</span>
+                </p>
+              </div>
+
+              <ChevronRight className="w-4 h-4 text-[#8F8F85] group-hover:text-[#FF771C] group-hover:translate-x-0.5 transition-all shrink-0" />
+            </div>
+          </Link>
 
           {/* Navigation Links */}
           <nav className="px-4 space-y-1.5 mt-2">
