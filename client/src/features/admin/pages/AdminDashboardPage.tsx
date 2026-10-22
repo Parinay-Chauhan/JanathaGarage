@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   Users,
@@ -700,6 +700,11 @@ export const AdminDashboardPage: React.FC = () => {
                   <img
                     src={tech.avatar}
                     alt={tech.name}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src =
+                        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80";
+                    }}
                     className="w-10 h-10 rounded-xl object-cover border border-[#E7E5DF] dark:border-[#2B231D]"
                   />
                   <div>
