@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, MapPin, Wrench, AlertCircle, CheckCircle2 } from "lucide-react";
+import { MapPin, Wrench, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Modal } from "../../../components/ui/Modal";
 import { Input } from "../../../components/ui/Input";
 import { Button } from "../../../components/ui/Button";
+import { DateTimePicker } from "../../../components/ui/DateTimePicker";
 import { Service } from "../../../types/api.types";
 import { useCreateBookingMutation } from "../api/bookingsApi";
 import { useLocation } from "../../../context/LocationContext";
@@ -131,13 +132,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
           />
         </div>
 
-        <Input
+        <DateTimePicker
           label="Preferred Appointment Slot"
-          type="datetime-local"
           value={scheduledAt}
-          onChange={(e) => setScheduledAt(e.target.value)}
-          leftIcon={<Calendar className="w-4 h-4" />}
-          helperText="Select a future date and time for mechanic visit"
+          onChange={(newVal) => setScheduledAt(newVal)}
+          helperText="Select a convenient arrival date and 12-hour time window"
         />
 
         <Input
