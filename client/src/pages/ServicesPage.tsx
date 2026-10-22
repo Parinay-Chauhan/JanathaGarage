@@ -19,6 +19,10 @@ import {
   Tv,
   Car,
   Check,
+  Wrench,
+  Shield,
+  ArrowRight,
+  Flame,
 } from "lucide-react";
 import {
   useGetCategoriesQuery,
@@ -30,60 +34,49 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Skeleton } from "../components/ui/Skeleton";
 import { BookingModal } from "../features/bookings/components/BookingModal";
+import {
+  getServiceImage,
+  handleImageError,
+  categoryFallbackImages,
+} from "../lib/serviceImageMap";
 
 interface ServicesPageProps {
   onOpenAuthModal?: () => void;
 }
 
-// Default high-quality categorized service images
-const categoryImages: Record<string, string> = {
-  electrician:
-    "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80",
-  plumbing:
-    "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&w=600&q=80",
-  "ac-repair":
-    "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=600&q=80",
-  appliance:
-    "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
-  cleaning:
-    "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=600&q=80",
-  mechanic:
-    "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=600&q=80",
-  painting:
-    "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80",
-  "painting-waterproofing":
-    "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80",
-  carpentry:
-    "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
-  "carpentry-furniture":
-    "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
-  "cctv-security":
-    "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80",
-  "cctv-smart-security":
-    "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80",
-  "ro-water-purifier":
-    "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=600&q=80",
-  "car-denting-painting":
-    "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=600&q=80",
-  "windshield-lights-care":
-    "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=600&q=80",
-  "car-periodic-maintenance":
-    "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=600&q=80",
-  "emergency-roadside-sos":
-    "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80",
-  "two-wheeler-repair":
-    "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
-  "brakes-clutch-suspension":
-    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80",
-  "battery-electrical":
-    "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80",
-  "tyres-wheel-care":
-    "https://images.unsplash.com/photo-1578844251758-2f71da64c96f?auto=format&fit=crop&w=600&q=80",
-  "detailing-wash-spa":
-    "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=600&q=80",
-  default:
-    "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=600&q=80",
+const categoryImages = categoryFallbackImages;
+
+// Dynamic icon resolver for each service category
+const getCategoryIcon = (slugOrId: string = "") => {
+  const s = slugOrId.toLowerCase();
+  if (s.includes("car") || s.includes("mechanic") || s.includes("periodic") || s.includes("denting")) return Car;
+  if (s.includes("sos") || s.includes("emergency") || s.includes("battery") || s.includes("electrician")) return Zap;
+  if (s.includes("two-wheeler") || s.includes("bike")) return Wrench;
+  if (s.includes("brake") || s.includes("suspension") || s.includes("clutch")) return ShieldCheck;
+  if (s.includes("tyre") || s.includes("wheel") || s.includes("puncture")) return ShieldCheck;
+  if (s.includes("wash") || s.includes("detailing") || s.includes("spa")) return Sparkles;
+  if (s.includes("paint") || s.includes("waterproof") || s.includes("plumbing") || s.includes("ro")) return Droplets;
+  if (s.includes("carpentry") || s.includes("wood")) return Wrench;
+  if (s.includes("cctv") || s.includes("security")) return Shield;
+  if (s.includes("ac") || s.includes("cool")) return Wind;
+  if (s.includes("appliance")) return Tv;
+  if (s.includes("cleaning")) return Sparkles;
+  return Sparkles;
 };
+
+// Quick 1-click filter chips for the hero bar
+const quickChips = [
+  { id: "ALL", label: "All Services", icon: Flame },
+  { id: "emergency-roadside-sos", label: "Roadside SOS", icon: Zap },
+  { id: "car-periodic-maintenance", label: "Car Service", icon: Car },
+  { id: "two-wheeler-repair", label: "Bike Repair", icon: Wrench },
+  { id: "tyres-wheel-care", label: "Tyres & Puncture", icon: ShieldCheck },
+  { id: "detailing-wash-spa", label: "Wash & Spa", icon: Sparkles },
+  { id: "brakes-clutch-suspension", label: "Brakes & Clutch", icon: ShieldCheck },
+  { id: "ac-repair", label: "AC Repair", icon: Wind },
+  { id: "electrician", label: "Electrician", icon: Zap },
+  { id: "plumbing", label: "Plumbing", icon: Droplets },
+];
 
 // Realistic fallback catalog with detailed metadata
 const fallbackCatalog: Service[] = [
@@ -294,7 +287,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
   const initialCategory = searchParams.get("category") || "ALL";
   const initialSearch = searchParams.get("search") || "";
 
-  const { t, tc, ts } = useLanguage();
+  const { t, tc, ts, language } = useLanguage();
 
   // Local filter states
   const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -346,13 +339,13 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
         durationMinutes: srv.durationMinutes || 45,
         rating: srv.rating || 4.9,
         reviewsCount: srv.reviewsCount || 100 + idx * 15,
-        image:
-          srv.image ||
-          categoryImages[srv.category?.slug?.toLowerCase() || ""] ||
-          categoryImages.default,
+        image: getServiceImage(srv.title, srv.category?.slug, srv.image),
       }));
     }
-    return fallbackCatalog;
+    return fallbackCatalog.map((srv) => ({
+      ...srv,
+      image: getServiceImage(srv.title, srv.category?.slug, srv.image),
+    }));
   }, [servicesData]);
 
   // Categories list
@@ -491,53 +484,94 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
   }, [filteredServices, currentPage, pageSize]);
 
   return (
-    <div className="bg-[#F8F7F3] dark:bg-[#040404] text-[#252621] dark:text-[#F5F2EB] min-h-screen pb-20 transition-colors">
+    <div className="relative bg-[#F8F7F3] dark:bg-[#070605] text-[#252621] dark:text-[#F5F2EB] min-h-screen pb-24 transition-colors overflow-hidden">
+      {/* Ambient Top Glow Mesh */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-[#FF771C]/15 via-[#FF771C]/5 to-transparent blur-3xl pointer-events-none -z-10" />
+
       {/* ========================================================= */}
-      {/* 01 BREADCRUMB & HEADER SECTION                            */}
+      {/* 01 BREADCRUMB & HERO HEADER SECTION                       */}
       {/* ========================================================= */}
-      <div className="border-b border-[#E7E5DF] dark:border-[#2B231D] bg-white/60 dark:bg-[#141210]/60 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4">
+      <div className="border-b border-[#E7E5DF] dark:border-[#221B16] bg-white/60 dark:bg-[#120F0D]/70 backdrop-blur-md relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs font-medium text-[#717167] dark:text-[#9E9488]">
-            <Link to="/" className="hover:text-[#E87532] transition-colors">
+            <Link to="/" className="hover:text-[#FF771C] transition-colors">
               {t("common.home")}
             </Link>
             <span>/</span>
-            <span className="text-[#252621] dark:text-[#F5F2EB] font-semibold">
+            <span className="text-[#FF771C] font-semibold">
               {t("servicesPage.allServices")}
             </span>
           </nav>
 
-          {/* Heading and Search Row */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold font-display leading-[1.3] text-[#252621] dark:text-[#F5F2EB]">
-                {t("servicesPage.headerTitle")}
+          {/* Title Badge & Heading Row */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              {/* Trust Tag */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF771C]/10 dark:bg-[#FF771C]/15 border border-[#FF771C]/30 text-[#FF771C] text-xs font-bold tracking-wide shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#FF771C]" />
+                <span>
+                  {language === "hi"
+                    ? "सत्यापित मैकेनिक व पेशेवर तकनीशियन"
+                    : "Standardized Doorstep & Emergency Services"}
+                </span>
+              </div>
+
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black font-display tracking-tight text-[#252621] dark:text-[#F5F2EB] leading-[1.2]">
+                {language === "hi" ? "विश्वसनीय होम व ऑटो " : "Reliable Home & Auto "}
+                <span className="bg-gradient-to-r from-[#FF771C] via-[#FFA463] to-[#FF771C] bg-clip-text text-transparent">
+                  {language === "hi" ? "रिपेयर सेवाएं" : "Repair Services"}
+                </span>
               </h1>
-              <p className="text-sm text-[#717167] dark:text-[#9E9488] mt-1.5 max-w-xl">
+
+              <p className="text-sm text-[#717167] dark:text-[#A89E92] leading-relaxed">
                 {t("servicesPage.headerSubtitle")}
               </p>
             </div>
 
-            {/* Top Search Input */}
-            <div className="relative w-full lg:w-96">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8F8F85] pointer-events-none" />
-              <input
-                type="text"
-                placeholder={t("servicesPage.searchPlaceholder")}
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full pl-10 pr-9 py-2.5 rounded-full bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] text-xs sm:text-sm text-[#252621] dark:text-[#F5F2EB] placeholder:text-[#8F8F85] focus:outline-none focus:ring-2 focus:ring-[#E87532]/20 focus:border-[#E87532] shadow-subtle"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => handleSearchChange("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8F8F85] hover:text-[#252621]"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
+            {/* Glowing Top Search Input */}
+            <div className="w-full lg:w-96">
+              <div className="relative group">
+                <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[#FF771C] pointer-events-none transition-transform group-focus-within:scale-110" />
+                <input
+                  type="text"
+                  placeholder={t("servicesPage.searchPlaceholder")}
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="w-full pl-11 pr-10 py-3 rounded-2xl bg-white dark:bg-[#181411] border border-[#E7E5DF] dark:border-[#2D241E] text-xs sm:text-sm text-[#252621] dark:text-[#F5F2EB] placeholder:text-[#8F8F85] focus:outline-none focus:ring-4 focus:ring-[#FF771C]/15 focus:border-[#FF771C] shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] transition-all"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => handleSearchChange("")}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-[#8F8F85] hover:text-[#252621] dark:hover:text-white transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
+          </div>
+
+          {/* Quick Category Chips Strip */}
+          <div className="pt-2 border-t border-[#E7E5DF]/60 dark:border-[#221B16] flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {quickChips.map((chip) => {
+              const Icon = chip.icon;
+              const isActive = selectedCategory === chip.id;
+              return (
+                <button
+                  key={chip.id}
+                  onClick={() => handleCategoryChange(chip.id)}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 ${
+                    isActive
+                      ? "bg-gradient-to-r from-[#FF771C] to-[#E56814] text-white shadow-[0_4px_16px_rgba(255,119,28,0.4)] scale-[1.03]"
+                      : "bg-white/80 dark:bg-[#181411] text-[#717167] dark:text-[#9E9488] hover:text-[#252621] dark:hover:text-white border border-[#E7E5DF] dark:border-[#2B231D] hover:border-[#FF771C]/40"
+                  }`}
+                >
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-[#FF771C]"}`} />
+                  <span>{chip.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -579,13 +613,21 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
           {/* 02 LEFT FILTERS SIDEBAR (Desktop)                         */}
           {/* ========================================================= */}
           <aside className="hidden lg:block lg:col-span-3 space-y-6">
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-[#E7E5DF] dark:border-[#2B231D]">
-                <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4 text-[#E87532]" />
-                  <h3 className="font-bold text-sm text-[#252621] dark:text-[#F5F2EB]">
-                    {t("common.filters")}
-                  </h3>
+            <div className="p-5 rounded-3xl bg-white/90 dark:bg-[#14100D]/90 backdrop-blur-xl border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.5)] space-y-6 sticky top-24">
+              {/* Header & Reset */}
+              <div className="flex items-center justify-between pb-4 border-b border-[#E7E5DF] dark:border-[#261E18]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-orange-500/10 dark:bg-[#FF771C]/15 border border-[#FF771C]/25 flex items-center justify-center text-[#FF771C]">
+                    <SlidersHorizontal className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-sm text-[#252621] dark:text-[#F5F2EB]">
+                      {t("common.filters")}
+                    </h3>
+                    <p className="text-[10px] text-[#8F8F85]">
+                      {filteredServices.length} {t("servicesPage.servicesCount")}
+                    </p>
+                  </div>
                 </div>
                 {(selectedCategory !== "ALL" ||
                   selectedPriceRange !== "ALL" ||
@@ -593,7 +635,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                   searchQuery) && (
                   <button
                     onClick={resetFilters}
-                    className="text-[11px] font-bold text-[#E87532] hover:underline flex items-center gap-1"
+                    className="text-[11px] font-bold text-[#FF771C] hover:text-[#E56814] flex items-center gap-1 px-2.5 py-1 rounded-lg bg-orange-50 dark:bg-[#23170E] border border-orange-200/60 dark:border-[#FF771C]/30 transition-colors"
                   >
                     <RotateCcw className="w-3 h-3" />
                     {t("common.clear")}
@@ -601,50 +643,80 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 )}
               </div>
 
-              {/* Instant Booking Toggle */}
-              <div className="space-y-2">
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={instantDispatchOnly}
-                    onChange={(e) => setInstantDispatchOnly(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#E87532] focus:ring-[#E87532] border-[#E7E5DF] dark:border-[#2B231D]"
-                  />
-                  <div>
-                    <p className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB] group-hover:text-[#E87532] transition-colors">
-                      {t("servicesPage.instantDispatch")}
-                    </p>
-                    <p className="text-[10px] text-[#717167] dark:text-[#9E9488]">
-                      {t("servicesPage.instantDispatchSub")}
-                    </p>
+              {/* Instant Dispatch Toggle Card */}
+              <div
+                onClick={() => setInstantDispatchOnly(!instantDispatchOnly)}
+                className={`p-3.5 rounded-2xl border transition-all duration-300 cursor-pointer select-none ${
+                  instantDispatchOnly
+                    ? "bg-gradient-to-br from-emerald-500/10 to-teal-500/5 dark:from-emerald-950/40 dark:to-teal-950/20 border-emerald-500/40 shadow-[0_4px_16px_rgba(16,185,129,0.15)]"
+                    : "bg-[#F8F7F3] dark:bg-[#1A1410] border-[#E7E5DF] dark:border-[#261E18] hover:border-[#FF771C]/30"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <div>
+                      <p className="text-xs font-extrabold text-[#252621] dark:text-[#F5F2EB]">
+                        {t("servicesPage.instantDispatch")}
+                      </p>
+                      <p className="text-[10px] text-[#717167] dark:text-[#9E9488]">
+                        {t("servicesPage.instantDispatchSub")}
+                      </p>
+                    </div>
                   </div>
-                </label>
+                  {/* Switch Pill */}
+                  <div
+                    className={`w-9 h-5 rounded-full transition-colors relative flex items-center p-0.5 ${
+                      instantDispatchOnly
+                        ? "bg-emerald-500 justify-end"
+                        : "bg-[#D8D5CD] dark:bg-[#342A22] justify-start"
+                    }`}
+                  >
+                    <div className="w-4 h-4 rounded-full bg-white shadow-sm transition-all" />
+                  </div>
+                </div>
               </div>
 
               {/* All Categories Filter */}
-              <div className="space-y-3 pt-3 border-t border-[#E7E5DF] dark:border-[#2B231D]">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#252621] dark:text-[#F5F2EB]">
-                  {t("categories.allCategories")}
-                </h4>
-                <div className="space-y-1">
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#8F8F85] dark:text-[#9E9488]">
+                    {t("categories.allCategories")}
+                  </h4>
+                  <span className="text-[10px] font-semibold text-[#8F8F85]">
+                    {categoriesList.length}
+                  </span>
+                </div>
+                <div className="space-y-1.5 max-h-[340px] overflow-y-auto pr-1 scrollbar-thin">
                   {categoriesList.map((cat) => {
                     const isSelected = selectedCategory === cat.id;
+                    const IconComp = getCategoryIcon(cat.id);
                     return (
                       <button
                         key={cat.id}
                         onClick={() => handleCategoryChange(cat.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 group ${
                           isSelected
-                            ? "bg-orange-50 dark:bg-orange-950/40 text-[#E87532] border border-[#E87532]/30"
-                            : "text-[#717167] dark:text-[#9E9488] hover:bg-[#F8F7F3] dark:hover:bg-[#1A1613] hover:text-[#252621] dark:hover:text-[#F5F2EB]"
+                            ? "bg-gradient-to-r from-[#FF771C] to-[#E56814] text-white shadow-[0_4px_16px_rgba(255,119,28,0.35)] scale-[1.02]"
+                            : "text-[#717167] dark:text-[#9E9488] hover:bg-[#F8F7F3] dark:hover:bg-[#1F1813] hover:text-[#252621] dark:hover:text-[#F5F2EB]"
                         }`}
                       >
-                        <span className="truncate">{tc(cat.name)}</span>
+                        <div className="flex items-center gap-2.5 truncate">
+                          <IconComp
+                            className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${
+                              isSelected ? "text-white" : "text-[#FF771C]"
+                            }`}
+                          />
+                          <span className="truncate">{tc(cat.name)}</span>
+                        </div>
                         <span
-                          className={`text-[10px] px-2 py-0.5 rounded-full ${
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-bold ml-2 shrink-0 ${
                             isSelected
-                              ? "bg-[#E87532] text-white"
-                              : "bg-[#F8F7F3] dark:bg-[#1A1613] text-[#8F8F85]"
+                              ? "bg-white/20 text-white"
+                              : "bg-[#EFECE6] dark:bg-[#251E17] text-[#8F8F85] group-hover:text-[#252621] dark:group-hover:text-white"
                           }`}
                         >
                           {cat.count}
@@ -656,55 +728,57 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               </div>
 
               {/* Price Filter */}
-              <div className="space-y-3 pt-3 border-t border-[#E7E5DF] dark:border-[#2B231D]">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#252621] dark:text-[#F5F2EB]">
+              <div className="space-y-3 pt-3 border-t border-[#E7E5DF] dark:border-[#261E18]">
+                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#8F8F85] dark:text-[#9E9488]">
                   {t("servicesPage.priceRange")}
                 </h4>
-                <div className="space-y-2 text-xs">
+                <div className="grid grid-cols-1 gap-1.5 text-xs">
                   {[
                     { id: "ALL", label: t("servicesPage.allPrices") },
                     { id: "UNDER_250", label: t("servicesPage.under250") },
                     { id: "250_TO_500", label: t("servicesPage.p250to500") },
                     { id: "500_TO_1000", label: t("servicesPage.p500to1000") },
                     { id: "ABOVE_1000", label: t("servicesPage.above1000") },
-                  ].map((range) => (
-                    <label
-                      key={range.id}
-                      className="flex items-center gap-2.5 cursor-pointer text-[#717167] dark:text-[#9E9488] hover:text-[#252621] dark:hover:text-[#F5F2EB]"
-                    >
-                      <input
-                        type="radio"
-                        name="priceRange"
-                        checked={selectedPriceRange === range.id}
-                        onChange={() => {
+                  ].map((range) => {
+                    const isSelected = selectedPriceRange === range.id;
+                    return (
+                      <button
+                        key={range.id}
+                        type="button"
+                        onClick={() => {
                           setSelectedPriceRange(range.id);
                           setCurrentPage(1);
                         }}
-                        className="text-[#E87532] focus:ring-[#E87532]"
-                      />
-                      <span
-                        className={
-                          selectedPriceRange === range.id
-                            ? "font-bold text-[#E87532]"
-                            : ""
-                        }
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-bold transition-all ${
+                          isSelected
+                            ? "bg-orange-50 dark:bg-[#2A1A10] text-[#FF771C] border border-[#FF771C]/50"
+                            : "bg-[#F8F7F3]/70 dark:bg-[#1A1410] border border-transparent text-[#717167] dark:text-[#9E9488] hover:text-[#252621] dark:hover:text-[#F5F2EB] hover:bg-[#F0EDE6] dark:hover:bg-[#221A15]"
+                        }`}
                       >
-                        {range.label}
-                      </span>
-                    </label>
-                  ))}
+                        <span>{range.label}</span>
+                        {isSelected && (
+                          <span className="w-2 h-2 rounded-full bg-[#FF771C] shadow-[0_0_8px_#FF771C]" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Guarantee Highlight */}
-              <div className="p-3.5 rounded-xl bg-orange-50/70 dark:bg-[#1A1613] border border-orange-200/50 dark:border-[#2B231D] space-y-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#E87532]">
-                  <ShieldCheck className="w-4 h-4" />
+              {/* Guarantee Highlight Card */}
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent dark:from-[#2A180E] dark:to-[#17100B] border border-orange-500/20 dark:border-[#FF771C]/25 space-y-2 relative overflow-hidden">
+                <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-[#FF771C]/10 rounded-full blur-xl pointer-events-none" />
+                <div className="flex items-center gap-2 text-xs font-extrabold text-[#FF771C]">
+                  <ShieldCheck className="w-4 h-4 shrink-0" />
                   <span>{t("servicesPage.doorstepWarranty")}</span>
                 </div>
-                <p className="text-[11px] text-[#717167] dark:text-[#9E9488] leading-relaxed">
+                <p className="text-[11px] text-[#717167] dark:text-[#B3A99B] leading-relaxed">
                   {t("servicesPage.warrantyDesc")}
                 </p>
+                <div className="pt-2 border-t border-orange-500/15 flex items-center justify-between text-[10px] font-semibold text-[#8F8F85]">
+                  <span>✓ 100% Genuine Spares</span>
+                  <span>✓ Verified Pros</span>
+                </div>
               </div>
             </div>
           </aside>
@@ -714,19 +788,19 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
           {/* ========================================================= */}
           <main className="lg:col-span-9 space-y-6">
             {/* Top Toolbar: Active Filters & Sort */}
-            <div className="p-4 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-subtle flex flex-wrap items-center justify-between gap-4">
+            <div className="p-4 rounded-3xl bg-white/90 dark:bg-[#14100D]/90 backdrop-blur-xl border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_4px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex flex-wrap items-center justify-between gap-4">
               {/* Active Filter Chips */}
               <div className="flex items-center gap-2 flex-wrap text-xs">
-                <span className="text-[#717167] dark:text-[#9E9488] font-medium">
+                <span className="text-[#717167] dark:text-[#9E9488] font-bold">
                   {t("servicesPage.showing")}{" "}
-                  <strong className="text-[#252621] dark:text-[#F5F2EB]">
+                  <strong className="text-[#252621] dark:text-[#F5F2EB] font-black">
                     {filteredServices.length}
                   </strong>{" "}
                   {t("servicesPage.servicesCount")}
                 </span>
 
                 {selectedCategory !== "ALL" && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-50 dark:bg-orange-950/40 text-[#E87532] border border-orange-200 text-[11px] font-bold">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/10 text-[#FF771C] border border-[#FF771C]/30 text-[11px] font-bold">
                     {t("servicesPage.category")}:{" "}
                     {tc(categoriesList.find((c) => c.id === selectedCategory)?.name ||
                       selectedCategory)}
@@ -740,7 +814,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 )}
 
                 {selectedPriceRange !== "ALL" && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-50 dark:bg-orange-950/40 text-[#E87532] border border-orange-200 text-[11px] font-bold">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/10 text-[#FF771C] border border-[#FF771C]/30 text-[11px] font-bold">
                     {t("servicesPage.priceRange")}: {selectedPriceRange.replace(/_/g, " ")}
                     <button
                       onClick={() => setSelectedPriceRange("ALL")}
@@ -752,7 +826,8 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 )}
 
                 {instantDispatchOnly && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[11px] font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     {t("servicesPage.instantDispatch")}
                     <button
                       onClick={() => setInstantDispatchOnly(false)}
@@ -766,13 +841,13 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
 
               {/* Desktop Sort Dropdown */}
               <div className="hidden lg:flex items-center gap-2 text-xs">
-                <span className="text-[#717167] dark:text-[#9E9488] font-semibold">
+                <span className="text-[#8F8F85] font-semibold">
                   {t("common.sort")}:
                 </span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D] rounded-xl px-3 py-1.5 text-xs font-bold text-[#252621] dark:text-[#F5F2EB] focus:outline-none focus:border-[#E87532]"
+                  className="bg-[#F8F7F3] dark:bg-[#1A1410] border border-[#E7E5DF] dark:border-[#261E18] rounded-xl px-3 py-1.5 text-xs font-bold text-[#252621] dark:text-[#F5F2EB] focus:outline-none focus:border-[#FF771C] transition-colors"
                 >
                   <option value="featured">{t("servicesPage.featured")}</option>
                   <option value="price_asc">{t("servicesPage.priceLowHigh")}</option>
@@ -784,16 +859,16 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
 
             {/* Service Cards Grid (or Loading / Error / Empty States) */}
             {servicesLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div
                     key={i}
-                    className="p-5 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-subtle space-y-4"
+                    className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#14100D] border border-[#E7E5DF] dark:border-[#261E18] shadow-subtle space-y-4"
                   >
-                    <Skeleton className="h-40 w-full rounded-xl" />
+                    <Skeleton className="h-44 w-full rounded-xl" />
                     <Skeleton className="h-5 w-3/4" />
                     <Skeleton className="h-4 w-full" />
-                    <div className="flex justify-between items-center pt-3 border-t border-[#E7E5DF]">
+                    <div className="flex justify-between items-center pt-3 border-t border-[#E7E5DF] dark:border-[#261E18]">
                       <Skeleton className="h-6 w-20" />
                       <Skeleton className="h-8 w-24 rounded-xl" />
                     </div>
@@ -802,8 +877,8 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               </div>
             ) : servicesError ? (
               /* Error State */
-              <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#141210] border border-rose-200 dark:border-rose-900/50 shadow-card space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto">
+              <div className="p-12 text-center rounded-3xl bg-white dark:bg-[#14100D] border border-rose-200 dark:border-rose-900/50 shadow-card space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
                   <AlertCircle className="w-7 h-7" />
                 </div>
                 <h3 className="text-lg font-bold font-display text-[#252621] dark:text-[#F5F2EB]">
@@ -822,68 +897,97 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 </Button>
               </div>
             ) : paginatedServices.length > 0 ? (
-              /* Active Services Grid (HandyHub Card Aesthetic) */
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              /* Active Services Grid - Proportional 3-Column Grid */
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {paginatedServices.map((service) => (
                   <div
                     key={service.id}
-                    className="p-5 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card hover:shadow-card-hover dark:hover:border-[#FF771C]/50 dark:hover:shadow-[0_12px_36px_rgba(255,119,28,0.12)] transition-all duration-300 flex flex-col justify-between group"
+                    className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#15110E] border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_4px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_16px_48px_rgba(255,119,28,0.16)] dark:hover:border-[#FF771C]/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
                   >
+                    {/* Ambient Glow behind card */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-[#FF771C]/10 transition-colors" />
+
                     <div>
-                      {/* Card Thumbnail Image */}
-                      <div className="relative rounded-xl overflow-hidden aspect-[16/10] bg-[#F8F7F3] dark:bg-[#1A1613] mb-4">
+                      {/* Card Thumbnail Image with Floating Badges */}
+                      <div className="relative rounded-xl overflow-hidden aspect-[16/10] bg-[#1F1813] mb-3.5">
                         <img
                           src={
                             service.image ||
-                            categoryImages[service.category?.slug?.toLowerCase() || ""] ||
-                            categoryImages.default
+                            getServiceImage(service.title, service.category?.slug)
                           }
                           alt={service.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={handleImageError}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                         />
-                        {/* Rating pill on image */}
-                        <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-lg bg-white/95 dark:bg-[#141210]/95 backdrop-blur-sm border border-[#E7E5DF] dark:border-[#2E251E] text-[11px] font-bold text-[#252621] dark:text-[#F5F2EB] flex items-center gap-1 shadow-subtle">
-                          <Star className="w-3.5 h-3.5 fill-[#FF771C] text-[#FF771C]" />
+                        {/* Dark Vignette Overlay for Crisp Contrast */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+
+                        {/* Top-Left Verified Badge */}
+                        <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-bold text-white flex items-center gap-1 shadow-sm">
+                          <Shield className="w-3 h-3 text-[#FF771C]" />
+                          <span>Verified Pro</span>
+                        </div>
+
+                        {/* Top-Right Glass Rating Pill */}
+                        <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-[11px] font-bold text-white flex items-center gap-1 shadow-sm">
+                          <Star className="w-3 h-3 fill-[#FF771C] text-[#FF771C]" />
                           <span>{service.rating || 4.9}</span>
-                          <span className="text-[#8A8074] font-normal">
+                          <span className="text-white/60 font-medium text-[10px]">
                             ({service.reviewsCount || 120})
                           </span>
                         </div>
-                      </div>
 
-                      {/* Category Badge & Duration */}
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF771C] bg-orange-50 dark:bg-[#23170E] px-2.5 py-0.5 rounded-full border border-orange-200/50 dark:border-[#FF771C]/30">
-                          {tc(service.category?.name || "Service")}
-                        </span>
-                        <div className="text-[11px] text-[#717167] dark:text-[#9E9488] flex items-center gap-1 font-medium">
-                          <Clock className="w-3.5 h-3.5 text-[#FF771C]" />
-                          <span>
-                            {service.durationMinutes || 45} {t("common.mins")}
+                        {/* Bottom Floating Info Over Image */}
+                        <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5">
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-white bg-[#FF771C] px-2.5 py-0.5 rounded-full shadow-sm truncate max-w-[55%]">
+                            {tc(service.category?.name || "Service")}
                           </span>
+                          <div className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-[10px] text-white/90 font-semibold flex items-center gap-1 border border-white/10 shrink-0">
+                            <Clock className="w-3 h-3 text-[#FF771C]" />
+                            <span>{service.durationMinutes || 45} {t("common.mins")}</span>
+                          </div>
                         </div>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-base font-bold font-display text-[#252621] dark:text-[#F5F2EB] group-hover:text-[#FF771C] transition-colors leading-snug">
+                      <h3 className="text-base font-bold font-display text-[#252621] dark:text-[#F5F2EB] group-hover:text-[#FF771C] transition-colors leading-snug tracking-tight line-clamp-1">
                         {ts(service.title)}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-xs text-[#717167] dark:text-[#9E9488] mt-1.5 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-[#717167] dark:text-[#9E9488] mt-1 line-clamp-2 leading-relaxed">
                         {service.description}
                       </p>
+
+                      {/* Perks Check Row */}
+                      <div className="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-[#E7E5DF]/60 dark:border-[#261E18] text-[10.5px] font-semibold text-[#8F8F85]">
+                        <span className="flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          Doorstep
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#FF771C]" />
+                          Warranty
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                          Genuine
+                        </span>
+                      </div>
                     </div>
 
                     {/* Card Footer: Price & Book CTA */}
-                    <div className="pt-4 mt-4 border-t border-[#E7E5DF] dark:border-[#2E251E] flex items-center justify-between gap-2">
+                    <div className="pt-3.5 mt-3.5 border-t border-[#E7E5DF] dark:border-[#261E18] flex items-center justify-between gap-2">
                       <div>
-                        <span className="text-[9px] uppercase font-bold tracking-wider text-[#8A8074] block">
+                        <span className="text-[9px] uppercase font-bold tracking-wider text-[#8F8F85] block">
                           {t("categories.starts")}
                         </span>
-                        <span className="text-lg font-mono font-extrabold text-[#252621] dark:text-[#F5F2EB]">
-                          ₹{service.defaultPrice}
-                        </span>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-xl font-mono font-black text-[#252621] dark:text-white">
+                            ₹{service.defaultPrice}
+                          </span>
+                        </div>
                       </div>
                       <Button
                         variant="primary"
@@ -892,9 +996,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                           setSelectedService(service);
                           setBookingModalOpen(true);
                         }}
-                        className="font-bold bg-[#FF771C] hover:bg-[#E56814] text-white shadow-[0_2px_14px_rgba(255,119,28,0.35)] px-4 py-2 rounded-xl"
+                        className="font-extrabold bg-gradient-to-r from-[#FF771C] to-[#E56814] hover:from-[#FF8433] hover:to-[#EB7220] text-white shadow-[0_3px_14px_rgba(255,119,28,0.35)] px-4 py-2 rounded-xl transition-all duration-300 group/btn flex items-center gap-1.5 text-xs"
                       >
-                        {t("common.bookNow")}
+                        <span>{t("common.bookNow")}</span>
+                        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
                       </Button>
                     </div>
                   </div>
@@ -902,9 +1007,9 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               </div>
             ) : (
               /* Empty State */
-              <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-[#E87532] flex items-center justify-center mx-auto border border-orange-200/50">
-                  <Search className="w-7 h-7" />
+              <div className="p-12 text-center rounded-3xl bg-white/90 dark:bg-[#14100D]/90 backdrop-blur-xl border border-[#E7E5DF] dark:border-[#261E18] shadow-card space-y-4">
+                <div className="w-16 h-16 rounded-2xl bg-orange-500/10 text-[#FF771C] flex items-center justify-center mx-auto border border-[#FF771C]/25 shadow-sm">
+                  <Search className="w-8 h-8" />
                 </div>
                 <h3 className="text-lg font-bold font-display text-[#252621] dark:text-[#F5F2EB]">
                   {t("servicesPage.noServicesMatch")}
@@ -917,7 +1022,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                   size="sm"
                   onClick={resetFilters}
                   leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
-                  className="font-bold"
+                  className="font-bold border-[#FF771C]/40 text-[#FF771C] hover:bg-orange-50 dark:hover:bg-[#23170E]"
                 >
                   {t("common.clear")}
                 </Button>
@@ -928,19 +1033,16 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
             {/* 04 PAGINATION CONTROLS                                    */}
             {/* ========================================================= */}
             {filteredServices.length > pageSize && (
-              <div className="p-4 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-subtle flex items-center justify-between">
-                <p className="text-xs text-[#717167] dark:text-[#9E9488]">
-                  {t("servicesPage.showing")} {(currentPage - 1) * pageSize + 1} -{" "}
-                  {Math.min(currentPage * pageSize, filteredServices.length)}{" "}
-                  {t("servicesPage.of")} {filteredServices.length}{" "}
-                  {t("servicesPage.servicesCount")}
+              <div className="p-4 rounded-3xl bg-white/90 dark:bg-[#14100D]/90 backdrop-blur-xl border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex items-center justify-between">
+                <p className="text-xs text-[#717167] dark:text-[#9E9488] font-medium">
+                  {t("servicesPage.showing")} <span className="font-bold text-[#252621] dark:text-[#F5F2EB]">{(currentPage - 1) * pageSize + 1} - {Math.min(currentPage * pageSize, filteredServices.length)}</span> {t("servicesPage.of")} <span className="font-bold text-[#252621] dark:text-[#F5F2EB]">{filteredServices.length}</span> {t("servicesPage.servicesCount")}
                 </p>
 
                 <div className="flex items-center gap-1.5">
                   <button
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    className="p-1.5 rounded-lg border border-[#E7E5DF] dark:border-[#2B231D] text-[#252621] dark:text-[#F5F2EB] disabled:opacity-30 hover:bg-[#F8F7F3] dark:hover:bg-[#1A1613] transition-colors"
+                    className="p-2 rounded-xl border border-[#E7E5DF] dark:border-[#261E18] text-[#252621] dark:text-[#F5F2EB] disabled:opacity-30 hover:bg-[#F8F7F3] dark:hover:bg-[#1A1410] transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -952,10 +1054,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`w-7 h-7 rounded-lg text-xs font-bold transition-all ${
+                        className={`w-8 h-8 rounded-xl text-xs font-bold transition-all ${
                           isActive
-                            ? "bg-[#E87532] text-white shadow-orange-glow"
-                            : "border border-[#E7E5DF] dark:border-[#2B231D] text-[#717167] hover:bg-[#F8F7F3] dark:hover:bg-[#1A1613]"
+                            ? "bg-gradient-to-r from-[#FF771C] to-[#E56814] text-white shadow-[0_4px_16px_rgba(255,119,28,0.4)] scale-105"
+                            : "border border-[#E7E5DF] dark:border-[#261E18] text-[#717167] dark:text-[#9E9488] hover:bg-[#F8F7F3] dark:hover:bg-[#1A1410] hover:text-[#252621] dark:hover:text-[#F5F2EB]"
                         }`}
                       >
                         {pageNum}
@@ -968,7 +1070,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                     onClick={() =>
                       setCurrentPage((p) => Math.min(totalPages, p + 1))
                     }
-                    className="p-1.5 rounded-lg border border-[#E7E5DF] dark:border-[#2B231D] text-[#252621] dark:text-[#F5F2EB] disabled:opacity-30 hover:bg-[#F8F7F3] dark:hover:bg-[#1A1613] transition-colors"
+                    className="p-2 rounded-xl border border-[#E7E5DF] dark:border-[#261E18] text-[#252621] dark:text-[#F5F2EB] disabled:opacity-30 hover:bg-[#F8F7F3] dark:hover:bg-[#1A1410] transition-colors"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -981,86 +1083,127 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
 
       {/* Mobile Filters Drawer */}
       {mobileFilterOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-sm lg:hidden">
-          <div className="w-full max-w-xs h-full bg-[#F8F7F3] dark:bg-[#1A1613] p-6 shadow-2xl flex flex-col justify-between overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm lg:hidden">
+          <div className="w-full max-w-xs h-full bg-[#FAFAF8] dark:bg-[#14100D] p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-[#E7E5DF] dark:border-[#261E18]">
             <div className="space-y-6">
-              <div className="flex items-center justify-between pb-3 border-b border-[#E7E5DF] dark:border-[#2B231D]">
-                <h3 className="font-bold text-base text-[#252621] dark:text-[#F5F2EB]">
-                  Filters
-                </h3>
+              <div className="flex items-center justify-between pb-3 border-b border-[#E7E5DF] dark:border-[#261E18]">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="w-4 h-4 text-[#FF771C]" />
+                  <h3 className="font-extrabold text-base text-[#252621] dark:text-[#F5F2EB]">
+                    Filters
+                  </h3>
+                </div>
                 <button
                   onClick={() => setMobileFilterOpen(false)}
-                  className="p-1.5 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800"
+                  className="p-1.5 rounded-full hover:bg-stone-200 dark:hover:bg-[#251E17] text-[#8F8F85] transition-colors"
                 >
-                  <X className="w-5 h-5 text-[#8F8F85]" />
+                  <X className="w-5 h-5" />
                 </button>
+              </div>
+
+              {/* Instant Dispatch Toggle */}
+              <div
+                onClick={() => setInstantDispatchOnly(!instantDispatchOnly)}
+                className={`p-3 rounded-2xl border transition-all cursor-pointer ${
+                  instantDispatchOnly
+                    ? "bg-emerald-500/10 border-emerald-500/40"
+                    : "bg-white dark:bg-[#1A1410] border-[#E7E5DF] dark:border-[#261E18]"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
+                      {t("servicesPage.instantDispatch")}
+                    </span>
+                  </div>
+                  <div
+                    className={`w-8 h-4 rounded-full relative flex items-center p-0.5 ${
+                      instantDispatchOnly ? "bg-emerald-500 justify-end" : "bg-stone-300 dark:bg-stone-700 justify-start"
+                    }`}
+                  >
+                    <div className="w-3 h-3 rounded-full bg-white shadow-xs" />
+                  </div>
+                </div>
               </div>
 
               {/* Mobile Categories */}
               <div className="space-y-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#717167]">
+                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#8F8F85]">
                   Category
                 </h4>
-                <div className="space-y-1">
-                  {categoriesList.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => {
-                        handleCategoryChange(cat.id);
-                        setMobileFilterOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold ${
-                        selectedCategory === cat.id
-                          ? "bg-[#E87532] text-white"
-                          : "text-[#252621] dark:text-[#F5F2EB] bg-white dark:bg-[#141210]"
-                      }`}
-                    >
-                      {cat.name}
-                    </button>
-                  ))}
+                <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
+                  {categoriesList.map((cat) => {
+                    const isSelected = selectedCategory === cat.id;
+                    const IconComp = getCategoryIcon(cat.id);
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => {
+                          handleCategoryChange(cat.id);
+                          setMobileFilterOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                          isSelected
+                            ? "bg-gradient-to-r from-[#FF771C] to-[#E56814] text-white shadow-md"
+                            : "text-[#252621] dark:text-[#F5F2EB] bg-white dark:bg-[#1A1410] border border-[#E7E5DF] dark:border-[#261E18]"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 truncate">
+                          <IconComp className={`w-3.5 h-3.5 ${isSelected ? "text-white" : "text-[#FF771C]"}`} />
+                          <span className="truncate">{tc(cat.name)}</span>
+                        </div>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${isSelected ? "bg-white/20 text-white" : "text-[#8F8F85]"}`}>
+                          {cat.count}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Mobile Price Filter */}
-              <div className="space-y-2 pt-3 border-t border-[#E7E5DF] dark:border-[#2B231D]">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#717167]">
+              <div className="space-y-2 pt-3 border-t border-[#E7E5DF] dark:border-[#261E18]">
+                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#8F8F85]">
                   Price
                 </h4>
-                <div className="space-y-2 text-xs">
+                <div className="grid grid-cols-1 gap-1 text-xs">
                   {[
                     { id: "ALL", label: "All Prices" },
                     { id: "UNDER_250", label: "Under ₹250" },
                     { id: "250_TO_500", label: "₹250 to ₹500" },
                     { id: "500_TO_1000", label: "₹500 to ₹1,000" },
                     { id: "ABOVE_1000", label: "₹1,000 and above" },
-                  ].map((range) => (
-                    <label
-                      key={range.id}
-                      className="flex items-center gap-2 cursor-pointer"
-                    >
-                      <input
-                        type="radio"
-                        name="mobilePriceRange"
-                        checked={selectedPriceRange === range.id}
-                        onChange={() => {
+                  ].map((range) => {
+                    const isSelected = selectedPriceRange === range.id;
+                    return (
+                      <button
+                        key={range.id}
+                        onClick={() => {
                           setSelectedPriceRange(range.id);
                           setCurrentPage(1);
                         }}
-                        className="text-[#E87532] focus:ring-[#E87532]"
-                      />
-                      <span>{range.label}</span>
-                    </label>
-                  ))}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-left transition-all ${
+                          isSelected
+                            ? "bg-orange-50 dark:bg-[#2A180E] text-[#FF771C] border border-[#FF771C]/50"
+                            : "bg-white dark:bg-[#1A1410] border border-[#E7E5DF] dark:border-[#261E18] text-[#717167] dark:text-[#9E9488]"
+                        }`}
+                      >
+                        <span>{range.label}</span>
+                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#FF771C]" />}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
 
-            <div className="pt-6 border-t border-[#E7E5DF] dark:border-[#2B231D] space-y-2">
+            <div className="pt-6 border-t border-[#E7E5DF] dark:border-[#261E18] space-y-2">
               <Button
                 variant="primary"
                 size="md"
                 onClick={() => setMobileFilterOpen(false)}
-                className="w-full font-bold shadow-orange-glow"
+                className="w-full font-bold bg-[#FF771C] hover:bg-[#E56814] text-white shadow-[0_4px_16px_rgba(255,119,28,0.4)]"
               >
                 Apply Filters
               </Button>
@@ -1071,7 +1214,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                   resetFilters();
                   setMobileFilterOpen(false);
                 }}
-                className="w-full text-xs"
+                className="w-full text-xs font-bold"
               >
                 Reset All
               </Button>
