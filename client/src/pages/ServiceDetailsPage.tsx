@@ -29,6 +29,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Skeleton } from "../components/ui/Skeleton";
 import { BookingModal } from "../features/bookings/components/BookingModal";
+import { getServiceImage, handleImageError } from "../lib/serviceImageMap";
 
 interface ServiceDetailsPageProps {
   onOpenAuthModal?: () => void;
@@ -55,7 +56,14 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
   // Find service from query or fallback
   const service: Service = useMemo(() => {
     if (serviceByIdData?.data) {
-      return serviceByIdData.data;
+      return {
+        ...serviceByIdData.data,
+        image: getServiceImage(
+          serviceByIdData.data.title,
+          serviceByIdData.data.category?.slug,
+          serviceByIdData.data.image
+        ),
+      };
     }
     if (allServicesData?.data && slug) {
       const found = allServicesData.data.find(
@@ -63,7 +71,12 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
           s.id === slug ||
           s.title.toLowerCase().replace(/\s+/g, "-") === slug.toLowerCase()
       );
-      if (found) return found;
+      if (found) {
+        return {
+          ...found,
+          image: getServiceImage(found.title, found.category?.slug, found.image),
+        };
+      }
     }
 
     // Default rich fallback matching slug
@@ -78,8 +91,7 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
       durationMinutes: 45,
       rating: 4.9,
       reviewsCount: 184,
-      image:
-        "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=1200&q=80",
+      image: getServiceImage("Split AC Deep Foam Jet Service & Gas Check", "ac-repair"),
     };
   }, [serviceByIdData, allServicesData, slug]);
 
@@ -254,9 +266,10 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
               <img
                 src={
                   service.image ||
-                  "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=1200&q=80"
+                  getServiceImage(service.title, service.category?.slug)
                 }
                 alt={service.title}
+                onError={handleImageError}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
