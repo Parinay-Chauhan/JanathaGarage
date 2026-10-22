@@ -38,6 +38,7 @@ import {
   getServiceImage,
   handleImageError,
   categoryFallbackImages,
+  compressImageUrl,
 } from "../lib/serviceImageMap";
 
 interface ServicesPageProps {
@@ -105,7 +106,7 @@ const fallbackCatalog: Service[] = [
     rating: 4.95,
     reviewsCount: 312,
     image:
-      "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=480&q=70&fm=webp",
   },
   {
     id: "srv-3",
@@ -184,7 +185,7 @@ const fallbackCatalog: Service[] = [
     rating: 4.94,
     reviewsCount: 189,
     image:
-      "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=480&q=70&fm=webp",
   },
   {
     id: "srv-9",
@@ -198,7 +199,7 @@ const fallbackCatalog: Service[] = [
     rating: 4.87,
     reviewsCount: 110,
     image:
-      "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=480&q=70&fm=webp",
   },
   {
     id: "srv-10",
@@ -299,7 +300,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 6;
+  const pageSize = 15;
 
   // Selected service for booking modal
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -484,15 +485,15 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
   }, [filteredServices, currentPage, pageSize]);
 
   return (
-    <div className="relative bg-[#F8F7F3] dark:bg-[#070605] text-[#252621] dark:text-[#F5F2EB] min-h-screen pb-24 transition-colors overflow-hidden">
+    <div className="relative bg-[#F8F7F3] dark:bg-[#070605] text-[#252621] dark:text-[#F5F2EB] min-h-screen pb-24 transition-colors">
       {/* Ambient Top Glow Mesh */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-[#FF771C]/15 via-[#FF771C]/5 to-transparent blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1560px] h-96 bg-gradient-to-b from-[#FF771C]/15 via-[#FF771C]/5 to-transparent blur-3xl pointer-events-none -z-10" />
 
       {/* ========================================================= */}
       {/* 01 BREADCRUMB & HERO HEADER SECTION                       */}
       {/* ========================================================= */}
       <div className="border-b border-[#E7E5DF] dark:border-[#221B16] bg-white/60 dark:bg-[#120F0D]/70 backdrop-blur-md relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        <div className="max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs font-medium text-[#717167] dark:text-[#9E9488]">
             <Link to="/" className="hover:text-[#FF771C] transition-colors">
@@ -577,7 +578,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
       </div>
 
       {/* Main Layout: Left Filters Sidebar + Right Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <div className="max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {/* Mobile Filter Toggle & Sort Header */}
         <div className="lg:hidden flex items-center justify-between pb-4 mb-4 border-b border-[#E7E5DF] dark:border-[#2B231D]">
           <Button
@@ -608,12 +609,12 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="flex flex-col lg:flex-row gap-5 lg:gap-6 items-start relative">
           {/* ========================================================= */}
-          {/* 02 LEFT FILTERS SIDEBAR (Desktop)                         */}
+          {/* 02 LEFT FILTERS SIDEBAR (Desktop) - STICKY                */}
           {/* ========================================================= */}
-          <aside className="hidden lg:block lg:col-span-3 space-y-6">
-            <div className="p-5 rounded-3xl bg-white/90 dark:bg-[#14100D]/90 backdrop-blur-xl border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.5)] space-y-6 sticky top-24">
+          <aside className="hidden lg:block w-56 xl:w-64 shrink-0 sticky top-20 self-start z-20">
+            <div className="p-4.5 sm:p-5 rounded-3xl bg-white/95 dark:bg-[#14100D]/95 backdrop-blur-xl border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.5)] space-y-5 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-thin">
               {/* Header & Reset */}
               <div className="flex items-center justify-between pb-4 border-b border-[#E7E5DF] dark:border-[#261E18]">
                 <div className="flex items-center gap-2.5">
@@ -690,7 +691,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                     {categoriesList.length}
                   </span>
                 </div>
-                <div className="space-y-1.5 max-h-[340px] overflow-y-auto pr-1 scrollbar-thin">
+                <div className="space-y-1.5 max-h-[260px] overflow-y-auto pr-1 scrollbar-thin">
                   {categoriesList.map((cat) => {
                     const isSelected = selectedCategory === cat.id;
                     const IconComp = getCategoryIcon(cat.id);
@@ -786,7 +787,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
           {/* ========================================================= */}
           {/* 03 RIGHT CONTENT: SERVICE CARDS GRID                      */}
           {/* ========================================================= */}
-          <main className="lg:col-span-9 space-y-6">
+          <main className="flex-1 min-w-0 space-y-6">
             {/* Top Toolbar: Active Filters & Sort */}
             <div className="p-4 rounded-3xl bg-white/90 dark:bg-[#14100D]/90 backdrop-blur-xl border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_4px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex flex-wrap items-center justify-between gap-4">
               {/* Active Filter Chips */}
@@ -898,80 +899,83 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               </div>
             ) : paginatedServices.length > 0 ? (
               /* Active Services Grid - Proportional 3-Column Grid */
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4.5 sm:gap-5">
                 {paginatedServices.map((service) => (
                   <div
                     key={service.id}
-                    className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#15110E] border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_4px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_16px_48px_rgba(255,119,28,0.16)] dark:hover:border-[#FF771C]/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                    className="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#15110E] border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_4px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_16px_48px_rgba(255,119,28,0.16)] dark:hover:border-[#FF771C]/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
                   >
                     {/* Ambient Glow behind card */}
                     <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-[#FF771C]/10 transition-colors" />
 
                     <div>
                       {/* Card Thumbnail Image with Floating Badges */}
-                      <div className="relative rounded-xl overflow-hidden aspect-[16/10] bg-[#1F1813] mb-3.5">
+                      <div className="relative rounded-xl overflow-hidden aspect-[16/9] bg-[#1F1813] mb-3">
                         <img
-                          src={
+                          src={compressImageUrl(
                             service.image ||
-                            getServiceImage(service.title, service.category?.slug)
-                          }
+                            getServiceImage(service.title, service.category?.slug),
+                            480,
+                            70
+                          )}
                           alt={service.title}
                           onError={handleImageError}
                           loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                         />
                         {/* Dark Vignette Overlay for Crisp Contrast */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 
                         {/* Top-Left Verified Badge */}
-                        <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-bold text-white flex items-center gap-1 shadow-sm">
-                          <Shield className="w-3 h-3 text-[#FF771C]" />
+                        <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[11px] font-bold text-white flex items-center gap-1.5 shadow-sm">
+                          <Shield className="w-3.5 h-3.5 text-[#FF771C]" />
                           <span>Verified Pro</span>
                         </div>
 
                         {/* Top-Right Glass Rating Pill */}
-                        <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-[11px] font-bold text-white flex items-center gap-1 shadow-sm">
-                          <Star className="w-3 h-3 fill-[#FF771C] text-[#FF771C]" />
+                        <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-xs font-bold text-white flex items-center gap-1 shadow-sm">
+                          <Star className="w-3.5 h-3.5 fill-[#FF771C] text-[#FF771C]" />
                           <span>{service.rating || 4.9}</span>
-                          <span className="text-white/60 font-medium text-[10px]">
+                          <span className="text-white/60 font-medium text-[11px]">
                             ({service.reviewsCount || 120})
                           </span>
                         </div>
 
                         {/* Bottom Floating Info Over Image */}
                         <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5">
-                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-white bg-[#FF771C] px-2.5 py-0.5 rounded-full shadow-sm truncate max-w-[55%]">
+                          <span className="text-[11px] font-extrabold uppercase tracking-wide text-white bg-[#FF771C] px-2.5 py-0.5 rounded-full shadow-sm truncate max-w-[72%]">
                             {tc(service.category?.name || "Service")}
                           </span>
-                          <div className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-[10px] text-white/90 font-semibold flex items-center gap-1 border border-white/10 shrink-0">
-                            <Clock className="w-3 h-3 text-[#FF771C]" />
+                          <div className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-[11px] text-white/90 font-semibold flex items-center gap-1 border border-white/10 shrink-0">
+                            <Clock className="w-3.5 h-3.5 text-[#FF771C]" />
                             <span>{service.durationMinutes || 45} {t("common.mins")}</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-base font-bold font-display text-[#252621] dark:text-[#F5F2EB] group-hover:text-[#FF771C] transition-colors leading-snug tracking-tight line-clamp-1">
+                      <h3 className="text-base sm:text-[17px] font-bold font-display text-[#252621] dark:text-[#F5F2EB] group-hover:text-[#FF771C] transition-colors leading-snug tracking-tight line-clamp-1">
                         {ts(service.title)}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-xs text-[#717167] dark:text-[#9E9488] mt-1 line-clamp-2 leading-relaxed">
+                      <p className="text-[13px] sm:text-[13.5px] text-[#717167] dark:text-[#9E9488] mt-1.5 line-clamp-2 leading-relaxed">
                         {service.description}
                       </p>
 
                       {/* Perks Check Row */}
-                      <div className="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-[#E7E5DF]/60 dark:border-[#261E18] text-[10.5px] font-semibold text-[#8F8F85]">
-                        <span className="flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <div className="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-[#E7E5DF]/60 dark:border-[#261E18] text-xs font-semibold text-[#8F8F85]">
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500" />
                           Doorstep
                         </span>
-                        <span className="flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#FF771C]" />
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-[#FF771C]" />
                           Warranty
                         </span>
-                        <span className="flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-blue-500" />
                           Genuine
                         </span>
                       </div>
@@ -980,11 +984,11 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                     {/* Card Footer: Price & Book CTA */}
                     <div className="pt-3.5 mt-3.5 border-t border-[#E7E5DF] dark:border-[#261E18] flex items-center justify-between gap-2">
                       <div>
-                        <span className="text-[9px] uppercase font-bold tracking-wider text-[#8F8F85] block">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-[#8F8F85] block">
                           {t("categories.starts")}
                         </span>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-xl font-mono font-black text-[#252621] dark:text-white">
+                          <span className="text-[22px] sm:text-2xl font-mono font-black text-[#252621] dark:text-white">
                             ₹{service.defaultPrice}
                           </span>
                         </div>
@@ -996,7 +1000,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                           setSelectedService(service);
                           setBookingModalOpen(true);
                         }}
-                        className="font-extrabold bg-gradient-to-r from-[#FF771C] to-[#E56814] hover:from-[#FF8433] hover:to-[#EB7220] text-white shadow-[0_3px_14px_rgba(255,119,28,0.35)] px-4 py-2 rounded-xl transition-all duration-300 group/btn flex items-center gap-1.5 text-xs"
+                        className="font-extrabold bg-gradient-to-r from-[#FF771C] to-[#E56814] hover:from-[#FF8433] hover:to-[#EB7220] text-white shadow-[0_3px_14px_rgba(255,119,28,0.35)] px-4 py-2 sm:px-4.5 sm:py-2.5 rounded-xl transition-all duration-300 group/btn flex items-center gap-1.5 text-xs sm:text-[13px]"
                       >
                         <span>{t("common.bookNow")}</span>
                         <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
@@ -1034,9 +1038,29 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
             {/* ========================================================= */}
             {filteredServices.length > pageSize && (
               <div className="p-4 rounded-3xl bg-white/90 dark:bg-[#14100D]/90 backdrop-blur-xl border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex items-center justify-between">
-                <p className="text-xs text-[#717167] dark:text-[#9E9488] font-medium">
-                  {t("servicesPage.showing")} <span className="font-bold text-[#252621] dark:text-[#F5F2EB]">{(currentPage - 1) * pageSize + 1} - {Math.min(currentPage * pageSize, filteredServices.length)}</span> {t("servicesPage.of")} <span className="font-bold text-[#252621] dark:text-[#F5F2EB]">{filteredServices.length}</span> {t("servicesPage.servicesCount")}
-                </p>
+                <div className="flex items-center gap-2 text-xs sm:text-sm font-medium text-[#717167] dark:text-[#A89E92]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF771C]" />
+                  {language === "hi" ? (
+                    <span>
+                      कुल <span className="font-bold text-[#252621] dark:text-[#F5F2EB]">{filteredServices.length}</span> सेवाओं में से{" "}
+                      <span className="font-bold text-[#FF771C]">
+                        {(currentPage - 1) * pageSize + 1} से {Math.min(currentPage * pageSize, filteredServices.length)}
+                      </span>
+                    </span>
+                  ) : (
+                    <span>
+                      Showing{" "}
+                      <span className="font-bold text-[#FF771C]">
+                        {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, filteredServices.length)}
+                      </span>{" "}
+                      of{" "}
+                      <span className="font-bold text-[#252621] dark:text-[#F5F2EB]">
+                        {filteredServices.length}
+                      </span>{" "}
+                      services
+                    </span>
+                  )}
+                </div>
 
                 <div className="flex items-center gap-1.5">
                   <button
