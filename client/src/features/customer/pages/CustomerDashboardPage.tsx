@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Calendar,
@@ -403,7 +403,7 @@ export const CustomerDashboardPage: React.FC = () => {
 
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-display tracking-tight text-[#252621] dark:text-white">
               Welcome back,{" "}
-              <span className="text-[#E87532]">
+              <span className="text-[#E87532] capitalize">
                 {user?.fullName?.split(" ")[0] || "Valued Customer"}
               </span>{" "}
               👋
@@ -1148,7 +1148,7 @@ export const CustomerDashboardPage: React.FC = () => {
             <HelpCircle className="w-3.5 h-3.5" />
             <span>24/7 Priority Support & Escrow Guarantee</span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold font-display">
+          <h3 className="text-xl sm:text-2xl font-bold font-display text-white">
             Need urgent assistance with a mechanic or billing?
           </h3>
           <p className="text-xs sm:text-sm text-stone-400">
