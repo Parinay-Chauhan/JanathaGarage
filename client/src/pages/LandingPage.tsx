@@ -111,7 +111,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹199",
       expertsCount: "42+ Pros",
       expertsCountHi: "42+ विशेषज्ञ",
-      accentColor: "text-amber-500 dark:text-amber-400 group-hover:border-amber-500/50 group-hover:shadow-[0_0_24px_rgba(245,158,11,0.25)]",
+      accentColor: "text-amber-500 dark:text-amber-400 group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
     },
     {
       id: "plumbing",
@@ -123,7 +123,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹149",
       expertsCount: "38+ Pros",
       expertsCountHi: "38+ विशेषज्ञ",
-      accentColor: "text-sky-500 dark:text-sky-400 group-hover:border-sky-500/50 group-hover:shadow-[0_0_24px_rgba(14,165,233,0.25)]",
+      accentColor: "text-sky-500 dark:text-sky-400 group-hover:drop-shadow-[0_0_12px_rgba(14,165,233,0.5)]",
     },
     {
       id: "ac-repair",
@@ -135,7 +135,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹499",
       expertsCount: "56+ Pros",
       expertsCountHi: "56+ विशेषज्ञ",
-      accentColor: "text-teal-500 dark:text-teal-400 group-hover:border-teal-500/50 group-hover:shadow-[0_0_24px_rgba(20,184,166,0.25)]",
+      accentColor: "text-teal-500 dark:text-teal-400 group-hover:drop-shadow-[0_0_12px_rgba(20,184,166,0.5)]",
     },
     {
       id: "appliance",
@@ -147,7 +147,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹249",
       expertsCount: "35+ Pros",
       expertsCountHi: "35+ विशेषज्ञ",
-      accentColor: "text-indigo-500 dark:text-indigo-400 group-hover:border-indigo-500/50 group-hover:shadow-[0_0_24px_rgba(99,102,241,0.25)]",
+      accentColor: "text-indigo-500 dark:text-indigo-400 group-hover:drop-shadow-[0_0_12px_rgba(99,102,241,0.5)]",
     },
     {
       id: "cleaning",
@@ -159,7 +159,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹399",
       expertsCount: "29+ Pros",
       expertsCountHi: "29+ विशेषज्ञ",
-      accentColor: "text-emerald-500 dark:text-emerald-400 group-hover:border-emerald-500/50 group-hover:shadow-[0_0_24px_rgba(16,185,129,0.25)]",
+      accentColor: "text-emerald-500 dark:text-emerald-400 group-hover:drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]",
     },
     {
       id: "mechanic",
@@ -171,7 +171,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹299",
       expertsCount: "64+ Pros",
       expertsCountHi: "64+ विशेषज्ञ",
-      accentColor: "text-[#E87532] dark:text-[#E87532] group-hover:border-[#E87532]/60 group-hover:shadow-[0_0_24px_rgba(232,117,50,0.25)]",
+      accentColor: "text-[#E87532] dark:text-[#E87532] group-hover:drop-shadow-[0_0_12px_rgba(232,117,50,0.5)]",
     },
     {
       id: "painting",
@@ -183,7 +183,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹499",
       expertsCount: "34+ Pros",
       expertsCountHi: "34+ विशेषज्ञ",
-      accentColor: "text-rose-500 dark:text-rose-400 group-hover:border-rose-500/50 group-hover:shadow-[0_0_24px_rgba(244,63,94,0.25)]",
+      accentColor: "text-rose-500 dark:text-rose-400 group-hover:drop-shadow-[0_0_12px_rgba(244,63,94,0.5)]",
     },
     {
       id: "carpentry",
@@ -195,7 +195,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹199",
       expertsCount: "48+ Pros",
       expertsCountHi: "48+ विशेषज्ञ",
-      accentColor: "text-yellow-600 dark:text-yellow-500 group-hover:border-yellow-600/50 group-hover:shadow-[0_0_24px_rgba(202,138,4,0.25)]",
+      accentColor: "text-yellow-600 dark:text-yellow-500 group-hover:drop-shadow-[0_0_12px_rgba(202,138,4,0.5)]",
     },
     {
       id: "cctv-security",
@@ -207,7 +207,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹499",
       expertsCount: "27+ Pros",
       expertsCountHi: "27+ विशेषज्ञ",
-      accentColor: "text-blue-500 dark:text-blue-400 group-hover:border-blue-500/50 group-hover:shadow-[0_0_24px_rgba(59,130,246,0.25)]",
+      accentColor: "text-blue-500 dark:text-blue-400 group-hover:drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]",
     },
     {
       id: "ro-water-purifier",
@@ -219,7 +219,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹299",
       expertsCount: "39+ Pros",
       expertsCountHi: "39+ विशेषज्ञ",
-      accentColor: "text-cyan-500 dark:text-cyan-400 group-hover:border-cyan-500/50 group-hover:shadow-[0_0_24px_rgba(6,182,212,0.25)]",
+      accentColor: "text-cyan-500 dark:text-cyan-400 group-hover:drop-shadow-[0_0_12px_rgba(6,182,212,0.5)]",
     },
     {
       id: "car-denting-painting",
@@ -231,7 +231,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹699",
       expertsCount: "52+ Pros",
       expertsCountHi: "52+ विशेषज्ञ",
-      accentColor: "text-violet-500 dark:text-violet-400 group-hover:border-violet-500/50 group-hover:shadow-[0_0_24px_rgba(139,92,246,0.25)]",
+      accentColor: "text-violet-500 dark:text-violet-400 group-hover:drop-shadow-[0_0_12px_rgba(139,92,246,0.5)]",
     },
     {
       id: "windshield-lights-care",
@@ -243,7 +243,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       startingPrice: "₹399",
       expertsCount: "31+ Pros",
       expertsCountHi: "31+ विशेषज्ञ",
-      accentColor: "text-emerald-600 dark:text-emerald-400 group-hover:border-emerald-600/50 group-hover:shadow-[0_0_24px_rgba(5,150,105,0.25)]",
+      accentColor: "text-emerald-600 dark:text-emerald-400 group-hover:drop-shadow-[0_0_12px_rgba(5,150,105,0.5)]",
     },
   ];
 
@@ -724,9 +724,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <div
-                        className={`w-13 h-13 p-2.5 rounded-2xl flex items-center justify-center border bg-[#F8F7F3] dark:bg-[#1A1613] border-[#E7E5DF] dark:border-[#2B231D] ${cat.accentColor} transition-all duration-300 group-hover:scale-105`}
+                        className={`w-12 h-12 flex items-center justify-center bg-transparent border-0 p-0 ${cat.accentColor} transition-all duration-300 group-hover:scale-110`}
                       >
-                        <Icon className="w-7 h-7" />
+                        <Icon className="w-8 h-8" />
                       </div>
                       <span className="text-xs font-bold font-mono text-[#E87532] bg-orange-50 dark:bg-[#1A1613] px-2.5 py-1 rounded-full border border-orange-200/50 dark:border-[#2B231D]">
                         {t("categories.starts")} {cat.startingPrice}
@@ -979,7 +979,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
 
                 {/* Avatar / Name */}
                 <div className="flex items-start gap-3.5 mt-2 mb-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#E87532]/25 to-[#E87532]/5 text-[#E87532] font-black text-base flex items-center justify-center border border-[#E87532]/40 shrink-0 shadow-sm mt-0.5">
+                  <div className="w-10 h-10 flex items-center justify-center bg-transparent border-0 text-[#E87532] dark:text-[#FF7A1A] font-black text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
                     {tech.user?.fullName?.charAt(0) || "T"}
                   </div>
                   <div className="min-w-0">
