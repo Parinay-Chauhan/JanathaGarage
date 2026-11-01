@@ -4,7 +4,7 @@ import type { RootState } from "../app/store";
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/v1",
+    baseUrl: import.meta.env.VITE_API_BASE_URL || "/api/v1",
     credentials: "include", // Send and receive cookies automatically
     prepareHeaders: (headers, { getState }) => {
       // Pull access token from Redux auth slice or fallback to localStorage
