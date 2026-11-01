@@ -6,7 +6,21 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "*",
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const allowedOrigins = [
+        process.env.CORS_ORIGIN,
+        "https://janatha-garage-o4y9.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
+      ].filter(Boolean);
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".vercel.app") ||
+        process.env.CORS_ORIGIN === "*";
+      if (isAllowed) return callback(null, origin);
+      return callback(new Error(`Blocked by CORS: ${origin}`));
+    },
     credentials: true,
   })
 );
