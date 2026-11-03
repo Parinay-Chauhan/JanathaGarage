@@ -611,75 +611,52 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
             </div>
           </div>
 
-          {/* Right Column: Hero Visual & Floating Cards (HandyHub Blueprint) */}
+          {/* Right Column: Hero Visual & Floating Cards (Editorial Reference Layout) */}
           <div className="lg:col-span-5 relative lg:pl-4 xl:pl-8">
             <div className="hero-anim relative mx-auto max-w-md lg:max-w-none">
-              {/* Main Visual Frame */}
-              <div className="relative rounded-3xl overflow-hidden bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-premium aspect-[4/4.5] flex flex-col justify-end p-6 pb-9 sm:pb-10">
-                {/* Background Authentic Service Collage / Visual Banner */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#252621]/90 via-[#252621]/30 to-transparent z-10" />
+              {/* Main Visual Frame (Clean, bright, luxury studio frame - matching reference) */}
+              <div className="relative rounded-[2.5rem] overflow-hidden bg-[#FAF8F5] dark:bg-[#151311] border border-[#E7E5DF] dark:border-[#2B231D] shadow-2xl aspect-[4/5] flex items-center justify-center group">
                 <img
                   src="/images/hero_technician.jpg"
-                  alt="Modern verified technician with diagnostic tools"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src =
-                      "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1200&q=80";
-                  }}
-                  className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                  alt="Certified JantaGaraj diagnostic technician"
+                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
                 />
-
-                {/* Content on Bottom of Card */}
-                <div className="relative z-20 text-white space-y-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E87532] text-white text-[11px] font-bold uppercase tracking-wider">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    {t("techs.verifiedPro")}
-                  </span>
-                  <h3 className="text-2xl font-bold font-display text-white">
-                    {t("hero.directDoorstep")}
-                  </h3>
-                  <p className="text-xs text-stone-200 line-clamp-2">
-                    {t("hero.directDesc")}
-                  </p>
-                </div>
               </div>
 
-              {/* Floating HandyHub Style Service Card (Top-Right) */}
-              <div className="absolute -top-7 sm:-top-9 -right-6 sm:-right-8 lg:-right-9 p-4 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-premium z-30 max-w-[210px] hidden sm:block animate-in fade-in duration-500">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-xl bg-orange-50 dark:bg-orange-950/60 text-[#E87532] flex items-center justify-center font-bold text-xs">
-                    <Wrench className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">{t("hero.emergencyRepair")}</p>
-                    <p className="text-[10px] text-[#717167] dark:text-[#9E9488]">{t("hero.instantDispatch")}</p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between text-[11px] font-semibold border-t border-[#E7E5DF] dark:border-[#2B231D] pt-2">
-                  <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                    {t("hero.availableNow")}
-                  </span>
-                  <span className="font-mono font-bold text-[#E87532]">
-                    {language === "hi" ? "₹299 से" : "From ₹299"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Floating Bottom Card: Rating & Reliability */}
-              <div className="absolute -bottom-8 -left-5 sm:-bottom-10 sm:-left-8 lg:-bottom-10 lg:-left-8 p-3.5 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-premium z-30 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center font-bold">
-                  <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+              {/* Floating Badge 1: Top-Right (Rating & Reviews - matching reference) */}
+              <div className="absolute -top-5 sm:-top-7 -right-3 sm:-right-6 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-3 animate-in fade-in duration-500">
+                <div className="w-9 h-9 rounded-full bg-[#252621] dark:bg-black text-amber-400 flex items-center justify-center shrink-0">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-bold text-[#252621] dark:text-[#F5F2EB]">4.95 / 5.0</span>
-                    <BadgeCheck className="w-4 h-4 text-[#E87532]" />
+                  <div className="text-sm font-extrabold text-[#252621] dark:text-[#F5F2EB] leading-tight">
+                    4.9 / 5.0
                   </div>
                   <p className="text-[10px] text-[#717167] dark:text-[#9E9488]">
-                    {t("hero.reviewsCount")}
+                    15K+ Verified Reviews
                   </p>
                 </div>
+              </div>
+
+              {/* Floating Badge 2: Mid-Left (Featured Expert - matching reference) */}
+              <div className="absolute top-[48%] -translate-y-1/2 -left-4 sm:-left-7 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#E87532] shrink-0" />
+                <div>
+                  <p className="text-[9px] font-bold uppercase tracking-wider text-[#717167] dark:text-[#9E9488]">
+                    {language === "hi" ? "शीर्ष विशेषज्ञ" : "FEATURED EXPERT"}
+                  </p>
+                  <p className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
+                    {language === "hi" ? "मास्टर ऑटो व होम प्रो" : "Master Diagnostics Pro"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Floating Badge 3: Bottom-Left (100% Verified - matching reference) */}
+              <div className="absolute -bottom-4 sm:-bottom-5 left-4 sm:left-8 px-4 py-2 rounded-full bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                <span className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
+                  {language === "hi" ? "100% सत्यापित व प्रशिक्षित मैकेनिक" : "100% Verified & Certified Pros"}
+                </span>
               </div>
             </div>
           </div>
