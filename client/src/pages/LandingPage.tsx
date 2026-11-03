@@ -614,17 +614,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           {/* Right Column: Hero Visual & Floating Cards (Editorial Reference Layout) */}
           <div className="lg:col-span-5 relative lg:pl-4 xl:pl-8">
             <div className="hero-anim relative mx-auto max-w-md lg:max-w-none">
-              {/* Main Visual Frame (Clean, bright, luxury studio frame - matching reference) */}
-              <div className="relative rounded-[2.5rem] overflow-hidden bg-[#FAF8F5] dark:bg-[#151311] border border-[#E7E5DF] dark:border-[#2B231D] shadow-2xl aspect-[4/5] flex items-center justify-center group">
-                <img
-                  src="/images/hero_technician.jpg"
-                  alt="Certified JantaGaraj diagnostic technician"
-                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
-                />
-              </div>
+              {/* Soft ambient atmospheric glow behind the cutout */}
+              <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-orange-500/10 dark:bg-orange-500/15 blur-3xl -z-10 pointer-events-none" />
+
+              {/* Direct Transparent Cutout (NO CARD, NO BORDER, NO BOX) */}
+              <img
+                src="/images/hero_technician.png"
+                alt="Certified JantaGaraj diagnostic technician"
+                className="w-full max-h-[520px] sm:max-h-[580px] object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_25px_45px_rgba(0,0,0,0.7)] transition-transform duration-700 hover:scale-[1.02]"
+              />
 
               {/* Floating Badge 1: Top-Right (Rating & Reviews - matching reference) */}
-              <div className="absolute -top-5 sm:-top-7 -right-3 sm:-right-6 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-3 animate-in fade-in duration-500">
+              <div className="absolute top-4 sm:top-6 -right-2 sm:-right-4 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-3 animate-in fade-in duration-500">
                 <div className="w-9 h-9 rounded-full bg-[#252621] dark:bg-black text-amber-400 flex items-center justify-center shrink-0">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                 </div>
@@ -639,7 +640,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </div>
 
               {/* Floating Badge 2: Mid-Left (Featured Expert - matching reference) */}
-              <div className="absolute top-[48%] -translate-y-1/2 -left-4 sm:-left-7 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2.5">
+              <div className="absolute top-[48%] -translate-y-1/2 -left-2 sm:-left-6 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#E87532] shrink-0" />
                 <div>
                   <p className="text-[9px] font-bold uppercase tracking-wider text-[#717167] dark:text-[#9E9488]">
@@ -652,7 +653,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </div>
 
               {/* Floating Badge 3: Bottom-Left (100% Verified - matching reference) */}
-              <div className="absolute -bottom-4 sm:-bottom-5 left-4 sm:left-8 px-4 py-2 rounded-full bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2">
+              <div className="absolute bottom-6 sm:bottom-8 left-2 sm:left-4 px-4 py-2 rounded-full bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                 <span className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
                   {language === "hi" ? "100% सत्यापित व प्रशिक्षित मैकेनिक" : "100% Verified & Certified Pros"}
