@@ -621,11 +621,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               <img
                 src="/images/hero_technician.png"
                 alt="Certified JantaGaraj diagnostic technician"
-                className="w-full max-h-[520px] sm:max-h-[580px] object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_25px_45px_rgba(0,0,0,0.7)] transition-transform duration-700 hover:scale-[1.02]"
+                className="w-full max-h-[560px] sm:max-h-[640px] object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_25px_45px_rgba(0,0,0,0.7)] transition-transform duration-700 hover:scale-[1.02]"
               />
 
               {/* Floating Badge 1: Top-Right (Rating & Reviews - matching reference) */}
-              <div className="absolute top-4 sm:top-6 -right-2 sm:-right-4 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-3 animate-in fade-in duration-500">
+              <div className="absolute top-10 sm:top-14 -right-2 sm:-right-4 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-3 animate-in fade-in duration-500">
                 <div className="w-9 h-9 rounded-full bg-[#252621] dark:bg-black text-amber-400 flex items-center justify-center shrink-0">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                 </div>
@@ -653,7 +653,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </div>
 
               {/* Floating Badge 3: Bottom-Left (100% Verified - matching reference) */}
-              <div className="absolute bottom-6 sm:bottom-8 left-2 sm:left-4 px-4 py-2 rounded-full bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2">
+              <div className="absolute bottom-8 sm:bottom-12 left-1 sm:left-3 px-4 py-2 rounded-full bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                 <span className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
                   {language === "hi" ? "100% सत्यापित व प्रशिक्षित मैकेनिक" : "100% Verified & Certified Pros"}
