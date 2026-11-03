@@ -35,7 +35,7 @@ app.use(cookieParser());
 // ----------- import routes ----------
 
 import userRoutes from "./routes/user.routes.js";
-import categoryRouter  from "./routes/category.routes.js";
+import categoryRouter from "./routes/category.routes.js";
 import serviceRouter from "./routes/service.routes.js";
 import technicianRouter from "./routes/technician.routes.js"
 import bookingRouter from "./routes/booking.routes.js"
