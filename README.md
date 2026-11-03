@@ -1,254 +1,286 @@
-<div align="center">
-
 # 🚗 JantaGaraj (जनता गैराज)
-### *On-Demand Automotive & Home Care Marketplace Platform*
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://janatha-garage-o4y9.vercel.app/)
-[![API Status](https://img.shields.io/badge/Backend_API-Render-46E3B7?style=for-the-badge&logo=render)](https://janathagarage-2puu.onrender.com/health)
-[![Swagger Docs](https://img.shields.io/badge/API_Docs-Swagger-85EA2D?style=for-the-badge&logo=swagger)](https://janathagarage-2puu.onrender.com/docs)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+> **On-Demand Automotive & Home Care Marketplace Platform**  
+> Connecting vehicle owners and households with verified local mechanics, electricians, and technicians in real-time.
 
-<p align="center">
-  <b>A production-ready full-stack marketplace connecting vehicle owners and households with verified local mechanics, electricians, and technicians in real-time. Featuring doorstep arrival in under 30 minutes, transparent upfront pricing, bilingual Hindi/English localization, and complete technician lifecycle management.</b>
-</p>
+<br />
 
-[Explore Live Web App](https://janatha-garage-o4y9.vercel.app/) • [Interactive API Docs](https://janathagarage-2puu.onrender.com/docs) • [API Health Status](https://janathagarage-2puu.onrender.com/health) • [Report Bug](https://github.com/Parinay-Chauhan/JanathaGarage/issues)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel)](https://janatha-garage-o4y9.vercel.app/)
+[![API Status](https://img.shields.io/badge/API_Status-Online-46E3B7?style=for-the-badge&logo=render)](https://janathagarage-2puu.onrender.com/health)
+[![Swagger Docs](https://img.shields.io/badge/Swagger-Docs-85EA2D?style=for-the-badge&logo=swagger)](https://janathagarage-2puu.onrender.com/docs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](./LICENSE)
 
----
-
-</div>
-
-## 📌 Table of Contents
-
-- [Overview](#-overview)
-- [System Architecture](#-system-architecture)
-- [Key Features](#-key-features)
-- [Tech Stack](#-tech-stack)
-- [Live Deployments](#-live-deployments)
-- [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Backend Setup](#1-backend-setup)
-  - [Frontend Setup](#2-frontend-setup)
-- [Environment Variables](#-environment-variables)
-- [API Reference](#-api-reference)
-- [Uptime & Health Monitoring](#-uptime--health-monitoring)
-- [Deployment Guide](#-deployment-guide)
-- [Contributing](#-contributing)
-- [License](#-license)
+<br />
 
 ---
 
-## 🌟 Overview
+## 📖 Overview
 
-**JantaGaraj** addresses the fragmented roadside breakdown and home service market across urban and suburban India. By combining an intuitive React frontend with an Express/Prisma-powered backend and Supabase PostgreSQL, the platform bridges the gap between vehicle/home owners in urgent need of assistance and skilled, KYC-verified trade professionals.
+**JantaGaraj** is a full-stack, production-ready on-demand service marketplace designed to solve sudden vehicle breakdowns and domestic maintenance issues.
 
-### 💡 Core Problems Solved
-- 🚫 **Unpredictable Pricing:** No hidden charges; clear upfront rate cards with verified base visiting fees.
-- ⏳ **Breakdown Waiting Times:** Direct geolocation triage with a 30-minute rapid response target.
-- 🛡️ **Lack of Trust & Safety:** Multi-tier technician verification (`SUBMITTED` ➔ `UNDER_REVIEW` ➔ `VERIFIED` ➔ `REJECTED`) with government ID audit trails.
-- 🌐 **Language Accessibility:** Fully localized English (EN) and Hindi (हिंदी) experience across all workflows.
+In most Indian cities and highways, finding a dependable mechanic or electrician during emergencies is stressful due to arbitrary pricing, long waiting times, and unverified credentials. JantaGaraj bridges this gap by offering:
 
----
+- **Transparent Pricing:** Fixed rate cards with zero hidden charges.
+- **Rapid Response:** 30-minute target doorstep arrival via geolocation triage.
+- **Verified Professionals:** Mandatory KYC verification (Aadhaar / Driving License / PAN).
+- **Inclusive Accessibility:** Fully localized bilingual interface supporting both English and Hindi.
 
-## 🏗️ System Architecture
-
-```mermaid
-flowchart TD
-    subgraph Client ["Client (Vercel)"]
-        UI["React 18 + Vite SPA"]
-        Redux["Redux Toolkit (RTK Query)"]
-        I18n["Bilingual Context (HI / EN)"]
-        GPS["Location & Geolocation Context"]
-        UI --> Redux
-        UI --> I18n
-        UI --> GPS
-    end
-
-    subgraph Monitoring ["Uptime & Keep-Alive"]
-        UR["UptimeRobot (5-Min Ping)"]
-    end
-
-    subgraph Server ["Server (Render)"]
-        Express["Express 5.x App"]
-        CORS["Smart Dynamic Origin CORS"]
-        AuthMid["JWT & Role Authorization"]
-        Swagger["Swagger UI (/docs)"]
-        HealthRoute["Health Routes (/, /health, /ping)"]
-        
-        Express --> CORS
-        Express --> AuthMid
-        Express --> Swagger
-        Express --> HealthRoute
-    end
-
-    subgraph Database ["Persistence Layer"]
-        Prisma["Prisma ORM 5.x"]
-        Supabase[("PostgreSQL (Supabase Pooler)")]
-        Prisma --> Supabase
-    end
-
-    Redux -->|"Secure Cookie Credentials (REST API)"| Express
-    UR -->|"Keep-Alive Pings"| HealthRoute
-    Express -->|"Data Mapping & Mutations"| Prisma
-```
+<br />
 
 ---
 
-## ⚡ Key Features
+## ✨ Features
 
-### 1. 🔍 Instant Service Catalog & Discovery
-- High-performance, debounced catalog search across automotive repairs, AC maintenance, plumbing, electrical triage, and appliance services.
-- Real-time GPS location detection with manual Indian city/pincode selector.
-- Rich trade blueprints with verified starting prices and estimated completion durations.
+- **⚡ Rapid Doorstep Assistance:** Immediate technician dispatch for vehicle breakdowns, battery jumpstarts, and home electrical or plumbing faults.
+- **📍 Smart Geolocation & City Search:** Auto-detects user coordinates via browser GPS or allows manual city/area selection.
+- **🔄 Deterministic Booking Lifecycle:** State-machine tracking every stage:
+  $$\text{PENDING} \longrightarrow \text{ACCEPTED} \longrightarrow \text{EN\_ROUTE} \longrightarrow \text{ARRIVED} \longrightarrow \text{IN\_PROGRESS} \longrightarrow \text{COMPLETED}$$
+- **👨‍🔧 Technician Radar & KYC System:** Technicians manage live availability (`isOnline`, `isAvailable`), service radius, and upload identity proofs for review.
+- **🛡️ Role-Based Access Control:** Distinct roles and portals for `CUSTOMER`, `TECHNICIAN`, and `ADMIN`.
+- **🇮🇳 Bilingual Localization:** Real-time toggle between **English** and **Hindi (हिंदी)** across the entire catalog and UI.
+- **📖 Interactive Swagger Documentation:** Live OpenAPI interactive documentation available at `/docs`.
+- **⏱️ 24/7 Keep-Alive Health Monitoring:** Dedicated endpoints (`/`, `/health`, `/ping`) configured for UptimeRobot to eliminate cold starts.
 
-### 2. 📋 State-Machine Driven Booking Lifecycle
-Deterministic booking state engine tracking every phase of the service request:
-$$\text{PENDING} \longrightarrow \text{ACCEPTED} \longrightarrow \text{EN\_ROUTE} \longrightarrow \text{ARRIVED} \longrightarrow \text{IN\_PROGRESS} \longrightarrow \text{COMPLETED}$$
-
-### 3. 👨‍🔧 Technician Radar & KYC Verification
-- Real-time technician availability toggle (`isOnline`, `isAvailable`).
-- Configurable service radius in kilometers (`serviceRadiusKm`).
-- Admin verification desk for reviewing Aadhaar/PAN/Driving License credentials.
-
-### 4. 🇮🇳 Bilingual Localization
-- Complete Hindi (हिंदी) and English (EN) localization powered by `LanguageContext`.
-- Context-aware trade vocabulary, error messages, and customer testimonials.
-
-### 5. 📖 Interactive Swagger API Documentation
-- Live interactive Swagger documentation served directly from `/docs`.
-- Try-it-out testing console for every endpoint with request schemas and status codes.
-
-### 6. ⏱️ 24/7 Keep-Alive & Health Monitoring
-- Dedicated health check endpoints (`/`, `/health`, `/ping`, `/api/v1/health`) designed for zero-downtime monitoring via UptimeRobot.
-- Prevents free-tier container sleep while minimizing database connection overhead.
+<br />
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework:** [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- **Bundler:** [Vite 5](https://vitejs.dev/)
-- **State Management:** [Redux Toolkit](https://redux-toolkit.js.org/) + RTK Query
-- **Styling:** [Tailwind CSS 3](https://tailwindcss.com/)
-- **Animations:** [GSAP 3](https://gsap.com/) + `@gsap/react`
-- **Form Validation:** [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
-- **Icons:** [Lucide React](https://lucide.dev/)
+
+| Technology | Purpose |
+| :--- | :--- |
+| **React 18** | UI component architecture |
+| **TypeScript** | Type safety and reliable contracts |
+| **Vite 5** | High-speed frontend tooling and bundler |
+| **Tailwind CSS 3** | Responsive utility-first styling |
+| **Redux Toolkit (RTK Query)** | Global state management and API caching |
+| **GSAP 3** | Smooth landing animations and micro-interactions |
+| **React Hook Form + Zod** | Form validation and schema checks |
+| **Lucide React** | Modern minimalist icon library |
+
+<br />
 
 ### Backend
-- **Runtime:** [Node.js](https://nodejs.org/) (ES Modules)
-- **Framework:** [Express 5](https://expressjs.com/)
-- **Database & ORM:** [Prisma ORM 5](https://www.prisma.io/) + [PostgreSQL](https://www.postgresql.org/) ([Supabase](https://supabase.com/))
-- **Authentication:** Dual Token JWT (`accessToken`, `refreshToken`) + HTTP-Only secure cookies
-- **API Documentation:** [Swagger UI Express](https://swagger.io/) + `swagger-jsdoc`
-- **Security:** CORS dynamic reflection, cookie-parser, bcrypt password hashing
+
+| Technology | Purpose |
+| :--- | :--- |
+| **Node.js (ES Modules)** | JavaScript server runtime |
+| **Express 5** | RESTful routing and middleware engine |
+| **Prisma ORM 5** | Next-generation database ORM and type generation |
+| **PostgreSQL (Supabase)** | Cloud relational database with connection pooling |
+| **JWT + HTTP-Only Cookies** | Secure stateless authentication with dual tokens |
+| **Swagger UI Express** | Interactive OpenAPI documentation |
+| **Bcrypt** | Strong password hashing |
+
+<br />
+
+### Infrastructure & Deployment
+
+- **Frontend:** [Vercel](https://janatha-garage-o4y9.vercel.app/)
+- **Backend:** [Render](https://janathagarage-2puu.onrender.com)
+- **Database:** [Supabase](https://supabase.com/)
+- **Uptime Monitoring:** [UptimeRobot](https://uptimerobot.com/)
+
+<br />
 
 ---
 
-## 🚀 Live Deployments
+## 📸 Screenshots
 
-| Service | Platform | URL |
-| :--- | :--- | :--- |
-| **Frontend Web App** | Vercel | [janatha-garage-o4y9.vercel.app](https://janatha-garage-o4y9.vercel.app/) |
-| **Backend API Server** | Render | [janathagarage-2puu.onrender.com](https://janathagarage-2puu.onrender.com) |
-| **Interactive API Docs** | Swagger | [janathagarage-2puu.onrender.com/docs](https://janathagarage-2puu.onrender.com/docs) |
-| **Uptime Health Check** | Render | [janathagarage-2puu.onrender.com/health](https://janathagarage-2puu.onrender.com/health) |
+| Hero & Service Discovery | Live Technician Network |
+| :---: | :---: |
+| <img src="client/public/images/hero_technician.jpg" alt="JantaGaraj Hero" width="460" /> | <img src="client/public/images/hero_technician_compressed.jpg" alt="Technician Network" width="460" /> |
+| *Doorstep auto & appliance service booking* | *KYC-verified mechanics and technicians* |
+
+<br />
 
 ---
 
-## 📁 Project Structure
+## 📁 Folder Structure
 
 ```text
 JantaGaraj/
-├── client/                     # Frontend Vite + React Application
-│   ├── public/                 # Static assets, logos, and images
+│
+├── client/                     # Frontend Application (React + Vite + TypeScript)
+│   ├── public/                 # Static assets, icons, and hero visuals
+│   │   └── images/             # Visual images and brand assets
 │   ├── src/
-│   │   ├── api/                # Base API and Axios/Fetch configurations
-│   │   ├── components/         # Reusable UI primitives, headers, modals
+│   │   ├── api/                # Base API and HTTP client configuration
+│   │   ├── components/         # Reusable UI primitives, headers, and modals
 │   │   ├── context/            # Language (EN/HI) and Location providers
-│   │   ├── features/           # Slices & RTK Query APIs (auth, bookings, services)
-│   │   ├── lib/                # GSAP animation helpers and utilities
-│   │   ├── locales/            # Translation dictionary (English / Hindi)
+│   │   ├── features/           # RTK Query slices (auth, bookings, services, technicians)
+│   │   ├── lib/                # GSAP animation utilities
+│   │   ├── locales/            # English and Hindi translation dictionaries
 │   │   ├── pages/              # LandingPage, ServicesPage, TechniciansPage
-│   │   └── types/              # TypeScript interfaces and API response contracts
+│   │   └── types/              # TypeScript contracts and API schemas
 │   ├── package.json
-│   ├── vercel.json             # Vercel SPA routing rules & proxy config
+│   ├── vercel.json             # Vercel deployment configuration & SPA rewrites
 │   └── vite.config.ts
 │
-├── server/                     # Backend Express.js Server
+├── server/                     # Backend Application (Node.js + Express + Prisma)
 │   ├── prisma/
-│   │   └── schema.prisma       # PostgreSQL models (Users, Bookings, Technicians)
+│   │   └── schema.prisma       # PostgreSQL schema models & enums
 │   ├── src/
-│   │   ├── controllers/        # Business logic controllers
-│   │   ├── db/                 # Prisma client instance & DB connectors
-│   │   ├── middleware/         # Auth, Error Handling, and Role guards
-│   │   ├── routes/             # Express API routes
-│   │   │   ├── healthcheck.routes.js # UptimeRobot & health endpoints
-│   │   │   └── ...
+│   │   ├── controllers/        # Request handlers and business logic
+│   │   ├── db/                 # Prisma client instance & DB connector
+│   │   ├── middleware/         # Auth, Error handling, and validation middlewares
+│   │   ├── routes/             # REST endpoints (auth, bookings, services, health)
 │   │   ├── utils/              # ApiResponse, ApiError, AsyncHandler, Swagger
-│   │   ├── app.js              # Express app initialization, CORS, middlewares
-│   │   └── index.js            # Server entrypoint and port listener
+│   │   ├── app.js              # Express app setup, CORS, and route registration
+│   │   └── index.js            # Server entry point
 │   └── package.json
 │
 ├── LICENSE                     # MIT License
 └── README.md                   # Project documentation
 ```
 
+<br />
+
 ---
 
-## 💻 Getting Started
+## 💻 Installation
+
+Follow these steps to run both the **Backend** and **Frontend** services on your local development machine.
+
+<br />
 
 ### Prerequisites
-- **Node.js** >= `v18.x`
-- **npm** >= `v9.x`
-- **PostgreSQL Database** (e.g. [Supabase](https://supabase.com/), Neon, or local PostgreSQL instance)
+
+Ensure you have the following installed:
+
+- **Node.js**: `v18.x` or higher
+- **npm**: `v9.x` or higher
+- **PostgreSQL**: A local instance or a free cloud database like [Supabase](https://supabase.com/)
+
+<br />
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Parinay-Chauhan/JanathaGarage.git
+
+cd JanathaGarage
+```
+
+<br />
 
 ---
 
-### 1. Backend Setup
+### 2. Backend Setup & Run
+
+Open a terminal window and follow these steps to configure and run the backend server:
+
+<br />
+
+**Step 2.1: Navigate to server directory**
 
 ```bash
-# Navigate to server directory
 cd server
+```
 
-# Install dependencies
+<br />
+
+**Step 2.2: Install backend dependencies**
+
+```bash
 npm install
+```
 
-# Configure environment variables
+<br />
+
+**Step 2.3: Configure environment variables**
+
+Create a `.env` file inside the `server/` folder:
+
+```bash
 cp .env.example .env
-# Fill in your POSTGRES_URI, DIRECT_URL, and JWT secrets in .env
+```
 
-# Generate Prisma Client & Sync Database
+*(Edit `.env` and fill in your PostgreSQL URI and JWT secrets. See the [Environment Variables](#-environment-variables) section below).*
+
+<br />
+
+**Step 2.4: Sync database schema with Prisma**
+
+```bash
 npx prisma generate
-npx prisma db push
 
-# Start development server
+npx prisma db push
+```
+
+<br />
+
+**Step 2.5: Start the backend development server**
+
+```bash
 npm run dev
 ```
 
-The server will run on `http://localhost:8000` with Swagger Docs at `http://localhost:8000/docs`.
+<br />
+
+The backend will start on:
+
+- **Server URL:** `http://localhost:8000`
+- **Swagger Docs:** `http://localhost:8000/docs`
+- **Health Check:** `http://localhost:8000/health`
+
+<br />
 
 ---
 
-### 2. Frontend Setup
+### 3. Frontend Setup & Run
+
+Open a **separate terminal window** and follow these steps to run the client web application:
+
+<br />
+
+**Step 3.1: Navigate to client directory**
 
 ```bash
-# Navigate to client directory
-cd ../client
+cd client
+```
 
-# Install dependencies
+<br />
+
+**Step 3.2: Install frontend dependencies**
+
+```bash
 npm install
+```
 
-# Configure environment variables
+<br />
+
+**Step 3.3: Configure environment variables**
+
+Create a `.env` file inside the `client/` folder:
+
+```bash
 cp .env.example .env
-# Set VITE_API_URL=http://localhost:8000/api/v1 (or your production Render URL)
+```
 
-# Start Vite development server
+Set the backend API endpoint:
+
+```ini
+VITE_API_URL=http://localhost:8000/api/v1
+```
+
+<br />
+
+**Step 3.4: Start the Vite frontend server**
+
+```bash
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+<br />
+
+The frontend will start on:
+
+- **Client Web App:** `http://localhost:5173`
+
+<br />
 
 ---
 
@@ -260,111 +292,98 @@ Open `http://localhost:5173` in your browser.
 PORT=8000
 NODE_ENV=development
 
-# Database URIs (Supabase PostgreSQL)
+# PostgreSQL Connection (Supabase Transaction & Session pooler)
 POSTGRES_URI="postgresql://postgres:[PASSWORD]@[HOST]:6543/postgres?pgbouncer=true"
 DIRECT_URL="postgresql://postgres:[PASSWORD]@[HOST]:5432/postgres"
 
 # Authentication Secrets
-ACCESS_TOKEN_SECRET="your_access_token_secret_min_32_chars"
+ACCESS_TOKEN_SECRET="your_jwt_access_token_secret_min_32_characters"
 ACCESS_TOKEN_EXPIRY="1d"
-REFRESH_TOKEN_SECRET="your_refresh_token_secret_min_32_chars"
+REFRESH_TOKEN_SECRET="your_jwt_refresh_token_secret_min_32_characters"
 REFRESH_TOKEN_EXPIRY="10d"
 
-# CORS Configuration
+# CORS Allowed Origin
 CORS_ORIGIN="http://localhost:5173"
 ```
+
+<br />
 
 ### Frontend (`client/.env`)
 
 ```ini
-# Production Render backend or local server
-VITE_API_URL="https://janathagarage-2puu.onrender.com/api/v1"
+# Backend API Base URL
+VITE_API_URL="http://localhost:8000/api/v1"
 
-# Firebase Client Configuration (Optional)
+# Firebase Client Credentials (Optional)
 VITE_FIREBASE_API_KEY="your_firebase_api_key"
-VITE_FIREBASE_AUTH_DOMAIN="your_project.firebaseapp.com"
-VITE_FIREBASE_PROJECT_ID="your_project_id"
+VITE_FIREBASE_AUTH_DOMAIN="your_firebase_auth_domain"
+VITE_FIREBASE_PROJECT_ID="your_firebase_project_id"
 ```
+
+<br />
 
 ---
 
-## 📡 API Reference
+## 📡 API Documentation
 
-A brief summary of primary API routes. For complete request/response schemas, visit the live [Swagger UI Documentation](https://janathagarage-2puu.onrender.com/docs).
+Interactive API documentation is generated via Swagger and can be accessed directly in your browser:
+
+- **Local Docs:** `http://localhost:8000/docs`
+- **Live Production Docs:** [https://janathagarage-2puu.onrender.com/docs](https://janathagarage-2puu.onrender.com/docs)
+
+<br />
+
+### Key Endpoints Summary
 
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/` | Root keep-alive ping | ❌ None |
-| `GET` | `/health` | System health, uptime & status | ❌ None |
-| `GET` | `/docs` | Interactive Swagger API Docs | ❌ None |
-| `POST` | `/api/v1/users/register` | Register new customer or technician | ❌ None |
-| `POST` | `/api/v1/users/login` | Login and issue HTTP-only cookies | ❌ None |
-| `POST` | `/api/v1/users/logout` | Clear auth cookies | ✅ Yes |
-| `GET` | `/api/v1/services` | Retrieve all active services | ❌ None |
-| `GET` | `/api/v1/categories` | List service trade categories | ❌ None |
-| `GET` | `/api/v1/technicians` | Search & filter verified technicians | ❌ None |
+| `GET` | `/` | Root keep-alive ping | ❌ Public |
+| `GET` | `/health` | UptimeRobot health check | ❌ Public |
+| `GET` | `/docs` | Interactive Swagger UI | ❌ Public |
+| `POST` | `/api/v1/users/register` | Register new user account | ❌ Public |
+| `POST` | `/api/v1/users/login` | Authenticate and issue HTTP cookies | ❌ Public |
+| `POST` | `/api/v1/users/logout` | Clear authentication session | ✅ Authenticated |
+| `GET` | `/api/v1/services` | Retrieve list of repair services | ❌ Public |
+| `GET` | `/api/v1/categories` | Retrieve trade categories | ❌ Public |
+| `GET` | `/api/v1/technicians` | Search verified mechanics | ❌ Public |
 | `POST` | `/api/v1/bookings` | Create new doorstep service booking | ✅ Customer |
-| `PATCH` | `/api/v1/bookings/:id/status`| Transition booking state | ✅ Technician / Admin |
+| `PATCH`| `/api/v1/bookings/:id/status` | Update booking status lifecycle | ✅ Technician / Admin |
 | `GET` | `/api/v1/admin/kyc-pending` | Review pending technician KYC requests | 🛡️ Admin |
 
----
-
-## 🤖 Uptime & Health Monitoring
-
-To ensure the backend server hosted on Render's free tier remains permanently warm and avoids cold starts:
-
-1. Create a monitor on [UptimeRobot](https://uptimerobot.com/).
-2. Select **Monitor Type**: `HTTP(s)`.
-3. Set **URL**: `https://janathagarage-2puu.onrender.com/health`.
-4. Set **Interval**: `5 minutes`.
-
-This sends periodic lightweight pings returning `200 OK`, maintaining container responsiveness without consuming database connection pooling limits.
+<br />
 
 ---
 
-## 🚢 Deployment Guide
+## 🎯 Usage
 
-### Vercel (Frontend)
-1. Link your GitHub repository in the Vercel dashboard.
-2. Set **Root Directory**: `client`.
-3. Build Command: `vite build` (or `npm run build`).
-4. Output Directory: `dist`.
-5. Add Environment Variable:
-   - `VITE_API_URL` = `https://janathagarage-2puu.onrender.com/api/v1`
+1. **For Customers:**
+   - Browse automotive and home care services on the landing page or services catalog.
+   - Filter by trade category (Mechanic, Electrician, Plumber, AC Repair).
+   - Enter your location or click **GPS** to find nearby certified technicians.
+   - Book a service with upfront pricing and track the technician's arrival status.
 
-### Render (Backend)
-1. Create a **Web Service** linked to the GitHub repo.
-2. Set **Root Directory**: `server`.
-3. Build Command: `npm install && npx prisma generate`.
-4. Start Command: `npm start`.
-5. Add Environment Variables:
-   - `NODE_ENV` = `production`
-   - `POSTGRES_URI` = `[Your Supabase Transaction Pooler URI]`
-   - `DIRECT_URL` = `[Your Supabase Direct Session URI]`
-   - `ACCESS_TOKEN_SECRET` = `[Secret]`
-   - `REFRESH_TOKEN_SECRET` = `[Secret]`
-   - `CORS_ORIGIN` = `https://janatha-garage-o4y9.vercel.app`
+2. **For Technicians:**
+   - Register a technician profile and submit KYC verification documents.
+   - Toggle availability status (`Online` / `Offline`) to receive booking notifications.
+   - Update job progress from `Accepted` to `Completed`.
 
----
+3. **For Administrators:**
+   - Access the admin desk to review and approve/reject technician KYC submissions.
+   - Monitor platform activity, active bookings, and customer reviews.
 
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
-
-1. Fork the Project.
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
-3. Commit your Changes (`git commit -m 'feat: Add some AmazingFeature'`).
-4. Push to the Branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
+<br />
 
 ---
 
 ## 📄 License
 
-Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for more information.
+This project is licensed under the **MIT License**.  
+See the [`LICENSE`](./LICENSE) file for complete details.
+
+<br />
 
 ---
 
 <div align="center">
-  <b>Developed with ❤️ by <a href="https://github.com/Parinay-Chauhan">Parinay Chauhan</a></b>
+  <b>Built with ❤️ by <a href="https://github.com/Parinay-Chauhan">Parinay Chauhan</a></b>
 </div>
