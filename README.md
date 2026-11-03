@@ -1,4 +1,4 @@
-# 🚗 JantaGaraj (जनता गैराज)
+                 # 🚗 JantaGaraj ( जनता गैराज )
 
 > **On-Demand Automotive & Home Care Marketplace Platform**  
 > Connecting vehicle owners and households with verified local mechanics, electricians, and technicians in real-time.
@@ -82,17 +82,6 @@ In most Indian cities and highways, finding a dependable mechanic or electrician
 - **Backend:** [Render](https://janathagarage-2puu.onrender.com)
 - **Database:** [Supabase](https://supabase.com/)
 - **Uptime Monitoring:** [UptimeRobot](https://uptimerobot.com/)
-
-<br />
-
----
-
-## 📸 Screenshots
-
-| Hero & Service Discovery | Live Technician Network |
-| :---: | :---: |
-| <img src="client/public/images/hero_technician.jpg" alt="JantaGaraj Hero" width="460" /> | <img src="client/public/images/hero_technician_compressed.jpg" alt="Technician Network" width="460" /> |
-| *Doorstep auto & appliance service booking* | *KYC-verified mechanics and technicians* |
 
 <br />
 
