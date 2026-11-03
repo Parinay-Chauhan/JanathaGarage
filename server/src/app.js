@@ -45,9 +45,25 @@ import adminRouter from "./routes/admin.routes.js"
 import healthcheckRouter from "./routes/healthcheck.routes.js";
 import { ErrorHandler } from "./middleware/Error.middleware.js";
 import { swaggerDocs } from "./utils/swagger.js";
+
 // ---------- routes declaration ------------
 
+// Root & Healthcheck endpoints (for UptimeRobot, Render keep-alive, and monitoring)
+app.get("/", (req, res) => {
+  return res.status(200).json({
+    status: "OK",
+    service: "JantaGaraj API",
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+    message: "JantaGaraj Backend is running smoothly 🚀",
+  });
+});
+
+app.use("/health", healthcheckRouter);
+app.use("/ping", healthcheckRouter);
 app.use("/api/v1/health", healthcheckRouter);
+app.use("/api/v1/healthcheck", healthcheckRouter);
+
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/services", serviceRouter);
