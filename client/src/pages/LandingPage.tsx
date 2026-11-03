@@ -618,11 +618,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-orange-500/10 dark:bg-orange-500/15 blur-3xl -z-10 pointer-events-none" />
 
               {/* Direct Transparent Cutout (NO CARD, NO BORDER, NO BOX) */}
-              <img
-                src="/images/hero_technician.png"
-                alt="Certified JantaGaraj diagnostic technician"
-                className="w-full max-h-[560px] sm:max-h-[640px] object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_25px_45px_rgba(0,0,0,0.7)] transition-transform duration-700 hover:scale-[1.02]"
-              />
+              <picture>
+                <source srcSet="/images/hero_technician.webp" type="image/webp" />
+                <source srcSet="/images/hero_technician.png" type="image/png" />
+                <img
+                  src="/images/hero_technician.webp"
+                  alt="JantaGaraj verified master automotive technician standing with wrench and diagnostic tools"
+                  width="896"
+                  height="1200"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                  className="w-full max-h-[560px] sm:max-h-[640px] object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_25px_45px_rgba(0,0,0,0.7)] transition-transform duration-700 hover:scale-[1.02]"
+                />
+              </picture>
 
               {/* Floating Badge 1: Top-Right (Rating & Reviews - matching reference) */}
               <div className="absolute top-10 sm:top-14 -right-2 sm:-right-4 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-3 animate-in fade-in duration-500">
