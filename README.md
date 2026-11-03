@@ -112,15 +112,6 @@ In most Indian cities and highways, finding a dependable mechanic or electrician
 
 ---
 
-## 📸 Screenshots
-
-| Landing Page & Service Discovery | Live Technician Network |
-| :---: | :---: |
-| <img src="client/public/images/hero_technician.jpg" alt="JantaGaraj Hero" width="460" /> | <img src="client/public/images/hero_technician_compressed.jpg" alt="Technician Network" width="460" /> |
-| *Doorstep auto & appliance service booking* | *KYC-verified mechanics and technicians* |
-
----
-
 ## 📁 Repository Structure
 
 ```plaintext
