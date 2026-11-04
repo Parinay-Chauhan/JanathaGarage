@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Wrench, Instagram, Facebook, Linkedin } from "lucide-react";
+import { Wrench, Instagram, Linkedin } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 
 export const Footer: React.FC = () => {
@@ -29,25 +29,8 @@ export const Footer: React.FC = () => {
                 : "India's trusted on-demand doorstep automotive garage & home maintenance network. Certified mechanics at your doorstep in 30 minutes."}
             </p>
 
-            {/* Social Links Row (Exact Reference Image Style) */}
+            {/* Social Links Row (Instagram & LinkedIn) */}
             <div className="flex items-center gap-4 pt-2 text-[#71717A]">
-              {/* X / Twitter */}
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="X (formerly Twitter)"
-                className="hover:text-white transition-colors"
-              >
-                <svg
-                  className="w-4 h-4 fill-currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-
               {/* Instagram */}
               <a
                 href="https://instagram.com"
@@ -57,17 +40,6 @@ export const Footer: React.FC = () => {
                 className="hover:text-white transition-colors"
               >
                 <Instagram className="w-4 h-4" />
-              </a>
-
-              {/* Facebook */}
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="hover:text-white transition-colors"
-              >
-                <Facebook className="w-4 h-4" />
               </a>
 
               {/* LinkedIn */}
