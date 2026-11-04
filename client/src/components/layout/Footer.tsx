@@ -1,18 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  Wrench,
-  Phone,
-  Mail,
-  MapPin,
-  ShieldCheck,
-  Clock,
-  Award,
-  ArrowRight,
-  Sparkles,
-  ExternalLink,
-  MessageCircle,
-} from "lucide-react";
+import { Wrench, Instagram, Facebook, Linkedin } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 
 export const Footer: React.FC = () => {
@@ -20,250 +8,295 @@ export const Footer: React.FC = () => {
   const isHi = language === "hi";
 
   return (
-    <footer className="bg-[#040404] text-[#A6998E] border-t border-[#2B231D]">
-      {/* 01 Trust Elements Bar */}
-      <div className="border-b border-[#2B231D]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link to="/safety" className="flex items-center gap-4 group">
-            <div className="w-12 h-12 rounded-2xl bg-[#E87532]/10 text-[#E87532] flex items-center justify-center shrink-0 border border-[#E87532]/20 shadow-sm group-hover:bg-[#E87532]/20 transition-colors">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-[#F8F7F3] text-sm group-hover:text-[#E87532] transition-colors">
-                {t("footer.verifiedTitle")}
-              </h4>
-              <p className="text-xs text-[#8F8F85]">{t("footer.verifiedDesc")}</p>
-            </div>
-          </Link>
+    <footer className="bg-[#121214] text-[#8E8E93] border-t border-[#222225] selection:bg-[#E87532] selection:text-white">
+      {/* Main Footer Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-16 pb-12 sm:pb-14">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 sm:gap-10">
+          {/* Brand & Description Column (Spans 2 cols on desktop) */}
+          <div className="col-span-2 space-y-4">
+            <Link to="/" className="inline-flex items-center gap-2.5 group">
+              <div className="w-8 h-8 rounded-lg bg-white/10 text-white flex items-center justify-center shrink-0 border border-white/10 group-hover:bg-[#E87532] group-hover:border-[#E87532] transition-colors">
+                <Wrench className="w-4 h-4 stroke-[2.2]" />
+              </div>
+              <span className="text-lg font-bold tracking-tight text-white font-display">
+                Janta<span className="text-[#E87532]">Garaj</span>
+              </span>
+            </Link>
 
-          <Link to="/pricing" className="flex items-center gap-4 group">
-            <div className="w-12 h-12 rounded-2xl bg-[#E87532]/10 text-[#E87532] flex items-center justify-center shrink-0 border border-[#E87532]/20 shadow-sm group-hover:bg-[#E87532]/20 transition-colors">
-              <Clock className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-[#F8F7F3] text-sm group-hover:text-[#E87532] transition-colors">
-                {t("footer.speedTitle")}
-              </h4>
-              <p className="text-xs text-[#8F8F85]">{t("footer.speedDesc")}</p>
-            </div>
-          </Link>
+            <p className="text-xs sm:text-[13px] text-[#8E8E93] leading-relaxed max-w-xs">
+              {isHi
+                ? "भारत का विश्वसनीय ऑन-डिमांड डोरस्टेप ऑटो गैराज व होम मेंटेनेंस नेटवर्क। प्रमाणित मैकेनिक 30 मिनट में आपके पास।"
+                : "India's trusted on-demand doorstep automotive garage & home maintenance network. Certified mechanics at your doorstep in 30 minutes."}
+            </p>
 
-          <Link to="/pricing" className="flex items-center gap-4 group">
-            <div className="w-12 h-12 rounded-2xl bg-[#E87532]/10 text-[#E87532] flex items-center justify-center shrink-0 border border-[#E87532]/20 shadow-sm group-hover:bg-[#E87532]/20 transition-colors">
-              <Award className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-[#F8F7F3] text-sm group-hover:text-[#E87532] transition-colors">
-                {t("footer.pricingTitle")}
-              </h4>
-              <p className="text-xs text-[#8F8F85]">{t("footer.pricingDesc")}</p>
-            </div>
-          </Link>
+            {/* Social Links Row (Exact Reference Image Style) */}
+            <div className="flex items-center gap-4 pt-2 text-[#71717A]">
+              {/* X / Twitter */}
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X (formerly Twitter)"
+                className="hover:text-white transition-colors"
+              >
+                <svg
+                  className="w-4 h-4 fill-currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
 
-          <a href="tel:+918439616833" className="flex items-center gap-4 group">
-            <div className="w-12 h-12 rounded-2xl bg-[#E87532]/10 text-[#E87532] flex items-center justify-center shrink-0 border border-[#E87532]/20 shadow-sm group-hover:bg-[#E87532]/20 transition-colors">
-              <Phone className="w-6 h-6" />
+              {/* Instagram */}
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="hover:text-white transition-colors"
+              >
+                <Instagram className="w-4 h-4" />
+              </a>
+
+              {/* Facebook */}
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="hover:text-white transition-colors"
+              >
+                <Facebook className="w-4 h-4" />
+              </a>
+
+              {/* LinkedIn */}
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="hover:text-white transition-colors"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
             </div>
-            <div>
-              <h4 className="font-bold text-[#F8F7F3] text-sm group-hover:text-[#E87532] transition-colors">
-                {t("footer.supportTitle")}
-              </h4>
-              <p className="text-xs text-[#8F8F85]">{t("footer.supportDesc")}</p>
-            </div>
-          </a>
+          </div>
+
+          {/* Column 2: Product / Services */}
+          <div className="col-span-1">
+            <h4 className="text-white font-medium text-sm tracking-normal mb-4">
+              {isHi ? "सेवाएं (Services)" : "Services"}
+            </h4>
+            <ul className="space-y-3 text-xs sm:text-[13px]">
+              <li>
+                <Link
+                  to="/services?search=Car"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "जनरल कार सर्विस" : "General Car Service"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/services?search=Breakdown"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "रोडसाइड ब्रेकडाउन" : "Roadside Breakdown"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/services?search=Battery"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "बैटरी जंपस्टार्ट" : "Battery Jumpstart"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/services?search=AC"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "एसी फोम जेट सर्विस" : "AC Foam Jet Service"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/services?search=Brake"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "ब्रेक व क्लच ओवरहॉल" : "Brake & Clutch Repair"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/services?search=Tyre"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "टायर व व्हील केयर" : "Tyre & Wheel Care"}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3: Resources */}
+          <div className="col-span-1">
+            <h4 className="text-white font-medium text-sm tracking-normal mb-4">
+              {isHi ? "संसाधन (Resources)" : "Resources"}
+            </h4>
+            <ul className="space-y-3 text-xs sm:text-[13px]">
+              <li>
+                <Link
+                  to="/pricing"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "पारदर्शी रेट कार्ड" : "Pricing Rate Card"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/safety"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "सुरक्षा दिशानिर्देश" : "Safety Guidelines"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/safety#kyc"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "4-स्तरीय केवाईसी" : "KYC Verification"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/help"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "सहायता व अक्सर पूछे जाने वाले सवाल" : "Help & Documentation"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/technicians"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "सत्यापित मैकेनिक खोजें" : "Verified Mechanics"}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Company */}
+          <div className="col-span-1">
+            <h4 className="text-white font-medium text-sm tracking-normal mb-4">
+              {isHi ? "कंपनी (Company)" : "Company"}
+            </h4>
+            <ul className="space-y-3 text-xs sm:text-[13px]">
+              <li>
+                <Link
+                  to="/about"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "हमारे बारे में" : "About Us"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/register?role=TECHNICIAN"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "पार्टनर बनें" : "Join as Partner"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/terms#partner-terms"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "आचार संहिता" : "Partner Code of Conduct"}
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="tel:+918439616833"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "संपर्क: +91 84396 16833" : "Contact: +91 84396 16833"}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/918439616833?text=Hi%20JantaGaraj"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "व्हाट्सएप सपोर्ट" : "WhatsApp Support"}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 5: Legal */}
+          <div className="col-span-1">
+            <h4 className="text-white font-medium text-sm tracking-normal mb-4">
+              {isHi ? "कानूनी (Legal)" : "Legal"}
+            </h4>
+            <ul className="space-y-3 text-xs sm:text-[13px]">
+              <li>
+                <Link
+                  to="/privacy"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "गोपनीयता नीति" : "Privacy Policy"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/terms"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "सेवा की शर्तें" : "Terms of Service"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/safety"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "सुरक्षा मानक" : "Safety Standards"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/pricing#guarantee"
+                  className="hover:text-white transition-colors block"
+                >
+                  {isHi ? "रिफंड व वारंटी" : "Refund & Warranty"}
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
-      {/* 02 Main Footer Links Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-        {/* Brand & Mission Column */}
-        <div className="lg:col-span-2 space-y-4">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-[#E87532] flex items-center justify-center text-white shadow-orange-glow">
-              <Wrench className="w-5 h-5 stroke-[2.2]" />
-            </div>
-            <span className="text-2xl font-extrabold font-display tracking-tight text-[#F8F7F3]">
-              Janta<span className="text-[#E87532]">Garaj</span>
-            </span>
-          </Link>
-          <p className="text-[#8F8F85] text-sm max-w-sm leading-relaxed">
-            {t("footer.brandDesc")}
+      {/* Bottom Legal / Copyright Bar (Exact Reference Image Style) */}
+      <div className="border-t border-[#222225] py-6 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#6B7280]">
+          {/* Copyright */}
+          <p>
+            © {new Date().getFullYear()} JantaGaraj. {isHi ? "सर्वाधिकार सुरक्षित।" : "All rights reserved."}
           </p>
 
-          <div className="flex items-center gap-3 text-xs text-[#8F8F85] pt-1">
-            <MapPin className="w-4 h-4 text-[#E87532] shrink-0" />
-            <span>
-              {isHi
-                ? "दिल्ली-एनसीआर, मुंबई, बेंगलुरु, पुणे, हैदराबाद व प्रमुख शहरों में उपलब्ध"
-                : "Serving Delhi NCR, Mumbai, Bengaluru, Pune, Hyderabad & Tier-2 Hubs"}
+          {/* Operational Status (Matching Reference Image) */}
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[#8E8E93]">
+              {isHi ? "स्थिति: सभी सिस्टम सामान्य रूप से चालू हैं" : "Status: All Systems Operational"}
             </span>
-          </div>
-
-          {/* Direct WhatsApp & Contact Pills */}
-          <div className="flex flex-wrap items-center gap-3 pt-3">
-            <a
-              href="https://wa.me/918439616833?text=Hi%20JantaGaraj%2C%20I%20need%20doorstep%20assistance"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20 transition-colors"
-            >
-              <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{isHi ? "व्हाट्सएप सहायता" : "WhatsApp Support"}</span>
-            </a>
-            <a
-              href="tel:+918439616833"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-[#E87532] text-xs font-semibold hover:bg-orange-500/20 transition-colors"
-            >
-              <Phone className="w-3.5 h-3.5" />
-              <span>+91 84396 16833</span>
-            </a>
-          </div>
-        </div>
-
-        {/* Column 2: Popular Services */}
-        <div>
-          <h4 className="text-[#F8F7F3] font-bold text-sm tracking-wider uppercase mb-4 font-display">
-            {t("footer.popularServices")}
-          </h4>
-          <ul className="space-y-2.5 text-sm text-[#A6998E]">
-            <li>
-              <Link to="/services?search=Car" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "जनरल कार सर्विस व ट्यूनिंग" : "General Car Service"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-            <li>
-              <Link to="/services?search=Breakdown" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "इमरजेंसी रोडसाइड ब्रेकडाउन" : "Roadside Breakdown Assist"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-            <li>
-              <Link to="/services?search=Battery" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "बैटरी जंपस्टार्ट व रिप्लेसमेंट" : "Battery Jumpstart Triage"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-            <li>
-              <Link to="/services?search=AC" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "स्प्लिट एसी डीप फोम जेट" : "AC Deep Jet Cleaning"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-            <li>
-              <Link to="/services?search=Brake" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "ब्रेक व क्लच ओवरहॉल" : "Brake & Clutch Repair"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-            <li>
-              <Link to="/services?search=Tyre" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "टायर पंचर व व्हील बैलेंसिंग" : "Tyre Puncture & Balancing"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Column 3: For Technicians */}
-        <div>
-          <h4 className="text-[#F8F7F3] font-bold text-sm tracking-wider uppercase mb-4 font-display">
-            {t("footer.forTechnicians")}
-          </h4>
-          <ul className="space-y-2.5 text-sm text-[#A6998E]">
-            <li>
-              <Link to="/register?role=TECHNICIAN" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "मैकेनिक पार्टनर बनें" : "Join as Mechanic Partner"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-            <li>
-              <Link to="/safety#kyc" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "4-स्तरीय केवाईसी प्रक्रिया" : "KYC Verification Process"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-            <li>
-              <Link to="/pricing" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "सर्विस रेट कार्ड व कमाई" : "Service Rate Card & Earnings"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-            <li>
-              <Link to="/terms#partner-terms" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "पार्टनर आचार संहिता" : "Partner Code of Conduct"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-            <li>
-              <Link to="/technician/dashboard" className="hover:text-[#E87532] transition-colors flex items-center justify-between group">
-                <span>{isHi ? "मैकेनिक रडार लॉगिन" : "Mechanic Radar Portal"}</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#E87532]" />
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Column 4: Company & Trust */}
-        <div>
-          <h4 className="text-[#F8F7F3] font-bold text-sm tracking-wider uppercase mb-4 font-display">
-            {isHi ? "कंपनी व सुरक्षा" : "Company & Trust"}
-          </h4>
-          <ul className="space-y-2.5 text-sm text-[#A6998E]">
-            <li>
-              <Link to="/about" className="hover:text-[#E87532] transition-colors">
-                {t("nav.aboutUs")}
-              </Link>
-            </li>
-            <li>
-              <Link to="/safety" className="hover:text-[#E87532] transition-colors">
-                {isHi ? "सुरक्षा व विश्वास गारंटी" : "Safety & Protection Standards"}
-              </Link>
-            </li>
-            <li>
-              <Link to="/pricing" className="hover:text-[#E87532] transition-colors">
-                {isHi ? "पारदर्शी दरें व मूल्य नीति" : "Transparent Pricing Policy"}
-              </Link>
-            </li>
-            <li>
-              <Link to="/help" className="hover:text-[#E87532] transition-colors">
-                {isHi ? "सहायता व अक्सर पूछे जाने वाले प्रश्न" : "Help & FAQs Center"}
-              </Link>
-            </li>
-            <li>
-              <Link to="/technicians" className="hover:text-[#E87532] transition-colors">
-                {isHi ? "सत्यापित मैकेनिक खोजें" : "Find Verified Mechanics"}
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* 03 Bottom Legal Bar */}
-      <div className="border-t border-[#2B231D] py-6 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#717167]">
-          <p>© {new Date().getFullYear()} JantaGaraj. {t("footer.rights")}</p>
-
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <Link to="/privacy" className="hover:text-[#E87532] transition-colors">
-              {isHi ? "गोपनीयता नीति" : "Privacy Policy"}
-            </Link>
-            <span className="text-[#2B231D]">•</span>
-            <Link to="/terms" className="hover:text-[#E87532] transition-colors">
-              {isHi ? "नियम व शर्तें" : "Terms of Service"}
-            </Link>
-            <span className="text-[#2B231D]">•</span>
-            <Link to="/safety" className="hover:text-[#E87532] transition-colors">
-              {isHi ? "सुरक्षा दिशानिर्देश" : "Safety Guidelines"}
-            </Link>
-            <span className="text-[#2B231D]">•</span>
-            <Link to="/pricing" className="hover:text-[#E87532] transition-colors">
-              {isHi ? "रेट कार्ड व रिफंड" : "Pricing & Refunds"}
-            </Link>
-            <span className="text-[#2B231D]">•</span>
-            <Link to="/help" className="hover:text-[#E87532] transition-colors">
-              {isHi ? "कस्टमर सपोर्ट" : "Support"}
-            </Link>
           </div>
         </div>
       </div>

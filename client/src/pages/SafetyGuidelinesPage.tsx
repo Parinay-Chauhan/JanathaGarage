@@ -190,3 +190,4 @@ export const SafetyGuidelinesPage: React.FC = () => {
     </div>
   );
 };
+
