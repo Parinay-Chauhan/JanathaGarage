@@ -8,8 +8,21 @@ export const getServices = asyncHandler(async (req, res) => {
   const { categoryId } = req.query;
 
   const filter = {};
-  if (categoryId) {
-    filter.categoryId = categoryId;
+  if (categoryId && categoryId !== "ALL") {
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(categoryId);
+    if (isUUID) {
+      filter.OR = [
+        { categoryId: categoryId },
+        { category: { id: categoryId } },
+        { category: { slug: categoryId } },
+      ];
+    } else {
+      filter.OR = [
+        { category: { slug: categoryId } },
+        { category: { slug: categoryId.toLowerCase() } },
+        { category: { name: { contains: categoryId, mode: "insensitive" } } },
+      ];
+    }
   }
 
   const services = await prisma.service.findMany({

@@ -16,7 +16,7 @@ async function main() {
 
   // 2. Create Real Service Categories
   console.log("🚗 Creating real automotive service categories...");
-  const categoriesData = [
+    const categoriesData = [
     {
       name: "Car Periodic Maintenance",
       slug: "car-periodic-maintenance",
@@ -24,6 +24,9 @@ async function main() {
         { title: "Standard Car Engine Oil & Filter Service", defaultPrice: 1499.0 },
         { title: "Comprehensive 50-Point Car Health Inspection", defaultPrice: 799.0 },
         { title: "Complete AC Gas Refill & Cooling Coil Flush", defaultPrice: 1299.0 },
+        { title: "Coolant Replacement & Radiator Descaling", defaultPrice: 499.0 },
+        { title: "Spark Plug & Air Filter Replacement", defaultPrice: 599.0 },
+        { title: "Transmission & Gear Oil Replacement", defaultPrice: 899.0 },
       ],
     },
     {
@@ -33,6 +36,9 @@ async function main() {
         { title: "Doorstep Car & Bike Battery Jumpstart", defaultPrice: 349.0 },
         { title: "Emergency Highway Fuel Delivery", defaultPrice: 299.0 },
         { title: "Flatbed Roadside Breakdown Towing", defaultPrice: 1899.0 },
+        { title: "On-Site Tyre Puncture & Stepney Swapping", defaultPrice: 249.0 },
+        { title: "Car Key Lockout Assistance", defaultPrice: 399.0 },
+        { title: "Emergency Minor Mechanical Triage", defaultPrice: 449.0 },
       ],
     },
     {
@@ -42,6 +48,9 @@ async function main() {
         { title: "Full Bike General Tune-Up & Lubrication", defaultPrice: 499.0 },
         { title: "Drive Chain Deep Cleaning & O-Ring Lubrication", defaultPrice: 199.0 },
         { title: "Carburetor Clean & Spark Plug Replacement", defaultPrice: 299.0 },
+        { title: "Scooter CVT Belt & Clutch Shoe Inspection", defaultPrice: 399.0 },
+        { title: "Front Fork Hydraulic Suspension Oil & Bushing Overhaul", defaultPrice: 549.0 },
+        { title: "Bike Clutch Cable & Accelerator Wire Replacement", defaultPrice: 179.0 },
       ],
     },
     {
@@ -51,6 +60,8 @@ async function main() {
         { title: "Front & Rear Brake Pad Replacement", defaultPrice: 599.0 },
         { title: "Clutch Wire & Friction Plate Overhaul", defaultPrice: 899.0 },
         { title: "Suspension Strut & Bushing Diagnostics", defaultPrice: 699.0 },
+        { title: "Handbrake Cable Tensioning & Shoe Adjustment", defaultPrice: 349.0 },
+        { title: "Brake Fluid Flush & Air Bleeding Service", defaultPrice: 449.0 },
       ],
     },
     {
@@ -60,6 +71,8 @@ async function main() {
         { title: "Computerized OBD-II Scanner Diagnostics", defaultPrice: 499.0 },
         { title: "Starter Motor & Alternator Current Check", defaultPrice: 599.0 },
         { title: "Headlight Relay & Short-Circuit Troubleshooting", defaultPrice: 399.0 },
+        { title: "Car Battery Terminal Cleaning & Acid Level Check", defaultPrice: 199.0 },
+        { title: "Horn Wiring, Relay & Dual Horn Fitting", defaultPrice: 299.0 },
       ],
     },
     {
@@ -68,6 +81,9 @@ async function main() {
       services: [
         { title: "Doorstep Tubeless Tyre Puncture Repair", defaultPrice: 199.0 },
         { title: "Computerized Wheel Balancing & Rotation", defaultPrice: 449.0 },
+        { title: "Tyre Valve Stem Replacement & Nitrogen Inflation", defaultPrice: 149.0 },
+        { title: "Spare Stepney Wheel Swapping", defaultPrice: 249.0 },
+        { title: "4-Wheel Cross Rotation & Tread Depth Assessment", defaultPrice: 299.0 },
       ],
     },
     {
@@ -76,6 +92,9 @@ async function main() {
       services: [
         { title: "Doorstep Foam Wash & Deep Interior Vacuuming", defaultPrice: 699.0 },
         { title: "Ceramic Coating Polish & Hydrophobic Shield", defaultPrice: 1999.0 },
+        { title: "Deep Interior Upholstery Dry-Cleaning & Dashboard Dressing", defaultPrice: 1199.0 },
+        { title: "Engine Bay Deep Degreasing & Silicone Shield", defaultPrice: 499.0 },
+        { title: "Leather Seat Conditioning & Ozone Odor Elimination", defaultPrice: 649.0 },
       ],
     },
     {
@@ -85,6 +104,9 @@ async function main() {
         { title: "Wall Dampness Treatment & Anti-Fungal Waterproofing", defaultPrice: 1799.0 },
         { title: "Interior Wall Fresh Coat & Touch-up Painting", defaultPrice: 2499.0 },
         { title: "Exterior Texture & Weather-Shield Protection", defaultPrice: 3299.0 },
+        { title: "Ceiling Seepage Repair & Water Barrier Membrane", defaultPrice: 1299.0 },
+        { title: "Wood & Metal Enamel Painting for Doors & Grills", defaultPrice: 899.0 },
+        { title: "Wall Putty, Primer & Crack Filling Preparation", defaultPrice: 999.0 },
       ],
     },
     {
@@ -94,6 +116,9 @@ async function main() {
         { title: "Door Lock, Handle & Concealed Hinge Repair", defaultPrice: 249.0 },
         { title: "Modular Kitchen Cabinet & Drawer Channel Tuning", defaultPrice: 399.0 },
         { title: "Custom Furniture Assembly & Wooden Polish", defaultPrice: 599.0 },
+        { title: "Wooden Door Trimming, Latch Fixing & Peep-Hole Fitting", defaultPrice: 299.0 },
+        { title: "Sliding Wardrobe Track & Roller Replacement", defaultPrice: 349.0 },
+        { title: "Curtain Rod, Wooden Shelf & TV Mount Drilling", defaultPrice: 199.0 },
       ],
     },
     {
@@ -103,6 +128,9 @@ async function main() {
         { title: "Doorstep HD CCTV Camera Installation & Mobile App Config", defaultPrice: 499.0 },
         { title: "Smart Video Doorbell & Digital Lock Fitting", defaultPrice: 699.0 },
         { title: "Security DVR/NVR Wiring & Mobile App Live Config", defaultPrice: 549.0 },
+        { title: "360° Wi-Fi PTZ Security Camera Setup", defaultPrice: 349.0 },
+        { title: "Intercom & Video Door Phone Cable Diagnosis", defaultPrice: 449.0 },
+        { title: "PIR Motion Sensor Security Floodlight Fitting", defaultPrice: 399.0 },
       ],
     },
     {
@@ -111,6 +139,10 @@ async function main() {
       services: [
         { title: "Comprehensive RO Service & Multi-Stage Filter Replacement", defaultPrice: 349.0 },
         { title: "Water TDS Calibration & Booster Pump Check", defaultPrice: 299.0 },
+        { title: "RO Membrane Replacement & Mineral Cartridge Add-on", defaultPrice: 899.0 },
+        { title: "RO UV Lamp & 24V SMPS Adapter Repair", defaultPrice: 449.0 },
+        { title: "Tap Connector Leakage Sealing & Pipe Replacement", defaultPrice: 199.0 },
+        { title: "Complete RO Uninstallation & Wall Mounting", defaultPrice: 399.0 },
       ],
     },
     {
@@ -119,6 +151,10 @@ async function main() {
       services: [
         { title: "Paintless Dent Removal & Minor Scratch Buffing", defaultPrice: 799.0 },
         { title: "Full Bumper Realignment & Spot Touch-Up", defaultPrice: 999.0 },
+        { title: "Single Panel Primer, Basecoat & Clearcoat Paint", defaultPrice: 1899.0 },
+        { title: "Running Board & Door Sill Plate Dent Pulling", defaultPrice: 899.0 },
+        { title: "Full Car Dual-Action Machine Polish & Glaze", defaultPrice: 1499.0 },
+        { title: "Bonnet / Hood Stone Chip Repair & Color Blend", defaultPrice: 1199.0 },
       ],
     },
     {
@@ -127,6 +163,10 @@ async function main() {
       services: [
         { title: "Windshield Crack Resin Repair & Headlight Polish", defaultPrice: 399.0 },
         { title: "Headlight Lens De-Oxidizing & Buffing Polish", defaultPrice: 499.0 },
+        { title: "Car Power Window Motor & Regulator Cable Triage", defaultPrice: 449.0 },
+        { title: "Frameless Wiper Blade Replacement & Washer Jet Flush", defaultPrice: 249.0 },
+        { title: "Rear Defogger Grid Line Continuity Test & Repair", defaultPrice: 349.0 },
+        { title: "Side Window Glass Channel Rubber Alignment", defaultPrice: 299.0 },
       ],
     },
     {
@@ -135,6 +175,10 @@ async function main() {
       services: [
         { title: "Complete Home Electrical Short Circuit Triage", defaultPrice: 249.0 },
         { title: "Ceiling Fan Installation & Regulator Switch Wiring", defaultPrice: 179.0 },
+        { title: "Inverter & Battery Wiring, Socket Setup & Triage", defaultPrice: 399.0 },
+        { title: "Modular Switchboard Installation & Rewiring", defaultPrice: 299.0 },
+        { title: "Heavy Appliance 16A Power Plug & AC Isolator Wiring", defaultPrice: 219.0 },
+        { title: "Smart Home Touch Switch & Wi-Fi Controller Setup", defaultPrice: 499.0 },
       ],
     },
     {
@@ -142,20 +186,47 @@ async function main() {
       slug: "plumbing",
       services: [
         { title: "Bathroom Tap & Concealed Pipe Leakage Repair", defaultPrice: 199.0 },
+        { title: "Overhead Water Tank Deep Cleaning & Disinfection", defaultPrice: 699.0 },
+        { title: "Blocked Drain, Kitchen Sink & Waste Pipe Unclogging", defaultPrice: 299.0 },
+        { title: "Western Toilet Jet Spray & Dual-Flush Valve Overhaul", defaultPrice: 249.0 },
+        { title: "Water Pressure Pump & Booster Motor Pipeline Installation", defaultPrice: 449.0 },
+        { title: "Geyser Hot Water Inlet/Outlet Valve & Connection Pipe Fitting", defaultPrice: 229.0 },
       ],
     },
     {
       name: "Appliance Repair",
       slug: "appliance",
       services: [
-        { title: "Fully Automatic Washing Machine Drum & Motor Repair", defaultPrice: 399.0 },
+        { title: "Fully Automatic Washing Machine Motor & Drum Repair", defaultPrice: 399.0 },
+        { title: "Single & Double Door Refrigerator Cooling & Gas Triage", defaultPrice: 449.0 },
+        { title: "Microwave Oven Magnetron, Fuse & Turntable Repair", defaultPrice: 349.0 },
+        { title: "Kitchen Chimney Deep Degreasing & Duct Pipe Cleaning", defaultPrice: 599.0 },
+        { title: "Instant & Storage Geyser Heating Element & Thermostat Fix", defaultPrice: 299.0 },
+        { title: "Semi-Automatic Washing Machine Spin/Wash Motor Wiring", defaultPrice: 349.0 },
       ],
     },
     {
       name: "Deep Cleaning",
       slug: "cleaning",
       services: [
-        { title: "Home Deep Cleaning & Kitchen Degreasing Package", defaultPrice: 799.0 },
+        { title: "Complete Home Deep Cleaning & Floor Machine Buffing", defaultPrice: 1499.0 },
+        { title: "Intensive Kitchen Degreasing, Tiles & Slab Scrubbing", defaultPrice: 699.0 },
+        { title: "Bathroom Acid-Free Deep Descaling & Sanitization", defaultPrice: 499.0 },
+        { title: "Fabric Sofa & Upholstery Deep Shampoo Vacuum Wash", defaultPrice: 599.0 },
+        { title: "Mattress Deep Dry Vacuuming & Anti-Allergen Sanitization", defaultPrice: 449.0 },
+        { title: "Balcony, Window Grill & Sliding Glass Railing Scrubbing", defaultPrice: 399.0 },
+      ],
+    },
+    {
+      name: "AC Repair & Service",
+      slug: "ac-repair",
+      services: [
+        { title: "Split AC Deep Foam Jet Service & Antibacterial Wash", defaultPrice: 549.0 },
+        { title: "AC Eco-Gas Charging (R32 / R410A) with Leakage Triage", defaultPrice: 1499.0 },
+        { title: "AC PCB Circuit Board Diagnosis & Capacitor Replacement", defaultPrice: 499.0 },
+        { title: "Window AC Complete Deep Servicing & Filter De-scale", defaultPrice: 449.0 },
+        { title: "Split AC Safe Dismantling & New Bracket Re-Installation", defaultPrice: 799.0 },
+        { title: "Indoor Unit Water Leakage Repair & Drain Tray Flushing", defaultPrice: 349.0 },
       ],
     },
   ];
@@ -397,23 +468,15 @@ async function main() {
       },
     });
 
-    // Map all created services to this technician
-    for (const service of createdServices) {
-      await prisma.technicianService.upsert({
-        where: {
-          technicianId_serviceId: {
-            technicianId: techProfile.id,
-            serviceId: service.id,
-          },
-        },
-        update: {},
-        create: {
-          technicianId: techProfile.id,
-          serviceId: service.id,
-          customPrice: service.defaultPrice,
-        },
-      });
-    }
+    // Map all created services to this technician in single batch
+    await prisma.technicianService.createMany({
+      data: createdServices.map((service) => ({
+        technicianId: techProfile.id,
+        serviceId: service.id,
+        customPrice: service.defaultPrice,
+      })),
+      skipDuplicates: true,
+    });
 
     createdTechProfiles.push(techProfile);
   }
