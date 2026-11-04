@@ -14,6 +14,10 @@ import { TechniciansPage } from "../pages/TechniciansPage";
 import { TechnicianDetailsPage } from "../pages/TechnicianDetailsPage";
 import { AboutPage } from "../pages/AboutPage";
 import { HelpPage } from "../pages/HelpPage";
+import { PrivacyPolicyPage } from "../pages/PrivacyPolicyPage";
+import { TermsPage } from "../pages/TermsPage";
+import { SafetyGuidelinesPage } from "../pages/SafetyGuidelinesPage";
+import { PricingGuidePage } from "../pages/PricingGuidePage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 
@@ -138,6 +142,57 @@ export const AppRoutes: React.FC = () => {
               <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
               <main className="min-h-screen">
                 <HelpPage />
+              </main>
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/privacy"
+          element={
+            <>
+              <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
+              <main className="min-h-screen">
+                <PrivacyPolicyPage />
+              </main>
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/terms"
+          element={
+            <>
+              <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
+              <main className="min-h-screen">
+                <TermsPage />
+              </main>
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/safety"
+          element={
+            <>
+              <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
+              <main className="min-h-screen">
+                <SafetyGuidelinesPage />
+              </main>
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/pricing"
+          element={
+            <>
+              <Navbar onOpenAuthModal={() => setAuthModalOpen(true)} />
+              <main className="min-h-screen">
+                <PricingGuidePage />
               </main>
               <Footer />
             </>

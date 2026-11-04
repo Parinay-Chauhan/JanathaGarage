@@ -617,6 +617,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               {/* Soft ambient atmospheric glow behind the cutout */}
               <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-orange-500/10 dark:bg-orange-500/15 blur-3xl -z-10 pointer-events-none" />
 
+              {/* Subtle Editorial Background Watermark Typography (matches reference image "LUX" style) */}
+              <div
+                aria-hidden="true"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none -z-10 font-display font-black text-[110px] sm:text-[150px] lg:text-[180px] leading-none tracking-widest text-[#252621]/[0.035] dark:text-white/[0.035] uppercase text-center"
+              >
+                GARAJ
+              </div>
+
               {/* Direct Transparent Cutout (NO CARD, NO BORDER, NO BOX) */}
               <picture>
                 <source srcSet="/images/hero_technician.webp" type="image/webp" />
@@ -633,39 +641,39 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 />
               </picture>
 
-              {/* Floating Badge 1: Top-Right (Rating & Reviews - matching reference) */}
-              <div className="absolute top-10 sm:top-14 -right-2 sm:-right-4 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-3 animate-in fade-in duration-500">
-                <div className="w-9 h-9 rounded-full bg-[#252621] dark:bg-black text-amber-400 flex items-center justify-center shrink-0">
-                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+              {/* Floating Badge 1: Top-Right (Rating & Reviews - matching reference image) */}
+              <div className="absolute top-10 sm:top-14 -right-2 sm:-right-4 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF]/70 dark:border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-30 flex items-center gap-3 animate-in fade-in duration-500">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#252621] dark:bg-black text-white flex items-center justify-center shrink-0 shadow-inner">
+                  <Star className="w-4 h-4 fill-white text-white" />
                 </div>
                 <div>
-                  <div className="text-sm font-extrabold text-[#252621] dark:text-[#F5F2EB] leading-tight">
+                  <div className="text-sm sm:text-base font-bold text-[#252621] dark:text-[#F5F2EB] leading-tight font-mono">
                     4.9 / 5.0
                   </div>
-                  <p className="text-[10px] text-[#717167] dark:text-[#9E9488]">
+                  <p className="text-[10px] sm:text-[11px] font-medium text-[#717167] dark:text-[#9E9488]">
                     15K+ Verified Reviews
                   </p>
                 </div>
               </div>
 
-              {/* Floating Badge 2: Mid-Left (Featured Expert - matching reference) */}
-              <div className="absolute top-[48%] -translate-y-1/2 -left-2 sm:-left-6 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#E87532] shrink-0" />
+              {/* Floating Badge 2: Mid-Left (Featured Expert - matching reference image) */}
+              <div className="absolute top-[48%] -translate-y-1/2 -left-2 sm:-left-6 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF]/70 dark:border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-30 flex items-center gap-3">
+                <span className="w-3 h-3 rounded-full bg-[#9C6A46] dark:bg-[#E87532] shrink-0" />
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-[#717167] dark:text-[#9E9488]">
+                  <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#717167] dark:text-[#9E9488]">
                     {language === "hi" ? "शीर्ष विशेषज्ञ" : "FEATURED EXPERT"}
                   </p>
-                  <p className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
-                    {language === "hi" ? "मास्टर ऑटो व होम प्रो" : "Master Diagnostics Pro"}
+                  <p className="text-xs sm:text-sm font-bold text-[#252621] dark:text-[#F5F2EB]">
+                    {language === "hi" ? "मास्टर ऑटो मैकेनिक व प्रो" : "Master Auto Mechanic & Pro"}
                   </p>
                 </div>
               </div>
 
-              {/* Floating Badge 3: Bottom-Left (100% Verified - matching reference) */}
-              <div className="absolute bottom-8 sm:bottom-12 left-1 sm:left-3 px-4 py-2 rounded-full bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF] dark:border-[#2B231D] shadow-xl z-30 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                <span className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
-                  {language === "hi" ? "100% सत्यापित व प्रशिक्षित मैकेनिक" : "100% Verified & Certified Pros"}
+              {/* Floating Badge 3: Bottom-Left (100% Genuine - matching reference image) */}
+              <div className="absolute bottom-6 sm:bottom-10 left-1 sm:left-4 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF]/70 dark:border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-30 flex items-center gap-2.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#252621] dark:text-[#F5F2EB]">
+                  {language === "hi" ? "100% ओरिजिनल पार्ट्स व डोरस्टेप वारंटी" : "100% Genuine Spares & Doorstep Service"}
                 </span>
               </div>
             </div>
