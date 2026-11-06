@@ -16,11 +16,15 @@ import {
   Zap,
   Droplets,
   Wind,
-  Tv,
   Sparkles,
   CalendarCheck,
-  Car,
-  BadgeCheck,
+  Activity,
+  Cpu,
+  Gauge,
+  Navigation,
+  CheckCircle2,
+  Radio,
+  FileText,
 } from "lucide-react";
 import { useGetCategoriesQuery, useGetServicesQuery } from "../features/services/api/servicesApi";
 import { useGetTechniciansQuery } from "../features/technicians/api/techniciansApi";
@@ -28,8 +32,6 @@ import { useLanguage } from "../context/LanguageContext";
 import { useLocation } from "../context/LocationContext";
 import { Service } from "../types/api.types";
 import { Button } from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
-import { Badge } from "../components/ui/Badge";
 import { Skeleton } from "../components/ui/Skeleton";
 import { BookingModal } from "../features/bookings/components/BookingModal";
 import { useGSAP, heroReveal, fadeInStagger } from "../lib/gsap";
@@ -64,7 +66,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>("all");
+  const [activeTelemetryStage, setActiveTelemetryStage] = useState<number>(3);
 
   const { data: categoriesData, isLoading: categoriesLoading } = useGetCategoriesQuery();
   const { data: servicesData, isLoading: servicesLoading } = useGetServicesQuery();
@@ -99,151 +101,175 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
     }
   };
 
-  // Popular category blueprints requested by user
+  // Popular category blueprints with Industrial-Tech badge indicators
   const popularCategories = [
+    {
+      id: "mechanic",
+      name: "Auto & Garage Repair",
+      nameHi: "ऑटो व गैराज रिपेयर",
+      badge: "ENGINE DIAGNOSTIC",
+      badgeType: "amber",
+      desc: "Doorstep car/bike breakdown, battery jumpstart, brake service & lube",
+      descHi: "डोरस्टेप कार/बाइक ब्रेकडाउन, बैटरी जंपस्टार्ट, ब्रेक व ल्यूब",
+      icon: AutoGarageTradeIcon,
+      startingPrice: "₹299",
+      expertsCount: "64+ Pros",
+      expertsCountHi: "64+ विशेषज्ञ",
+      accentColor: "text-amber-400 group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+    },
     {
       id: "electrician",
       name: "Electrician",
       nameHi: "इलेक्ट्रीशियन",
-      desc: "Wiring, switchboard, fuse, MCB & inverter repairs",
+      badge: "CIRCUIT SAFE",
+      badgeType: "cyan",
+      desc: "Wiring, switchboard, fuse, MCB triage & heavy appliance power lines",
       descHi: "वायरिंग, स्विचबोर्ड, फ्यूज, एमसीबी व इनवर्टर रिपेयर",
       icon: ElectricianTradeIcon,
       startingPrice: "₹199",
       expertsCount: "42+ Pros",
       expertsCountHi: "42+ विशेषज्ञ",
-      accentColor: "text-amber-500 dark:text-amber-400 group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+      accentColor: "text-amber-400 group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
     },
     {
       id: "plumbing",
       name: "Plumbing",
       nameHi: "प्लंबिंग",
-      desc: "Leakage, pipe fittings, taps, tanks & drain clearing",
+      badge: "NON-INVASIVE",
+      badgeType: "cyan",
+      desc: "Leak detection, pipe fittings, taps, overhead tanks & drain clearing",
       descHi: "लीकेज, पाइप फिटिंग, नल, टंकी व ड्रेन क्लीनिंग",
       icon: PlumbingTradeIcon,
       startingPrice: "₹149",
       expertsCount: "38+ Pros",
       expertsCountHi: "38+ विशेषज्ञ",
-      accentColor: "text-sky-500 dark:text-sky-400 group-hover:drop-shadow-[0_0_12px_rgba(14,165,233,0.5)]",
+      accentColor: "text-cyan-400 group-hover:drop-shadow-[0_0_12px_rgba(6,182,212,0.5)]",
     },
     {
       id: "ac-repair",
       name: "AC Repair & Service",
       nameHi: "एसी रिपेयर व सर्विस",
-      desc: "Deep foam jet cleaning, gas charging & compressor fix",
+      badge: "ECO-TESTED",
+      badgeType: "cyan",
+      desc: "Deep foam jet cleaning, gas charging & compressor PCB fix",
       descHi: "डीप फोम जेट क्लीनिंग, गैस चार्जिंग व कंप्रेसर रिपेयर",
       icon: AcRepairTradeIcon,
       startingPrice: "₹499",
       expertsCount: "56+ Pros",
       expertsCountHi: "56+ विशेषज्ञ",
-      accentColor: "text-teal-500 dark:text-teal-400 group-hover:drop-shadow-[0_0_12px_rgba(20,184,166,0.5)]",
-    },
-    {
-      id: "appliance",
-      name: "Appliance Repair",
-      nameHi: "अप्लायंस रिपेयर",
-      desc: "Washing machine, refrigerator, microwave & RO water",
-      descHi: "वॉशिंग मशीन, फ्रिज, माइक्रोवेव व आरओ वॉटर प्यूरीफायर",
-      icon: ApplianceRepairTradeIcon,
-      startingPrice: "₹249",
-      expertsCount: "35+ Pros",
-      expertsCountHi: "35+ विशेषज्ञ",
-      accentColor: "text-indigo-500 dark:text-indigo-400 group-hover:drop-shadow-[0_0_12px_rgba(99,102,241,0.5)]",
-    },
-    {
-      id: "cleaning",
-      name: "Deep Cleaning",
-      nameHi: "डीप क्लीनिंग",
-      desc: "Home deep clean, kitchen degreasing & sofa shampoo",
-      descHi: "फुल होम डीप क्लीन, किचन डीग्रीजिंग व सोफा शैम्पू",
-      icon: CleaningTradeIcon,
-      startingPrice: "₹399",
-      expertsCount: "29+ Pros",
-      expertsCountHi: "29+ विशेषज्ञ",
-      accentColor: "text-emerald-500 dark:text-emerald-400 group-hover:drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]",
-    },
-    {
-      id: "mechanic",
-      name: "Auto & Garage Repair",
-      nameHi: "ऑटो व गैराज रिपेयर",
-      desc: "Doorstep car/bike breakdown, battery jumpstart & lube",
-      descHi: "डोरस्टेप कार/बाइक ब्रेकडाउन, बैटरी जंपस्टार्ट व ल्यूब",
-      icon: AutoGarageTradeIcon,
-      startingPrice: "₹299",
-      expertsCount: "64+ Pros",
-      expertsCountHi: "64+ विशेषज्ञ",
-      accentColor: "text-[#E87532] dark:text-[#E87532] group-hover:drop-shadow-[0_0_12px_rgba(232,117,50,0.5)]",
-    },
-    {
-      id: "painting",
-      name: "Painting & Waterproofing",
-      nameHi: "पेंटिंग व वॉटरप्रूफिंग",
-      desc: "Wall dampness repair, interior fresh paint, texture & exterior coat",
-      descHi: "दीवारों की सीलन रिपेयर, इंटीरियर फ्रेश पेंट, पुट्टी व वॉटरप्रूफिंग",
-      icon: PaintingTradeIcon,
-      startingPrice: "₹499",
-      expertsCount: "34+ Pros",
-      expertsCountHi: "34+ विशेषज्ञ",
-      accentColor: "text-rose-500 dark:text-rose-400 group-hover:drop-shadow-[0_0_12px_rgba(244,63,94,0.5)]",
-    },
-    {
-      id: "carpentry",
-      name: "Carpentry & Woodwork",
-      nameHi: "कारपेंट्री व वुडवर्क",
-      desc: "Door lock & hinge fix, modular cabinet tuning, furniture polish",
-      descHi: "दरवाजे के लॉक व कब्जे, किचन कैबिनेट्स रिपेयर व फर्नीचर पॉलिश",
-      icon: CarpentryTradeIcon,
-      startingPrice: "₹199",
-      expertsCount: "48+ Pros",
-      expertsCountHi: "48+ विशेषज्ञ",
-      accentColor: "text-yellow-600 dark:text-yellow-500 group-hover:drop-shadow-[0_0_12px_rgba(202,138,4,0.5)]",
-    },
-    {
-      id: "cctv-security",
-      name: "CCTV & Smart Security",
-      nameHi: "सीसीटीवी व स्मार्ट सिक्योरिटी",
-      desc: "HD CCTV camera installation, smart video doorbells & digital locks",
-      descHi: "HD सीसीटीवी कैमरा फिटिंग, स्मार्ट वीडियो डोरबेल व डिजिटल लॉक सेटअप",
-      icon: SecurityCctvTradeIcon,
-      startingPrice: "₹499",
-      expertsCount: "27+ Pros",
-      expertsCountHi: "27+ विशेषज्ञ",
-      accentColor: "text-blue-500 dark:text-blue-400 group-hover:drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]",
-    },
-    {
-      id: "ro-water-purifier",
-      name: "RO Water Purifier Care",
-      nameHi: "आरओ वॉटर प्यूरीफायर सर्विस",
-      desc: "RO filter membrane change, sediment cleaning & TDS calibration",
-      descHi: "आरओ फिल्टर मेंब्रेन रिप्लेसमेंट, सेडिमेंट क्लीनिंग व टीडीएस जांच",
-      icon: RoPurifierTradeIcon,
-      startingPrice: "₹299",
-      expertsCount: "39+ Pros",
-      expertsCountHi: "39+ विशेषज्ञ",
-      accentColor: "text-cyan-500 dark:text-cyan-400 group-hover:drop-shadow-[0_0_12px_rgba(6,182,212,0.5)]",
+      accentColor: "text-cyan-400 group-hover:drop-shadow-[0_0_12px_rgba(6,182,212,0.5)]",
     },
     {
       id: "car-denting-painting",
       name: "Car Denting & Painting",
       nameHi: "कार डेंटिंग व पेंटिंग",
-      desc: "Paintless dent removal, scratch buffing, bumper & panel restoration",
+      badge: "OEM TOLERANCE",
+      badgeType: "amber",
+      desc: "Paintless dent removal (PDR), scratch buffing, bumper & panel 2K paint",
       descHi: "पेंटलेस डेंट रिमूवल (PDR), स्क्रैच बफिंग, बंपर व पैनल पेंटिंग",
       icon: DentingPaintingTradeIcon,
       startingPrice: "₹699",
       expertsCount: "52+ Pros",
       expertsCountHi: "52+ विशेषज्ञ",
-      accentColor: "text-violet-500 dark:text-violet-400 group-hover:drop-shadow-[0_0_12px_rgba(139,92,246,0.5)]",
+      accentColor: "text-amber-400 group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
     },
     {
       id: "windshield-lights-care",
       name: "Windshield & Glass Care",
       nameHi: "विंडशील्ड व ग्लास केयर",
-      desc: "Windshield chip crack repair, headlight restoration & power window",
+      badge: "UV-RESIN SPEC",
+      badgeType: "cyan",
+      desc: "Windshield chip crack repair, headlight restoration & power window motors",
       descHi: "विंडशील्ड क्रैक रिपेयर, हेडलाइट डी-ऑक्सीडाइजिंग व पावर विंडो मोटर",
       icon: WindshieldGlassTradeIcon,
       startingPrice: "₹399",
       expertsCount: "31+ Pros",
       expertsCountHi: "31+ विशेषज्ञ",
-      accentColor: "text-emerald-600 dark:text-emerald-400 group-hover:drop-shadow-[0_0_12px_rgba(5,150,105,0.5)]",
+      accentColor: "text-cyan-400 group-hover:drop-shadow-[0_0_12px_rgba(6,182,212,0.5)]",
+    },
+    {
+      id: "appliance",
+      name: "Appliance Repair",
+      nameHi: "अप्लायंस रिपेयर",
+      badge: "INSTANT QUOTE",
+      badgeType: "amber",
+      desc: "Washing machine, refrigerator, microwave oven & geyser repair",
+      descHi: "वॉशिंग मशीन, फ्रिज, माइक्रोवेव व गीजर रिपेयर",
+      icon: ApplianceRepairTradeIcon,
+      startingPrice: "₹249",
+      expertsCount: "35+ Pros",
+      expertsCountHi: "35+ विशेषज्ञ",
+      accentColor: "text-amber-400 group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+    },
+    {
+      id: "cleaning",
+      name: "Deep Cleaning",
+      nameHi: "डीप क्लीनिंग",
+      badge: "HIGH-PRESSURE",
+      badgeType: "cyan",
+      desc: "Machine floor scrubbing, kitchen degreasing & sofa shampoo sanitization",
+      descHi: "फुल होम डीप क्लीन, किचन डीग्रीजिंग व सोफा शैम्पू",
+      icon: CleaningTradeIcon,
+      startingPrice: "₹399",
+      expertsCount: "29+ Pros",
+      expertsCountHi: "29+ विशेषज्ञ",
+      accentColor: "text-cyan-400 group-hover:drop-shadow-[0_0_12px_rgba(6,182,212,0.5)]",
+    },
+    {
+      id: "painting",
+      name: "Painting & Waterproofing",
+      nameHi: "पेंटिंग व वॉटरप्रूफिंग",
+      badge: "MOISTURE-SEALED",
+      badgeType: "amber",
+      desc: "Wall dampness repair, interior fresh paint, texture & weather shield",
+      descHi: "दीवारों की सीलन रिपेयर, इंटीरियर फ्रेश पेंट, पुट्टी व वॉटरप्रूफिंग",
+      icon: PaintingTradeIcon,
+      startingPrice: "₹499",
+      expertsCount: "34+ Pros",
+      expertsCountHi: "34+ विशेषज्ञ",
+      accentColor: "text-amber-400 group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+    },
+    {
+      id: "carpentry",
+      name: "Carpentry & Woodwork",
+      nameHi: "कारपेंट्री व वुडवर्क",
+      badge: "PRECISION CALIBRATED",
+      badgeType: "amber",
+      desc: "Door lock & hydraulic hinge fix, modular cabinet tuning & furniture assembly",
+      descHi: "दरवाजे के लॉक व कब्जे, किचन कैबिनेट्स रिपेयर व फर्नीचर पॉलिश",
+      icon: CarpentryTradeIcon,
+      startingPrice: "₹199",
+      expertsCount: "48+ Pros",
+      expertsCountHi: "48+ विशेषज्ञ",
+      accentColor: "text-amber-400 group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+    },
+    {
+      id: "cctv-security",
+      name: "CCTV & Smart Security",
+      nameHi: "सीसीटीवी व स्मार्ट सिक्योरिटी",
+      badge: "DIGITAL ENCRYPTED",
+      badgeType: "cyan",
+      desc: "HD CCTV camera installation, smart video doorbells & digital biometric locks",
+      descHi: "HD सीसीटीवी कैमरा फिटिंग, स्मार्ट वीडियो डोरबेल व डिजिटल लॉक सेटअप",
+      icon: SecurityCctvTradeIcon,
+      startingPrice: "₹499",
+      expertsCount: "27+ Pros",
+      expertsCountHi: "27+ विशेषज्ञ",
+      accentColor: "text-cyan-400 group-hover:drop-shadow-[0_0_12px_rgba(6,182,212,0.5)]",
+    },
+    {
+      id: "ro-water-purifier",
+      name: "RO Water Purifier Care",
+      nameHi: "आरओ वॉटर प्यूरीफायर सर्विस",
+      badge: "TDS CERTIFIED",
+      badgeType: "cyan",
+      desc: "RO filter membrane change, booster pump pressure check & TDS calibration",
+      descHi: "आरओ फिल्टर मेंब्रेन रिप्लेसमेंट, सेडिमेंट क्लीनिंग व टीडीएस जांच",
+      icon: RoPurifierTradeIcon,
+      startingPrice: "₹299",
+      expertsCount: "39+ Pros",
+      expertsCountHi: "39+ विशेषज्ञ",
+      accentColor: "text-cyan-400 group-hover:drop-shadow-[0_0_12px_rgba(6,182,212,0.5)]",
     },
   ];
 
@@ -251,7 +277,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
   const fallbackServices: Service[] = [
     {
       id: "fb-1",
-      title: "General Car Inspection & Comprehensive Service",
+      title: "General Car Inspection & Comprehensive Engine Diagnostics",
       categoryId: "mechanic",
       category: { id: "mechanic", name: "Auto Service", description: "Vehicle care" },
       defaultPrice: 899,
@@ -261,11 +287,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
     },
     {
       id: "fb-2",
-      title: "Emergency Battery Jumpstart & Diagnostic",
+      title: "Emergency Battery Jumpstart & Alternator Output Test",
       categoryId: "mechanic",
       category: { id: "mechanic", name: "Auto Service", description: "Vehicle care" },
       defaultPrice: 349,
-      durationMinutes: 30,
+      durationMinutes: 25,
       createdAt: "",
       updatedAt: "",
     },
@@ -281,7 +307,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
     },
     {
       id: "fb-4",
-      title: "Complete Home Electrical Short Circuit Triage",
+      title: "Complete Home Electrical Short Circuit Triage & MCB Fix",
       categoryId: "electrician",
       category: { id: "electrician", name: "Electrician", description: "Electrical work" },
       defaultPrice: 249,
@@ -291,7 +317,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
     },
     {
       id: "fb-5",
-      title: "Bathroom Tap & Concealed Pipe Leakage Repair",
+      title: "Bathroom Tap & Concealed Pipe Leakage Sealing",
       categoryId: "plumbing",
       category: { id: "plumbing", name: "Plumbing", description: "Plumbing work" },
       defaultPrice: 199,
@@ -301,57 +327,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
     },
     {
       id: "fb-6",
-      title: "Fully Automatic Washing Machine Drum & Motor Repair",
-      categoryId: "appliance",
-      category: { id: "appliance", name: "Appliance", description: "Appliance care" },
-      defaultPrice: 399,
-      durationMinutes: 50,
-      createdAt: "",
-      updatedAt: "",
-    },
-    {
-      id: "fb-7",
-      title: "Wall Dampness Treatment & Anti-Fungal Waterproofing",
-      categoryId: "painting",
-      category: { id: "painting", name: "Painting & Waterproofing", description: "Wall care" },
-      defaultPrice: 1799,
-      durationMinutes: 90,
-      createdAt: "",
-      updatedAt: "",
-    },
-    {
-      id: "fb-8",
-      title: "Door Lock, Handle & Concealed Hinge Repair",
-      categoryId: "carpentry",
-      category: { id: "carpentry", name: "Carpentry & Woodwork", description: "Carpentry" },
-      defaultPrice: 249,
-      durationMinutes: 40,
-      createdAt: "",
-      updatedAt: "",
-    },
-    {
-      id: "fb-9",
-      title: "Doorstep HD CCTV Camera Installation & Mobile App Config",
-      categoryId: "cctv-security",
-      category: { id: "cctv-security", name: "CCTV & Smart Security", description: "Security" },
-      defaultPrice: 499,
-      durationMinutes: 60,
-      createdAt: "",
-      updatedAt: "",
-    },
-    {
-      id: "fb-10",
-      title: "Comprehensive RO Service & Multi-Stage Filter Replacement",
-      categoryId: "ro-water-purifier",
-      category: { id: "ro-water-purifier", name: "RO Water Purifier Care", description: "Water purification" },
-      defaultPrice: 349,
-      durationMinutes: 45,
-      createdAt: "",
-      updatedAt: "",
-    },
-    {
-      id: "fb-11",
-      title: "Paintless Dent Removal & Minor Scratch Buffing",
+      title: "Paintless Dent Removal (PDR) & Minor Scratch Buffing",
       categoryId: "car-denting-painting",
       category: { id: "car-denting-painting", name: "Car Denting & Painting", description: "Bodywork" },
       defaultPrice: 799,
@@ -359,19 +335,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       createdAt: "",
       updatedAt: "",
     },
-    {
-      id: "fb-12",
-      title: "Windshield Crack Resin Repair & Headlight Polish",
-      categoryId: "windshield-lights-care",
-      category: { id: "windshield-lights-care", name: "Windshield & Glass Care", description: "Glass care" },
-      defaultPrice: 399,
-      durationMinutes: 40,
-      createdAt: "",
-      updatedAt: "",
-    },
   ];
 
-  // Display services
   const displayedServices =
     servicesData?.data && servicesData.data.length > 0
       ? servicesData.data.slice(0, 6)
@@ -383,7 +348,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       id: "tech-1",
       user: { fullName: "Rameshwar Sharma", phone: "+91 98765 43210" },
       experienceYears: 9,
-      bio: "Certified senior automobile technician specializing in breakdown diagnosis and Japanese/German cars.",
+      bio: "Certified senior automobile technician specializing in OBD-II breakdown diagnosis and precision mechanical overhauls.",
       bioHi: "प्रमाणित सीनियर ऑटोमोबाइल तकनीशियन, ब्रेकडाउन डायग्नोसिस और जापानी/जर्मन कारों में 9 वर्षों का अनुभव।",
       avgRating: 4.95,
       baseVisitingCharge: 199,
@@ -395,9 +360,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       id: "tech-2",
       user: { fullName: "Vikramjit Singh", phone: "+91 98765 43211" },
       experienceYears: 7,
-      bio: "Licensed industrial and domestic wireman, expert in MCB boards, high-load inverters, and house rewiring.",
+      bio: "Licensed industrial wireman, expert in MCB distribution boards, high-load inverters, and phase load balancing.",
       bioHi: "लाइसेंस प्राप्त इलेक्ट्रीशियन, एमसीबी बोर्ड, हाई-लोड इनवर्टर और हाउस री-वायरिंग विशेषज्ञ।",
-      avgRating: 4.9,
+      avgRating: 4.91,
       baseVisitingCharge: 149,
       specialty: "Licensed Electrician",
       specialtyHi: "लाइसेंस प्राप्त इलेक्ट्रीशियन",
@@ -407,7 +372,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       id: "tech-3",
       user: { fullName: "Sunil Verma", phone: "+91 98765 43212" },
       experienceYears: 8,
-      bio: "HVAC and AC specialist with expertise in inverter compressors, eco gas recharging, and duct cleaning.",
+      bio: "HVAC specialist with expertise in inverter compressors, eco gas recharging (R32/R410A), and high-pressure jet cleaning.",
       bioHi: "एचवीएसी व एसी विशेषज्ञ, इनवर्टर कंप्रेसर, ईको गैस रीचार्जिंग व डक्ट क्लीनिंग में दक्ष।",
       avgRating: 4.88,
       baseVisitingCharge: 249,
@@ -419,7 +384,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       id: "tech-4",
       user: { fullName: "Mohammad Imran", phone: "+91 98765 43213" },
       experienceYears: 6,
-      bio: "Master plumber specializing in high-pressure lines, concealed leak detection, and sanitary fittings.",
+      bio: "Master plumber specializing in high-pressure lines, acoustic concealed leak detection, and sanitary booster fittings.",
       bioHi: "मास्टर प्लंबर, हाई-प्रेशर लाइन्स, कंसील्ड लीकेज डिटेक्शन और सेनेटरी फिटिंग्स में विशेषज्ञ।",
       avgRating: 4.92,
       baseVisitingCharge: 149,
@@ -448,41 +413,41 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       date: "3 days ago",
       dateHi: "3 दिन पहले",
       comment:
-        "My car battery died unexpectedly in the basement parking around 9 PM. Ramesh arrived in 25 minutes with a portable starter kit, verified the alternator output, and got me moving without any hassle. Clear upfront price of ₹349, no hidden extra charge.",
+        "Stranded on the highway with a dead battery. The JantaGaraj technician arrived in 24 minutes, hooked up high-capacity booster cables, and checked the alternator output before letting me leave. Clear rate card, no haggling.",
       commentHi:
-        "रात 9 बजे बेसमेंट पार्किंग में मेरी कार की बैटरी अचानक खत्म हो गई। रमेश 25 मिनट में पोर्टेबल स्टार्टर किट लेकर पहुंचे, अल्टरनेटर चेक किया और बिना किसी परेशानी के कार स्टार्ट कर दी। बिल्कुल तय ₹349 चार्ज, कोई अतिरिक्त पैसा नहीं लिया।",
+        "हाईवे पर कार की बैटरी पूरी तरह डाउन हो गई थी। जनता गैराज के मैकेनिक केवल 24 मिनट में पहुंचे, बूस्टर केबल से स्टार्ट किया और जाने से पहले अल्टरनेटर का करंट भी चेक किया। बिल्कुल तय रेट, कोई बहस नहीं।",
       verified: true,
     },
     {
       id: "rev-2",
-      customerName: "Priya Sundaram",
-      customerNameHi: "प्रिया सुंदरम",
-      location: "HSR Layout, Bengaluru",
-      locationHi: "एचएसआर लेआउट, बेंगलुरु",
-      serviceUsed: "MCB Trip & Kitchen Wiring Repair",
-      serviceUsedHi: "एमसीबी ट्रिप व किचन वायरिंग रिपेयर",
+      customerName: "Pooja Deshmukh",
+      customerNameHi: "पूजा देशमुख",
+      location: "Kothrud, Pune",
+      locationHi: "कोथरुड, पुणे",
+      serviceUsed: "Electrical Short Circuit & Inverter Triage",
+      serviceUsedHi: "इलेक्ट्रिकल शॉर्ट सर्किट व इनवर्टर रिपेयर",
       rating: 5,
       date: "1 week ago",
       dateHi: "1 सप्ताह पहले",
       comment:
-        "Half of our apartment circuit tripped suddenly. Booked an electrician on JantaGaraj; technician Vikram brought multimeter tools, identified a burnt junction box behind the chimney, and fixed it within 40 minutes. Extremely polite and professional.",
+        "The MCB kept tripping every time we switched on the geyser. Vikramjit traced the neutral leakage in 15 minutes with a digital multimeter and replaced the damaged isolator socket. Very professional and polite.",
       commentHi:
-        "हमारे फ्लैट का आधा सर्किट अचानक ट्रिप हो गया था। जनतागैराज पर इलेक्ट्रीशियन बुक किया; विक्रम जी मल्टीमीटर टूल्स के साथ आए, चिमनी के पीछे जला हुआ जंक्शन बॉक्स ढूंढा और 40 मिनट में ठीक कर दिया। बहुत ही विनम्र और पेशेवर सेवा।",
+        "गीजर ऑन करते ही मेन एमसीबी ट्रिप हो रही थी। विक्रमजीत जी ने 15 मिनट में डिजिटल मल्टीमीटर से न्यूट्रल लीकेज ढूंढ निकाली और खराब आइसोलेटर सॉकेट को बदला। बेहद पेशेवर और विनम्र कार्य।",
       verified: true,
     },
     {
       id: "rev-3",
-      customerName: "Anand Malhotra",
-      customerNameHi: "आनंद मल्होत्रा",
-      location: "Saket, New Delhi",
-      locationHi: "साकेत, नई दिल्ली",
+      customerName: "Karan Johar Sharma",
+      customerNameHi: "करण जौहर शर्मा",
+      location: "HSR Layout, Bengaluru",
+      locationHi: "एचएसआर लेआउट, बेंगलुरु",
       serviceUsed: "Split AC Jet Deep Foam Service",
       serviceUsedHi: "स्प्लिट एसी जेट डीप फोम सर्विस",
       rating: 5,
       date: "2 weeks ago",
       dateHi: "2 सप्ताह पहले",
       comment:
-        "The foam jet cleaning was completely mess-free. The technician used a proper waterproof funnel jacket, so not a single drop soiled our painted wall. AC cooling is back to optimum. Far better experience than local unverified mechanics.",
+        "The foam jet cleaning was completely mess-free. The technician used a proper waterproof funnel jacket, so not a single drop soiled our painted wall. AC cooling is back to optimum. Far better experience than unverified local mechanics.",
       commentHi:
         "फोम जेट क्लीनिंग बिल्कुल साफ-सुथरी रही। तकनीशियन ने वाटरप्रूफ फनल जैकेट का इस्तेमाल किया, जिससे दीवार पर एक बूंद भी नहीं गिरी। एसी की कूलिंग अब एकदम बेहतरीन है। लोकल अनवेरिफाइड मैकेनिकों से कहीं बेहतर अनुभव।",
       verified: true,
@@ -490,53 +455,61 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
   ];
 
   return (
-    <div className="space-y-24 sm:space-y-32 pb-24 overflow-hidden bg-[#F8F7F3] dark:bg-[#040404] text-[#252621] dark:text-[#F5F2EB] transition-colors">
+    <div className="bg-[#0b0f17] text-white min-h-screen selection:bg-amber-500 selection:text-slate-950 pb-24 overflow-hidden relative">
+      {/* Precision Engineering Technical Grid Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:32px_32px] opacity-25 pointer-events-none -z-0" />
+
       {/* ========================================================= */}
-      {/* 02 HERO SECTION                                           */}
+      {/* 02 HERO SECTION (Industrial-Tech & Precision Engineering)  */}
       {/* ========================================================= */}
       <section
         ref={heroRef}
-        className="relative pt-8 sm:pt-16 pb-16 sm:pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="relative z-10 pt-8 sm:pt-16 pb-16 sm:pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-slate-800/80"
       >
+        {/* Subtle Ambient Radial Lighting */}
+        <div className="absolute top-10 left-10 w-[500px] h-[300px] bg-amber-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute top-20 right-10 w-[450px] h-[250px] bg-cyan-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-24 items-center">
           {/* Left Column: Headlines & Search */}
           <div className="lg:col-span-7 space-y-6 sm:space-y-7 lg:pr-4 xl:pr-8">
-            {/* Trust Pill */}
-            <div className="hero-anim inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] text-[#252621] dark:text-[#F5F2EB] text-xs font-semibold shadow-subtle">
-              <span className="w-2 h-2 rounded-full bg-[#E87532] animate-pulse" />
-              <span>{t("hero.trustPill1")}</span>
-              <span className="text-[#E7E5DF] dark:text-[#2B231D]">|</span>
-              <span className="text-[#E87532] font-bold">{t("hero.trustPill2")}</span>
+            {/* Telemetry Status Beacon */}
+            <div className="hero-anim inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-medium tracking-wider shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
+              </span>
+              <span>FLEET STATUS: ACTIVE • 500+ VERIFIED ENGINEERS DISPATCHED</span>
             </div>
 
-            {/* Headline */}
-            <h1 className="hero-anim text-4xl sm:text-5xl lg:text-6xl font-extrabold font-display text-[#252621] dark:text-[#F5F2EB] leading-[1.18] sm:leading-[1.15] lg:leading-[1.12]">
+            {/* Punchy Structured Heading */}
+            <h1 className="hero-anim text-3xl sm:text-5xl lg:text-6xl font-extrabold font-display text-white tracking-tight leading-[1.18] sm:leading-[1.12]">
               {t("hero.titlePart1")}{" "}
-              <span className="text-[#E87532]">
+              <span className="text-amber-400 drop-shadow-[0_0_25px_rgba(245,158,11,0.25)]">
                 {t("hero.titlePart2")}
               </span>{" "}
               {t("hero.titlePart3")}
             </h1>
 
-            {/* Subtitle */}
-            <p className="hero-anim text-base sm:text-lg text-[#717167] dark:text-[#9E9488] leading-relaxed max-w-2xl">
+            {/* Silver Slate Description */}
+            <p className="hero-anim text-sm sm:text-base text-[#9ca3af] leading-relaxed max-w-2xl">
               {t("hero.mainSubtitle")}
             </p>
 
-            {/* Interactive Search Bar (HandyHub Style) */}
-            <div className="hero-anim pt-2">
+            {/* High-Contrast Industrial Command Search Bar */}
+            <div className="hero-anim pt-1">
               <form
                 onSubmit={handleSearchSubmit}
-                className="p-2 sm:p-2.5 rounded-2xl sm:rounded-full bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
+                className="p-2 sm:p-2.5 rounded-2xl sm:rounded-full bg-[#1f2937] border border-slate-800 shadow-xl flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
               >
                 {/* Location Picker */}
-                <div className="flex items-center gap-2 px-3 py-2 border-b sm:border-b-0 sm:border-r border-[#E7E5DF] dark:border-[#2B231D] text-xs font-semibold text-[#252621] dark:text-[#F5F2EB] min-w-[150px]">
-                  <MapPin className="w-4 h-4 text-[#E87532] shrink-0" />
+                <div className="flex items-center gap-2 px-3 py-2 border-b sm:border-b-0 sm:border-r border-slate-700/80 text-xs font-semibold text-white min-w-[150px]">
+                  <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />
                   <span className="truncate max-w-[110px]">{location.city}</span>
                   <button
                     type="button"
                     onClick={() => detectCurrentLocation()}
-                    className="text-[10px] text-[#E87532] underline hover:no-underline ml-auto"
+                    className="text-[10px] text-amber-400 hover:text-amber-300 underline hover:no-underline ml-auto font-mono"
                     title="Auto detect location"
                   >
                     {isLoadingGPS ? "..." : t("nav.gpsDetect")}
@@ -545,13 +518,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
 
                 {/* Service Search Input */}
                 <div className="relative flex-1 flex items-center px-2">
-                  <Search className="w-4 h-4 text-[#8F8F85] mr-2 shrink-0" />
+                  <Search className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={t("hero.searchPlaceholder")}
-                    className="w-full bg-transparent border-none text-xs sm:text-sm text-[#252621] dark:text-[#F5F2EB] placeholder:text-[#8F8F85] focus:outline-none"
+                    className="w-full bg-transparent border-none text-xs sm:text-sm text-white placeholder:text-slate-400 focus:outline-none"
                   />
                 </div>
 
@@ -560,7 +533,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   type="submit"
                   variant="primary"
                   size="md"
-                  className="rounded-xl sm:rounded-full px-6 font-bold shadow-orange-glow"
+                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl sm:rounded-full px-6 font-bold shadow-[0_0_15px_rgba(245,158,11,0.25)]"
                 >
                   {t("hero.searchBtn")}
                 </Button>
@@ -574,7 +547,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   variant="primary"
                   size="lg"
                   rightIcon={<ArrowRight className="w-4 h-4" />}
-                  className="shadow-orange-glow font-bold px-7"
+                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-7 py-3 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.25)] flex items-center gap-2 transition-all hover:scale-[1.02]"
                 >
                   {t("hero.bookBtn")}
                 </Button>
@@ -583,49 +556,49 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 <Button
                   variant="outline"
                   size="lg"
-                  className="border-[#E7E5DF] text-[#252621] dark:text-[#F5F2EB] hover:bg-white dark:hover:bg-[#1A1613]"
+                  className="bg-[#1f2937] hover:bg-slate-800 text-cyan-400 border border-cyan-500/40 hover:border-cyan-400 font-semibold px-6 py-3 rounded-xl transition-all"
                 >
                   {t("hero.findTechBtn")}
                 </Button>
               </Link>
             </div>
 
-            {/* Trust Metrics Bar */}
+            {/* Precision Trust Metrics Bar */}
             <div className="hero-anim pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-              <div className="p-3 rounded-xl bg-white/80 dark:bg-[#141210]/80 border border-[#E7E5DF] dark:border-[#2B231D] shadow-subtle">
-                <p className="text-xl font-bold font-mono text-[#252621] dark:text-[#F5F2EB]">500+</p>
-                <p className="text-[11px] text-[#717167] dark:text-[#9E9488]">{t("hero.statPros")}</p>
+              <div className="p-3.5 rounded-xl bg-[#1f2937] border border-slate-800 shadow-sm">
+                <p className="text-xl font-bold font-mono text-cyan-400">500+</p>
+                <p className="text-[11px] text-[#9ca3af]">{t("hero.statPros")}</p>
               </div>
-              <div className="p-3 rounded-xl bg-white/80 dark:bg-[#141210]/80 border border-[#E7E5DF] dark:border-[#2B231D] shadow-subtle">
-                <p className="text-xl font-bold font-mono text-[#252621] dark:text-[#F5F2EB]">30 {t("common.mins")}</p>
-                <p className="text-[11px] text-[#717167] dark:text-[#9E9488]">{t("hero.statArrival")}</p>
+              <div className="p-3.5 rounded-xl bg-[#1f2937] border border-slate-800 shadow-sm">
+                <p className="text-xl font-bold font-mono text-amber-400">30 {t("common.mins")}</p>
+                <p className="text-[11px] text-[#9ca3af]">{t("hero.statArrival")}</p>
               </div>
-              <div className="p-3 rounded-xl bg-white/80 dark:bg-[#141210]/80 border border-[#E7E5DF] dark:border-[#2B231D] shadow-subtle">
-                <p className="text-xl font-bold font-mono text-[#252621] dark:text-[#F5F2EB]">4.9★</p>
-                <p className="text-[11px] text-[#717167] dark:text-[#9E9488]">{t("hero.statRating")}</p>
+              <div className="p-3.5 rounded-xl bg-[#1f2937] border border-slate-800 shadow-sm">
+                <p className="text-xl font-bold font-mono text-white">4.92★</p>
+                <p className="text-[11px] text-[#9ca3af]">{t("hero.statRating")}</p>
               </div>
-              <div className="p-3 rounded-xl bg-white/80 dark:bg-[#141210]/80 border border-[#E7E5DF] dark:border-[#2B231D] shadow-subtle">
-                <p className="text-xl font-bold font-mono text-[#252621] dark:text-[#F5F2EB]">₹0</p>
-                <p className="text-[11px] text-[#717167] dark:text-[#9E9488]">{t("hero.statCharges")}</p>
+              <div className="p-3.5 rounded-xl bg-[#1f2937] border border-slate-800 shadow-sm">
+                <p className="text-xl font-bold font-mono text-amber-400">₹0</p>
+                <p className="text-[11px] text-[#9ca3af]">{t("hero.statCharges")}</p>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Hero Visual & Floating Cards (Editorial Reference Layout) */}
+          {/* Right Column: Hero Visual & Floating Cards */}
           <div className="lg:col-span-5 relative lg:pl-4 xl:pl-8">
             <div className="hero-anim relative mx-auto max-w-md lg:max-w-none">
-              {/* Soft ambient atmospheric glow behind the cutout */}
-              <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-orange-500/10 dark:bg-orange-500/15 blur-3xl -z-10 pointer-events-none" />
+              {/* Ambient atmospheric glow */}
+              <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-amber-500/10 blur-3xl -z-10 pointer-events-none" />
 
-              {/* Subtle Editorial Background Watermark Typography (matches reference image "LUX" style) */}
+              {/* Watermark Typography */}
               <div
                 aria-hidden="true"
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none -z-10 font-display font-black text-[110px] sm:text-[150px] lg:text-[180px] leading-none tracking-widest text-[#252621]/[0.035] dark:text-white/[0.035] uppercase text-center"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none -z-10 font-display font-black text-[110px] sm:text-[150px] lg:text-[180px] leading-none tracking-widest text-white/[0.035] uppercase text-center"
               >
                 GARAJ
               </div>
 
-              {/* Direct Transparent Cutout (NO CARD, NO BORDER, NO BOX) */}
+              {/* Direct Transparent Cutout */}
               <picture>
                 <source srcSet="/images/hero_technician.webp" type="image/webp" />
                 <source srcSet="/images/hero_technician.png" type="image/png" />
@@ -637,43 +610,43 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   loading="eager"
                   decoding="async"
                   fetchPriority="high"
-                  className="w-full max-h-[560px] sm:max-h-[640px] object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_25px_45px_rgba(0,0,0,0.7)] transition-transform duration-700 hover:scale-[1.02]"
+                  className="w-full max-h-[560px] sm:max-h-[640px] object-contain object-bottom drop-shadow-[0_25px_45px_rgba(0,0,0,0.8)] transition-transform duration-700 hover:scale-[1.02]"
                 />
               </picture>
 
-              {/* Floating Badge 1: Top-Right (Rating & Reviews - matching reference image) */}
-              <div className="absolute top-10 sm:top-14 -right-2 sm:-right-4 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF]/70 dark:border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-30 flex items-center gap-3 animate-in fade-in duration-500">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#252621] dark:bg-black text-white flex items-center justify-center shrink-0 shadow-inner">
-                  <Star className="w-4 h-4 fill-white text-white" />
+              {/* Floating Badge 1: Top-Right (Rating & Reviews) */}
+              <div className="absolute top-10 sm:top-14 -right-2 sm:-right-4 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-[#1f2937]/95 backdrop-blur-md border border-slate-700/80 shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-30 flex items-center gap-3 animate-in fade-in duration-500">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-900 text-amber-400 flex items-center justify-center shrink-0 border border-slate-700">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                 </div>
                 <div>
-                  <div className="text-sm sm:text-base font-bold text-[#252621] dark:text-[#F5F2EB] leading-tight font-mono">
-                    4.9 / 5.0
+                  <div className="text-sm sm:text-base font-bold text-white leading-tight font-mono">
+                    4.92 / 5.0
                   </div>
-                  <p className="text-[10px] sm:text-[11px] font-medium text-[#717167] dark:text-[#9E9488]">
+                  <p className="text-[10px] sm:text-[11px] font-medium text-[#9ca3af]">
                     15K+ Verified Reviews
                   </p>
                 </div>
               </div>
 
-              {/* Floating Badge 2: Mid-Left (Featured Expert - matching reference image) */}
-              <div className="absolute top-[48%] -translate-y-1/2 -left-2 sm:-left-6 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF]/70 dark:border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-30 flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-[#9C6A46] dark:bg-[#E87532] shrink-0" />
+              {/* Floating Badge 2: Mid-Left (Featured Expert) */}
+              <div className="absolute top-[48%] -translate-y-1/2 -left-2 sm:-left-6 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-[#1f2937]/95 backdrop-blur-md border border-slate-700/80 shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-30 flex items-center gap-3">
+                <span className="w-3 h-3 rounded-full bg-amber-400 shrink-0 shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
                 <div>
-                  <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#717167] dark:text-[#9E9488]">
+                  <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-amber-400 font-mono">
                     {language === "hi" ? "शीर्ष विशेषज्ञ" : "FEATURED EXPERT"}
                   </p>
-                  <p className="text-xs sm:text-sm font-bold text-[#252621] dark:text-[#F5F2EB]">
-                    {language === "hi" ? "मास्टर ऑटो मैकेनिक व प्रो" : "Master Auto Mechanic & Pro"}
+                  <p className="text-xs sm:text-sm font-bold text-white">
+                    {language === "hi" ? "मास्टर ऑटो मैकेनिक व प्रो" : "Master Diagnostics Pro"}
                   </p>
                 </div>
               </div>
 
-              {/* Floating Badge 3: Bottom-Left (100% Genuine - matching reference image) */}
-              <div className="absolute bottom-6 sm:bottom-10 left-1 sm:left-4 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/95 dark:bg-[#1E1B18]/95 backdrop-blur-md border border-[#E7E5DF]/70 dark:border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-30 flex items-center gap-2.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-[#252621] dark:text-[#F5F2EB]">
-                  {language === "hi" ? "100% ओरिजिनल पार्ट्स व डोरस्टेप वारंटी" : "100% Genuine Spares & Doorstep Service"}
+              {/* Floating Badge 3: Bottom-Left (100% Genuine OEM Spares) */}
+              <div className="absolute bottom-6 sm:bottom-10 left-1 sm:left-4 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-[#1f2937]/95 backdrop-blur-md border border-slate-700/80 shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-30 flex items-center gap-2.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)] shrink-0 animate-pulse" />
+                <span className="text-xs sm:text-sm font-semibold text-white">
+                  {language === "hi" ? "100% ओरिजिनल पार्ट्स व वारंटी" : "100% Genuine Spares & Warranty"}
                 </span>
               </div>
             </div>
@@ -682,30 +655,144 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 03 POPULAR CATEGORIES                                     */}
+      {/* 02.5 LIVE TRACKING & TELEMETRY WIDGET (Industrial-Tech Showcase) */}
       {/* ========================================================= */}
-      <section ref={categoriesRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="p-6 sm:p-8 rounded-2xl bg-[#1f2937] border border-slate-800 shadow-xl space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-800/80 gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-xs font-bold uppercase">
+                  Live Dispatch Telemetry
+                </span>
+                <span className="text-xs text-[#9ca3af] font-mono">
+                  JOB #JG-4081 • TATA HARRIER 2.0
+                </span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                Doorstep Battery Triage &amp; Alternator Diagnostics
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="px-3.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/40 text-amber-400 flex items-center gap-2 text-xs font-mono font-bold">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                <span>DIAGNOSTIC TEST ACTIVE</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Steps / Workflow Timeline */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <button
+              type="button"
+              onClick={() => setActiveTelemetryStage(1)}
+              className={`text-left p-3.5 rounded-xl border transition-all ${
+                activeTelemetryStage >= 1
+                  ? "bg-cyan-950/30 border-cyan-500/50 text-cyan-300"
+                  : "bg-[#111827] border-slate-800 text-slate-500"
+              }`}
+            >
+              <div className="flex items-center gap-2 text-xs font-bold font-mono mb-1">
+                <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                <span>01. RADAR DISPATCHED</span>
+              </div>
+              <p className="text-xs text-[#9ca3af]">
+                Proximity matched in 28 seconds
+              </p>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTelemetryStage(2)}
+              className={`text-left p-3.5 rounded-xl border transition-all ${
+                activeTelemetryStage >= 2
+                  ? "bg-cyan-950/30 border-cyan-500/50 text-cyan-300"
+                  : "bg-[#111827] border-slate-800 text-slate-500"
+              }`}
+            >
+              <div className="flex items-center gap-2 text-xs font-bold font-mono mb-1">
+                <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                <span>02. DOORSTEP OTP GATE &amp; SCAN</span>
+              </div>
+              <p className="text-xs text-[#9ca3af]">
+                Verified customer authentication
+              </p>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTelemetryStage(3)}
+              className={`text-left p-3.5 rounded-xl border transition-all ${
+                activeTelemetryStage >= 3
+                  ? "bg-amber-950/30 border-amber-500/60 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.15)]"
+                  : "bg-[#111827] border-slate-800 text-slate-500"
+              }`}
+            >
+              <div className="flex items-center gap-2 text-xs font-bold font-mono mb-1 text-amber-400">
+                <Activity className="w-4 h-4 animate-spin text-amber-400 shrink-0" />
+                <span>03. PRECISION CALIBRATION</span>
+              </div>
+              <p className="text-xs text-amber-200/70">
+                14.2V charging &amp; 30-day warranty active
+              </p>
+            </button>
+          </div>
+
+          {/* Quick Mechanic Card & Contact */}
+          <div className="p-4 rounded-xl bg-[#111827] border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold font-mono">
+                RS
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-white">Rameshwar Sharma</h4>
+                  <span className="px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-[10px] font-mono text-cyan-400 font-bold">
+                    VERIFIED LEAD
+                  </span>
+                </div>
+                <p className="text-xs text-[#9ca3af]">Master Auto Mechanic • 9+ Yrs Exp • 4.95 Rating</p>
+              </div>
+            </div>
+
+            <a
+              href="tel:+918439616833"
+              className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              <span>Contact Mechanic Directly</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* 03 POPULAR CATEGORIES (Service Selection Cards with Hover Lift) */}
+      {/* ========================================================= */}
+      <section ref={categoriesRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#E87532]">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
               {t("categories.exploreTag")}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#252621] dark:text-[#F5F2EB] mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight mt-1">
               {t("categories.popularTitle")}
             </h2>
-            <p className="text-sm text-[#717167] dark:text-[#9E9488] mt-1">
+            <p className="text-sm text-[#9ca3af] mt-1">
               {t("categories.popularSubtitle")}
             </p>
           </div>
           <Link
             to="/services"
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#E87532] hover:underline group shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 group shrink-0"
           >
             <span>{t("categories.allCategories")}</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
+        {/* 3-Column Service Selection Card Grid with Amber Hover Lift */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {popularCategories.map((cat) => {
             const Icon = cat.icon;
@@ -715,30 +802,37 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 to={`/services?category=${cat.id}`}
                 className="category-card-anim group"
               >
-                <div className="h-full p-6 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] hover:border-[#E87532]/60 shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between">
+                <div className="h-full p-6 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-amber-500/50 hover:-translate-y-1 transition-all duration-300 shadow-md flex flex-col justify-between">
                   <div>
+                    {/* Top Row: Icon + High-Contrast Badge + Starting Price */}
                     <div className="flex items-center justify-between mb-4">
                       <div
-                        className={`w-12 h-12 flex items-center justify-center bg-transparent border-0 p-0 ${cat.accentColor} transition-all duration-300 group-hover:scale-110`}
+                        className={`w-11 h-11 flex items-center justify-center bg-transparent border-0 p-0 ${cat.accentColor} transition-all duration-300 group-hover:scale-110`}
                       >
-                        <Icon className="w-8 h-8" />
+                        <Icon className="w-7 h-7" />
                       </div>
-                      <span className="text-xs font-bold font-mono text-[#E87532] bg-orange-50 dark:bg-[#1A1613] px-2.5 py-1 rounded-full border border-orange-200/50 dark:border-[#2B231D]">
-                        {t("categories.starts")} {cat.startingPrice}
-                      </span>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
+                          {cat.badge}
+                        </span>
+                        <span className="text-xs font-bold font-mono text-amber-400 bg-amber-950/40 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                          {cat.startingPrice}
+                        </span>
+                      </div>
                     </div>
 
-                    <h3 className="text-lg font-bold font-display text-[#252621] dark:text-[#F5F2EB] group-hover:text-[#E87532] transition-colors">
+                    <h3 className="text-base sm:text-lg font-bold font-display text-white group-hover:text-amber-400 transition-colors">
                       {language === "hi" && cat.nameHi ? cat.nameHi : tc(cat.name)}
                     </h3>
-                    <p className="text-xs text-[#717167] dark:text-[#9E9488] mt-1.5 leading-relaxed">
+                    <p className="text-xs text-[#9ca3af] mt-1.5 leading-relaxed">
                       {language === "hi" && cat.descHi ? cat.descHi : cat.desc}
                     </p>
                   </div>
 
-                  <div className="pt-4 mt-4 border-t border-[#E7E5DF] dark:border-[#2B231D] flex items-center justify-between text-xs font-semibold text-[#717167] dark:text-[#9E9488]">
+                  <div className="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-[#9ca3af]">
                     <span>{language === "hi" && cat.expertsCountHi ? cat.expertsCountHi : cat.expertsCount}</span>
-                    <span className="text-[#E87532] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    <span className="text-amber-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform font-mono text-xs">
                       {t("common.bookNow")} <ChevronRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
@@ -750,125 +844,122 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 04 HOW IT WORKS                                           */}
+      {/* 04 HOW IT WORKS (1-2-3 Service Process Timeline)          */}
       {/* ========================================================= */}
       <section
         id="how-it-works"
         ref={howItWorksRef}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-28"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 scroll-mt-28"
       >
-        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#E87532]">
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14 space-y-2">
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400">
             {t("howItWorks.tag")}
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#252621] dark:text-[#F5F2EB] mt-1">
+          <h2 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight">
             {t("howItWorks.title")}
           </h2>
-          <p className="text-sm text-[#717167] dark:text-[#9E9488] mt-2">
+          <p className="text-sm text-[#9ca3af]">
             {t("howItWorks.subtitle")}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 relative">
           {/* Step 1 */}
-          <div className="p-6 sm:p-7 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card hover:shadow-card-hover hover:border-[#E87532]/50 transition-all duration-300 relative group flex flex-col justify-between overflow-hidden">
+          <div className="p-6 sm:p-7 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-amber-500/50 hover:-translate-y-1 transition-all duration-300 relative group flex flex-col justify-between overflow-hidden shadow-lg">
             <div>
-              {/* Top Row: Heading on top-left, Number on top-right */}
               <div className="flex items-start justify-between gap-4 mb-3.5">
-                <h3 className="text-lg sm:text-xl font-bold font-display text-[#252621] dark:text-[#F5F2EB] leading-snug">
+                <h3 className="text-lg font-bold font-display text-white leading-snug">
                   {t("howItWorks.step1Title")}
                 </h3>
-                <span className="font-mono font-black text-4xl sm:text-5xl text-[#E87532]/25 dark:text-[#E87532]/30 select-none shrink-0 group-hover:text-[#E87532]/45 transition-colors leading-none">
+                <span className="font-mono font-black text-4xl sm:text-5xl text-amber-400/20 select-none shrink-0 group-hover:text-amber-400/40 transition-colors leading-none">
                   01
                 </span>
               </div>
-
-              {/* Description Content */}
-              <p className="text-xs sm:text-sm text-[#717167] dark:text-[#9E9488] leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">
                 {t("howItWorks.step1Desc")}
               </p>
             </div>
 
-            {/* Bottom Step Highlight */}
-            <div className="pt-4 mt-6 border-t border-[#E7E5DF]/70 dark:border-[#2B231D] flex items-center text-xs font-semibold text-[#E87532]">
-              <CheckCircle className="w-3.5 h-3.5 mr-1.5 shrink-0" />
-              <span>{language === "hi" ? "पारदर्शी तय दरें" : "Fixed Upfront Quotes"}</span>
+            <div className="pt-4 mt-6 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-amber-400">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle className="w-3.5 h-3.5" />
+                <span>{language === "hi" ? "पारदर्शी तय दरें" : "Fixed Upfront Quotes"}</span>
+              </span>
+              <span className="text-slate-500">STAGE 1</span>
             </div>
           </div>
 
           {/* Step 2 */}
-          <div className="p-6 sm:p-7 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card hover:shadow-card-hover hover:border-[#E87532]/50 transition-all duration-300 relative group flex flex-col justify-between overflow-hidden">
+          <div className="p-6 sm:p-7 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-amber-500/50 hover:-translate-y-1 transition-all duration-300 relative group flex flex-col justify-between overflow-hidden shadow-lg">
             <div>
-              {/* Top Row: Heading on top-left, Number on top-right */}
               <div className="flex items-start justify-between gap-4 mb-3.5">
-                <h3 className="text-lg sm:text-xl font-bold font-display text-[#252621] dark:text-[#F5F2EB] leading-snug">
+                <h3 className="text-lg font-bold font-display text-white leading-snug">
                   {t("howItWorks.step2Title")}
                 </h3>
-                <span className="font-mono font-black text-4xl sm:text-5xl text-[#E87532]/25 dark:text-[#E87532]/30 select-none shrink-0 group-hover:text-[#E87532]/45 transition-colors leading-none">
+                <span className="font-mono font-black text-4xl sm:text-5xl text-cyan-400/20 select-none shrink-0 group-hover:text-cyan-400/40 transition-colors leading-none">
                   02
                 </span>
               </div>
-
-              {/* Description Content */}
-              <p className="text-xs sm:text-sm text-[#717167] dark:text-[#9E9488] leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">
                 {t("howItWorks.step2Desc")}
               </p>
             </div>
 
-            {/* Bottom Step Highlight */}
-            <div className="pt-4 mt-6 border-t border-[#E7E5DF]/70 dark:border-[#2B231D] flex items-center text-xs font-semibold text-[#E87532]">
-              <CheckCircle className="w-3.5 h-3.5 mr-1.5 shrink-0" />
-              <span>{language === "hi" ? "3 मिनट में नजदीकी मैकेनिक" : "Matched in 3 Minutes"}</span>
+            <div className="pt-4 mt-6 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-cyan-400">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle className="w-3.5 h-3.5" />
+                <span>{language === "hi" ? "3 मिनट में नजदीकी मैकेनिक" : "Matched in 3 Minutes"}</span>
+              </span>
+              <span className="text-slate-500">STAGE 2</span>
             </div>
           </div>
 
           {/* Step 3 */}
-          <div className="p-6 sm:p-7 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card hover:shadow-card-hover hover:border-[#E87532]/50 transition-all duration-300 relative group flex flex-col justify-between overflow-hidden">
+          <div className="p-6 sm:p-7 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-amber-500/50 hover:-translate-y-1 transition-all duration-300 relative group flex flex-col justify-between overflow-hidden shadow-lg">
             <div>
-              {/* Top Row: Heading on top-left, Number on top-right */}
               <div className="flex items-start justify-between gap-4 mb-3.5">
-                <h3 className="text-lg sm:text-xl font-bold font-display text-[#252621] dark:text-[#F5F2EB] leading-snug">
+                <h3 className="text-lg font-bold font-display text-white leading-snug">
                   {t("howItWorks.step3Title")}
                 </h3>
-                <span className="font-mono font-black text-4xl sm:text-5xl text-[#E87532]/25 dark:text-[#E87532]/30 select-none shrink-0 group-hover:text-[#E87532]/45 transition-colors leading-none">
+                <span className="font-mono font-black text-4xl sm:text-5xl text-amber-400/20 select-none shrink-0 group-hover:text-amber-400/40 transition-colors leading-none">
                   03
                 </span>
               </div>
-
-              {/* Description Content */}
-              <p className="text-xs sm:text-sm text-[#717167] dark:text-[#9E9488] leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">
                 {t("howItWorks.step3Desc")}
               </p>
             </div>
 
-            {/* Bottom Step Highlight */}
-            <div className="pt-4 mt-6 border-t border-[#E7E5DF]/70 dark:border-[#2B231D] flex items-center text-xs font-semibold text-[#E87532]">
-              <CheckCircle className="w-3.5 h-3.5 mr-1.5 shrink-0" />
-              <span>{language === "hi" ? "काम से संतुष्ट होने पर पेमेंट" : "Pay After Satisfaction"}</span>
+            <div className="pt-4 mt-6 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-amber-400">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle className="w-3.5 h-3.5" />
+                <span>{language === "hi" ? "काम से संतुष्ट होने पर पेमेंट" : "Pay After Satisfaction"}</span>
+              </span>
+              <span className="text-slate-500">STAGE 3</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* ========================================================= */}
-      {/* 05 POPULAR SERVICES                                       */}
+      {/* 05 POPULAR SERVICES (Industrial Service Grid)              */}
       {/* ========================================================= */}
-      <section id="services" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="services" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#E87532]">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
               {t("services.topBookedTag")}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#252621] dark:text-[#F5F2EB] mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight mt-1">
               {t("services.popularTitle")}
             </h2>
-            <p className="text-sm text-[#717167] dark:text-[#9E9488] mt-1">
+            <p className="text-sm text-[#9ca3af] mt-1">
               {t("services.popularSubtitle")}
             </p>
           </div>
           <Link
             to="/services"
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#E87532] hover:underline group shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 group shrink-0"
           >
             <span>{t("services.viewAll")}</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -878,7 +969,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
         {servicesLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-56 w-full rounded-2xl" />
+              <Skeleton key={i} className="h-56 w-full rounded-2xl bg-slate-800" />
             ))}
           </div>
         ) : (
@@ -886,29 +977,29 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
             {displayedServices.map((service) => (
               <div
                 key={service.id}
-                className="p-6 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
+                className="p-6 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-amber-500/50 hover:-translate-y-1 transition-all duration-300 shadow-md flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="text-[11px] font-bold text-[#E87532] bg-orange-50 dark:bg-[#1A1613] border border-orange-200/60 dark:border-[#2B231D] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                    <span className="text-[11px] font-mono font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2.5 py-0.5 rounded uppercase tracking-wider">
                       {tc(service.category?.name || "Service")}
                     </span>
-                    <span className="text-lg font-mono font-extrabold text-[#252621] dark:text-[#F5F2EB]">
+                    <span className="text-lg font-mono font-extrabold text-amber-400">
                       ₹{service.defaultPrice}
                     </span>
                   </div>
 
-                  <h3 className="text-base sm:text-lg font-bold font-display text-[#252621] dark:text-[#F5F2EB]">
+                  <h3 className="text-base sm:text-lg font-bold font-display text-white group-hover:text-amber-400 transition-colors">
                     {ts(service.title)}
                   </h3>
-                  <p className="text-xs text-[#717167] dark:text-[#9E9488] mt-2 leading-relaxed">
+                  <p className="text-xs text-[#9ca3af] mt-2 leading-relaxed">
                     {t("services.desc")}
                   </p>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-[#E7E5DF] dark:border-[#2B231D] flex items-center justify-between gap-3">
-                  <div className="text-xs text-[#717167] dark:text-[#9E9488] flex items-center gap-1.5 font-medium">
-                    <Clock className="w-3.5 h-3.5 text-[#E87532]" />
+                <div className="pt-5 mt-5 border-t border-slate-800/80 flex items-center justify-between gap-3">
+                  <div className="text-xs text-[#9ca3af] flex items-center gap-1.5 font-mono">
+                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
                     <span>
                       {service.durationMinutes || 45} {t("common.mins")}
                     </span>
@@ -917,7 +1008,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                     variant="primary"
                     size="sm"
                     onClick={() => handleBookService(service)}
-                    className="font-bold shadow-orange-glow px-4"
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-xl shadow-[0_0_12px_rgba(245,158,11,0.25)]"
                   >
                     {t("common.bookNow")}
                   </Button>
@@ -929,24 +1020,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 06 TRUSTED TECHNICIANS                                    */}
+      {/* 06 TRUSTED TECHNICIANS (Verified Field Engineers)          */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#E87532]">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400">
               {t("techs.tag")}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#252621] dark:text-[#F5F2EB] mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight mt-1">
               {t("techs.title")}
             </h2>
-            <p className="text-sm text-[#717167] dark:text-[#9E9488] mt-1">
+            <p className="text-sm text-[#9ca3af] mt-1">
               {t("techs.subtitle")}
             </p>
           </div>
           <Link
             to="/technicians"
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#E87532] hover:underline group shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 group shrink-0"
           >
             <span>{t("techs.allTechs")}</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -957,31 +1048,29 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           {displayedTechnicians.map((tech) => (
             <div
               key={tech.id}
-              className="p-6 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] hover:border-[#E87532]/50 dark:hover:border-[#FF7A1A]/40 shadow-card hover:shadow-card-hover dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 flex flex-col justify-between group"
+              className="p-6 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-cyan-500/50 hover:-translate-y-1 transition-all duration-300 shadow-md flex flex-col justify-between group"
             >
               <div>
-                {/* Header Status & Rating */}
                 <div className="flex items-center justify-between gap-2 mb-4">
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 px-2.5 py-0.5 rounded-full">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2.5 py-0.5 rounded">
+                    <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
                     {t("techs.verifiedPro")}
                   </span>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#252621] dark:text-[#F5F5F0] bg-[#F8F7F3] dark:bg-[#1A1613] px-2.5 py-0.5 rounded-lg border border-[#E7E5DF] dark:border-[#2B231D]">
+                  <div className="flex items-center gap-1 text-xs font-bold font-mono text-amber-400 bg-amber-950/40 px-2.5 py-0.5 rounded border border-amber-500/30">
                     <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     <span>{tech.avgRating || 4.9}</span>
                   </div>
                 </div>
 
-                {/* Avatar / Name */}
                 <div className="flex items-start gap-3.5 mt-2 mb-3.5">
-                  <div className="w-10 h-10 flex items-center justify-center bg-transparent border-0 text-[#E87532] dark:text-[#FF7A1A] font-black text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-mono font-bold text-lg flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     {tech.user?.fullName?.charAt(0) || "T"}
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-bold text-sm sm:text-base text-[#252621] dark:text-[#F5F5F0] group-hover:text-[#E87532] transition-colors leading-snug">
+                    <h3 className="font-bold text-sm sm:text-base text-white group-hover:text-cyan-400 transition-colors leading-snug truncate">
                       {tech.user?.fullName || "Certified Technician"}
                     </h3>
-                    <p className="text-xs font-semibold text-[#E87532] mt-0.5 truncate">
+                    <p className="text-xs font-medium text-amber-400 mt-0.5 truncate font-mono">
                       {language === "hi"
                         ? ((tech as any).specialtyHi || (tech as any).specialty || "ऑटो व होम विशेषज्ञ")
                         : ((tech as any).specialty || "Auto & Home Specialist")}
@@ -989,43 +1078,40 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   </div>
                 </div>
 
-                {/* Bio text with spacious leading and 3-line clamp */}
-                <p className="text-xs sm:text-[13px] text-[#61605A] dark:text-[#A39E93] line-clamp-3 mt-3 leading-relaxed min-h-[58px]">
+                <p className="text-xs text-[#9ca3af] line-clamp-3 mt-3 leading-relaxed min-h-[54px]">
                   {language === "hi"
                     ? ((tech as any).bioHi || tech.bio || "त्वरित डायग्नोसिस और प्रामाणिक रिपेयर मानकों के लिए समर्पित पेशेवर तकनीशियन।")
                     : (tech.bio || "Professional technician dedicated to swift diagnostics and genuine repair standards.")}
                 </p>
 
-                {/* Experience & Jobs stats container with clear spacing and divider */}
-                <div className="mt-4 pt-3.5 border-t border-[#E7E5DF]/70 dark:border-[#2B231D]/80 flex items-center justify-between text-xs text-[#717167] dark:text-[#A39E93]">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] text-[#8F8F85]">{t("common.exp")}:</span>
-                    <span className="font-semibold text-[#252621] dark:text-[#F5F2EB]">
-                      {tech.experienceYears}+ {t("common.years")}
-                    </span>
+                <div className="mt-4 pt-3.5 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-[#9ca3af]">
+                  <div>
+                    <span className="text-slate-500">{t("common.exp")}:</span>{" "}
+                    <span className="font-semibold text-white">{tech.experienceYears}+ {t("common.years")}</span>
                   </div>
-                  <div className="h-3 w-px bg-[#E7E5DF] dark:bg-[#2B231D]" />
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] text-[#8F8F85]">{language === "hi" ? "काम" : "Jobs"}:</span>
-                    <span className="font-semibold text-[#252621] dark:text-[#F5F2EB]">
-                      {(tech as any).jobsDone || 120}+
-                    </span>
+                  <div className="h-3 w-px bg-slate-800" />
+                  <div>
+                    <span className="text-slate-500">{language === "hi" ? "काम" : "Jobs"}:</span>{" "}
+                    <span className="font-semibold text-white">{(tech as any).jobsDone || 120}+</span>
                   </div>
                 </div>
               </div>
 
-              {/* Bottom Actions */}
-              <div className="pt-4 mt-4 border-t border-[#E7E5DF] dark:border-[#2B231D] flex items-center justify-between gap-3">
+              <div className="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
                 <div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-[#8F8F85] block mb-0.5">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500 block mb-0.5 font-mono">
                     {t("techs.visitingFee")}
                   </span>
-                  <span className="text-base font-bold font-mono text-[#252621] dark:text-white">
+                  <span className="text-base font-bold font-mono text-white">
                     ₹{tech.baseVisitingCharge || 149}
                   </span>
                 </div>
                 <Link to={`/technicians/${tech.id}`}>
-                  <Button variant="primary" size="sm" className="text-xs font-bold shadow-orange-glow px-4 py-2 rounded-xl">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs"
+                  >
                     {t("techs.viewProfile")}
                   </Button>
                 </Link>
@@ -1036,67 +1122,67 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 07 WHY JANTAGARAJ                                         */}
+      {/* 07 WHY JANTAGARAJ (Precision Engineering Standards)       */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card">
-          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#E87532]">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
+        <div className="p-8 sm:p-12 rounded-3xl bg-[#111827] border border-slate-800 shadow-xl">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
               {t("why.tag")}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#252621] dark:text-[#F5F2EB] mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight">
               {t("why.title")}
             </h2>
-            <p className="text-sm text-[#717167] dark:text-[#9E9488] mt-2">
+            <p className="text-sm text-[#9ca3af]">
               {t("why.subtitle")}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="space-y-3 p-5 rounded-2xl bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D]">
-              <div className="w-10 h-10 rounded-xl bg-[#E87532]/10 text-[#E87532] flex items-center justify-center font-bold">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="space-y-3 p-5 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-cyan-500/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-[#252621] dark:text-[#F5F2EB]">
+              <h3 className="text-base font-bold text-white tracking-tight">
                 {t("why.f1Title")}
               </h3>
-              <p className="text-xs text-[#717167] dark:text-[#9E9488] leading-relaxed">
+              <p className="text-xs text-[#9ca3af] leading-relaxed">
                 {t("why.f1Desc")}
               </p>
             </div>
 
-            <div className="space-y-3 p-5 rounded-2xl bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D]">
-              <div className="w-10 h-10 rounded-xl bg-[#E87532]/10 text-[#E87532] flex items-center justify-center font-bold">
+            <div className="space-y-3 p-5 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-amber-500/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center font-bold">
                 <Wrench className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-[#252621] dark:text-[#F5F2EB]">
+              <h3 className="text-base font-bold text-white tracking-tight">
                 {t("why.f2Title")}
               </h3>
-              <p className="text-xs text-[#717167] dark:text-[#9E9488] leading-relaxed">
+              <p className="text-xs text-[#9ca3af] leading-relaxed">
                 {t("why.f2Desc")}
               </p>
             </div>
 
-            <div className="space-y-3 p-5 rounded-2xl bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D]">
-              <div className="w-10 h-10 rounded-xl bg-[#E87532]/10 text-[#E87532] flex items-center justify-center font-bold">
+            <div className="space-y-3 p-5 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-cyan-500/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold">
                 <CalendarCheck className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-[#252621] dark:text-[#F5F2EB]">
+              <h3 className="text-base font-bold text-white tracking-tight">
                 {t("why.f3Title")}
               </h3>
-              <p className="text-xs text-[#717167] dark:text-[#9E9488] leading-relaxed">
+              <p className="text-xs text-[#9ca3af] leading-relaxed">
                 {t("why.f3Desc")}
               </p>
             </div>
 
-            <div className="space-y-3 p-5 rounded-2xl bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D]">
-              <div className="w-10 h-10 rounded-xl bg-[#E87532]/10 text-[#E87532] flex items-center justify-center font-bold">
+            <div className="space-y-3 p-5 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-amber-500/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center font-bold">
                 <Phone className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-[#252621] dark:text-[#F5F2EB]">
+              <h3 className="text-base font-bold text-white tracking-tight">
                 {t("why.f4Title")}
               </h3>
-              <p className="text-xs text-[#717167] dark:text-[#9E9488] leading-relaxed">
+              <p className="text-xs text-[#9ca3af] leading-relaxed">
                 {t("why.f4Desc")}
               </p>
             </div>
@@ -1105,45 +1191,45 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 08 REMOTE ASSISTANCE                                      */}
+      {/* 08 REMOTE ASSISTANCE (Industrial Video Diagnostic Desk)     */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
+        <div className="p-8 sm:p-12 rounded-3xl bg-[#1f2937] border border-slate-800 shadow-xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 dark:bg-[#1A1613] border border-orange-200/60 dark:border-[#2B231D] text-[#E87532] text-xs font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">
                 <Video className="w-3.5 h-3.5" />
                 {t("remote.tag")}
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#252621] dark:text-[#F5F2EB]">
+              <h2 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight">
                 {t("remote.title")}
               </h2>
-              <p className="text-sm text-[#717167] dark:text-[#9E9488] leading-relaxed">
+              <p className="text-sm text-[#9ca3af] leading-relaxed">
                 {t("remote.desc")}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                <div className="p-3 rounded-xl bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D]">
-                  <p className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
+                <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800">
+                  <p className="text-xs font-bold text-white">
                     {t("remote.s1Title")}
                   </p>
-                  <p className="text-[11px] text-[#717167] dark:text-[#9E9488] mt-0.5">
+                  <p className="text-[11px] text-[#9ca3af] mt-0.5">
                     {t("remote.s1Desc")}
                   </p>
                 </div>
-                <div className="p-3 rounded-xl bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D]">
-                  <p className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
+                <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800">
+                  <p className="text-xs font-bold text-white">
                     {t("remote.s2Title")}
                   </p>
-                  <p className="text-[11px] text-[#717167] dark:text-[#9E9488] mt-0.5">
+                  <p className="text-[11px] text-[#9ca3af] mt-0.5">
                     {t("remote.s2Desc")}
                   </p>
                 </div>
-                <div className="p-3 rounded-xl bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D]">
-                  <p className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
+                <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800">
+                  <p className="text-xs font-bold text-white">
                     {t("remote.s3Title")}
                   </p>
-                  <p className="text-[11px] text-[#717167] dark:text-[#9E9488] mt-0.5">
+                  <p className="text-[11px] text-[#9ca3af] mt-0.5">
                     {t("remote.s3Desc")}
                   </p>
                 </div>
@@ -1155,13 +1241,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                     variant="primary"
                     size="md"
                     leftIcon={<Phone className="w-4 h-4" />}
-                    className="font-bold shadow-orange-glow"
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl shadow-[0_0_15px_rgba(245,158,11,0.25)]"
                   >
                     {t("remote.callBtn")}
                   </Button>
                 </a>
                 <Link to="/services">
-                  <Button variant="outline" size="md">
+                  <Button
+                    variant="outline"
+                    size="md"
+                    className="bg-[#111827] hover:bg-slate-800 text-cyan-400 border border-cyan-500/40 px-6 py-2.5 rounded-xl"
+                  >
                     {t("remote.scheduleBtn")}
                   </Button>
                 </Link>
@@ -1170,20 +1260,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
 
             {/* Video Preview Mock Interface */}
             <div className="lg:col-span-5">
-              <div className="p-5 rounded-2xl bg-[#F8F7F3] dark:bg-[#1A1613] border border-[#E7E5DF] dark:border-[#2B231D] space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#E7E5DF] dark:border-[#2B231D]">
+              <div className="p-5 rounded-2xl bg-[#111827] border border-slate-800 space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
+                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="text-xs font-bold font-mono text-cyan-400">
                       {t("remote.statusActive")}
                     </span>
                   </div>
-                  <span className="text-[11px] font-mono text-[#E87532] font-semibold">
+                  <span className="text-[11px] font-mono text-amber-400 font-semibold">
                     {t("remote.freeTriage")}
                   </span>
                 </div>
 
-                <div className="relative rounded-xl overflow-hidden aspect-video bg-[#252621] flex items-center justify-center">
+                <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-900 flex items-center justify-center">
                   <img
                     src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80"
                     alt="Remote technician guidance"
@@ -1194,19 +1284,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                     }}
                     className="w-full h-full object-cover opacity-80"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-3">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
                     <p className="text-[11px] text-white font-medium">
                       {t("remote.videoCap")}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs font-semibold text-[#717167] dark:text-[#9E9488]">
+                <div className="flex items-center justify-between text-xs font-mono text-[#9ca3af]">
                   <span className="flex items-center gap-1.5">
-                    <MessageSquare className="w-3.5 h-3.5 text-[#E87532]" />
+                    <MessageSquare className="w-3.5 h-3.5 text-amber-400" />
                     {t("remote.chatVoice")}
                   </span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                  <span className="text-cyan-400 font-bold">
                     {t("remote.techsOnline")}
                   </span>
                 </div>
@@ -1217,17 +1307,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 09 CUSTOMER REVIEWS                                       */}
+      {/* 09 CUSTOMER REVIEWS (Audited Field Feedback)               */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#E87532]">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-2">
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
             {t("reviews.tag")}
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#252621] dark:text-[#F5F2EB] mt-1">
+          <h2 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight">
             {t("reviews.title")}
           </h2>
-          <p className="text-sm text-[#717167] dark:text-[#9E9488] mt-1">
+          <p className="text-sm text-[#9ca3af]">
             {t("reviews.subtitle")}
           </p>
         </div>
@@ -1236,7 +1326,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           {customerReviews.map((rev) => (
             <div
               key={rev.id}
-              className="p-6 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
+              className="p-6 rounded-2xl bg-[#1f2937] border border-slate-800 hover:border-slate-700 transition-all duration-300 flex flex-col justify-between shadow-md"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
@@ -1248,27 +1338,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                       />
                     ))}
                   </div>
-                  <span className="text-[11px] text-[#8F8F85] font-medium">
+                  <span className="text-[11px] font-mono text-slate-500">
                     {language === "hi" && rev.dateHi ? rev.dateHi : rev.date}
                   </span>
                 </div>
 
-                <p className="text-xs sm:text-sm text-[#252621] dark:text-[#F5F2EB] leading-relaxed italic">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
                   "{language === "hi" && rev.commentHi ? rev.commentHi : rev.comment}"
                 </p>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-[#E7E5DF] dark:border-[#2B231D] flex items-center justify-between">
+              <div className="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
                 <div>
-                  <h4 className="text-xs sm:text-sm font-bold text-[#252621] dark:text-[#F5F2EB]">
+                  <h4 className="text-xs sm:text-sm font-bold text-white">
                     {language === "hi" && rev.customerNameHi ? rev.customerNameHi : rev.customerName}
                   </h4>
-                  <p className="text-[10px] text-[#717167] dark:text-[#9E9488]">
+                  <p className="text-[10px] text-[#9ca3af] font-mono">
                     {language === "hi" && rev.locationHi ? rev.locationHi : rev.location}
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200/80 dark:border-emerald-800/60">
-                  <CheckCircle className="w-3 h-3 text-emerald-500" />
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">
+                  <CheckCircle className="w-3 h-3 text-cyan-400" />
                   {t("reviews.verified")}
                 </span>
               </div>
@@ -1278,24 +1368,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 10 FINAL CTA BANNER                                       */}
+      {/* 10 FINAL CTA BANNER (Precision Reliability Gate)           */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-14 rounded-3xl bg-[#252621] dark:bg-[#141210] text-white border border-[#34352f] shadow-premium relative overflow-hidden">
-          {/* Subtle warm orange ambient background glow */}
-          <div className="absolute right-0 top-0 w-96 h-96 bg-[#E87532]/20 rounded-full blur-[120px] pointer-events-none" />
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
+        <div className="p-8 sm:p-14 rounded-3xl bg-[#111827] text-white border border-slate-800 shadow-2xl relative overflow-hidden">
+          {/* Top Industrial Accent Rule */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-cyan-400 to-amber-500" />
+          <div className="absolute right-0 top-0 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
 
           <div className="relative z-10 text-center max-w-2xl mx-auto space-y-6">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E87532]/20 text-[#E87532] text-xs font-bold uppercase tracking-wider border border-[#E87532]/30">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-mono font-bold uppercase tracking-wider border border-amber-500/30">
               <Sparkles className="w-3.5 h-3.5" />
               {t("cta.tag")}
             </span>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display leading-[1.32] sm:leading-[1.3] text-[#F8F7F3]">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold font-display leading-[1.3] text-white tracking-tight">
               {t("cta.title")}
             </h2>
 
-            <p className="text-sm sm:text-base text-[#D1C7BD] leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">
               {t("cta.subtitle")}
             </p>
 
@@ -1305,24 +1396,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   variant="primary"
                   size="lg"
                   rightIcon={<ArrowRight className="w-5 h-5" />}
-                  className="font-bold shadow-orange-glow px-8"
+                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-8 py-3 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.25)] flex items-center gap-2 transition-all hover:scale-[1.02]"
                 >
                   {t("cta.bookNow")}
                 </Button>
               </Link>
               <a href="tel:+918439616833">
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="lg"
-                  leftIcon={<Phone className="w-4 h-4 text-[#E87532]" />}
-                  className="bg-[#34352f] hover:bg-[#44443e] text-white border border-[#44443e]"
+                  leftIcon={<Phone className="w-4 h-4 text-amber-400" />}
+                  className="bg-[#1f2937] hover:bg-slate-800 text-white border border-slate-700 px-6 py-3 rounded-xl font-mono text-xs sm:text-sm"
                 >
                   {t("cta.callHelp")}
                 </Button>
               </a>
             </div>
 
-            <p className="text-[11px] text-[#8F8F85] pt-2">
+            <p className="text-[11px] font-mono text-slate-500 pt-2">
               {t("cta.guarantee")}
             </p>
           </div>
