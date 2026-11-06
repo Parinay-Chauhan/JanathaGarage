@@ -14,6 +14,10 @@ import {
   CalendarCheck,
   ShieldAlert,
   Languages,
+  Radio,
+  Clock,
+  CreditCard,
+  HelpCircle,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logOut } from "../../features/auth/authSlice";
@@ -40,7 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 15);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -65,69 +69,76 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
   return (
     <header
       id="header"
-      className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+      className={`sticky top-0 z-40 w-full transition-all duration-200 ${
         isScrolled || mobileMenuOpen
-          ? "header-scrolled bg-[#F8F7F3]/85 dark:bg-[#040404]/85 backdrop-blur-xl border-b border-[#E7E5DF]/80 dark:border-[#2B231D]/80 shadow-sm dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)]"
-          : "header-transparent bg-transparent border-b border-transparent shadow-none"
+          ? "header-scrolled bg-[#0b0f17]/95 backdrop-blur-md border-b border-slate-800"
+          : "header-transparent bg-[#0b0f17]/80 backdrop-blur-sm border-b border-slate-800/80"
       }`}
     >
       <div
-        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 transition-all duration-300 ${
-          isScrolled ? "h-16" : "h-20"
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 transition-all duration-200 ${
+          isScrolled ? "h-16" : "h-18 sm:h-20"
         }`}
       >
-        {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-11 h-11 rounded-2xl bg-[#E87532] flex items-center justify-center text-white shadow-orange-glow group-hover:scale-105 transition-transform duration-200">
-            <Wrench className="w-6 h-6 stroke-[2.2]" />
+        {/* Brand Mark */}
+        <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 font-bold group-hover:scale-105 transition-transform">
+            <Wrench className="w-5 h-5 stroke-[2.4]" />
           </div>
           <div>
-            <span className="text-2xl font-extrabold font-display tracking-tight text-[#252621] dark:text-[#F5F2EB]">
-              Janta<span className="text-[#E87532]">Garaj</span>
+            <span className="text-xl sm:text-2xl font-bold font-display tracking-tight text-white">
+              Janta<span className="text-amber-400">Garaj</span>
             </span>
-            <span className="hidden sm:block text-[10px] tracking-wider uppercase font-semibold text-[#717167] dark:text-[#9E9488]">
+            <span className="hidden sm:block text-[9px] font-mono tracking-wider uppercase text-slate-400">
               {t("nav.tagline")}
             </span>
           </div>
         </Link>
 
-        {/* Location Selector (GPS / City) */}
-        <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 dark:bg-[#141210]/70 backdrop-blur-md border border-[#E7E5DF]/80 dark:border-[#2B231D]/90 text-xs font-medium text-[#252621] dark:text-[#F5F2EB] shadow-subtle hover:border-[#E87532]/50 transition-all">
-          <MapPin className="w-4 h-4 text-[#E87532] shrink-0" />
-          <span className="max-w-[140px] truncate">{location.city}</span>
+        {/* Diagnostic Geo-Zone Pill */}
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#1f2937] border border-slate-800 text-xs font-mono text-slate-300">
+          <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+          <span className="max-w-[130px] truncate text-white">{location.city}</span>
+          <span className="text-slate-600">|</span>
           <button
             onClick={() => detectCurrentLocation()}
             disabled={isLoadingGPS}
-            className="text-[#E87532] font-semibold hover:underline text-[11px] disabled:opacity-50"
+            className="text-amber-400 hover:text-amber-300 font-semibold text-[10px] disabled:opacity-50 transition-colors uppercase"
             title="Auto detect location via GPS"
           >
-            {isLoadingGPS ? t("nav.detecting") : t("nav.gpsDetect")}
+            {isLoadingGPS ? "..." : t("nav.gpsDetect")}
           </button>
         </div>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-[#252621]/80 dark:text-[#F5F2EB]/80">
+        <nav className="hidden lg:flex items-center gap-6 text-xs sm:text-sm font-mono font-medium text-slate-300">
           <Link
             to="/services"
-            className="hover:text-[#E87532] dark:hover:text-[#E87532] transition-colors relative py-1"
+            className="hover:text-amber-400 transition-colors uppercase tracking-wider py-1"
           >
             {t("nav.services")}
           </Link>
           <a
             href="/#how-it-works"
-            className="hover:text-[#E87532] dark:hover:text-[#E87532] transition-colors relative py-1"
+            className="hover:text-amber-400 transition-colors uppercase tracking-wider py-1"
           >
             {t("nav.howItWorks")}
           </a>
           <Link
             to="/technicians"
-            className="hover:text-[#E87532] dark:hover:text-[#E87532] transition-colors relative py-1"
+            className="hover:text-amber-400 transition-colors uppercase tracking-wider py-1"
           >
             {t("nav.technicians")}
           </Link>
           <Link
+            to="/pricing"
+            className="hover:text-amber-400 transition-colors uppercase tracking-wider py-1"
+          >
+            Rate Card
+          </Link>
+          <Link
             to="/help"
-            className="hover:text-[#E87532] dark:hover:text-[#E87532] transition-colors relative py-1"
+            className="hover:text-amber-400 transition-colors uppercase tracking-wider py-1"
           >
             {t("nav.help")}
           </Link>
@@ -135,30 +146,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
 
         {/* Right Section Actions */}
         <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Language Switcher Button */}
+          {/* Live Fleet Beacon (Desktop) */}
+          <div className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-cyan-950/70 border border-cyan-500/30 text-cyan-400 font-mono text-[11px] font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span>RADAR: ACTIVE</span>
+          </div>
+
+          {/* Language Switcher */}
           <button
             onClick={toggleLanguage}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#E7E5DF]/80 dark:border-[#2B231D]/90 bg-white/70 dark:bg-[#141210]/70 backdrop-blur-md hover:border-[#E87532]/50 text-xs font-bold text-[#252621] dark:text-[#F5F2EB] transition-all shadow-subtle active:scale-95"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-800 bg-[#1f2937] hover:border-slate-700 text-xs font-mono font-semibold text-slate-300 hover:text-white transition-colors"
             title="भाषा बदलें / Switch Language"
             aria-label="Toggle between Hindi and English"
           >
-            <Languages className="w-4 h-4 text-[#E87532] shrink-0" />
-            <span className={language === "hi" ? "text-[#E87532] font-extrabold" : ""}>
+            <Languages className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className={language === "hi" ? "text-amber-400 font-bold" : ""}>
               {language === "en" ? "हिंदी" : "English"}
             </span>
-          </button>
-
-          {/* Theme Switcher */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-xl text-[#717167] hover:text-[#252621] dark:text-[#9E9488] dark:hover:text-[#F5F2EB] bg-white/70 dark:bg-[#141210]/70 backdrop-blur-md border border-[#E7E5DF]/80 dark:border-[#2B231D]/90 hover:border-[#E87532]/50 transition-all shadow-subtle"
-            aria-label="Toggle theme"
-          >
-            {theme === "dark" ? (
-              <Sun className="w-5 h-5 text-amber-400" />
-            ) : (
-              <Moon className="w-5 h-5" />
-            )}
           </button>
 
           {/* User Auth / Profile Dropdown */}
@@ -166,7 +170,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#E87532]/10 hover:bg-[#E87532]/20 text-[#E87532] font-black flex items-center justify-center text-sm border border-[#E87532]/30 hover:border-[#E87532] transition-all shadow-subtle active:scale-95 focus:outline-none ring-2 ring-transparent hover:ring-[#E87532]/20"
+                className="w-9 h-9 rounded-lg bg-[#1f2937] border border-amber-500/40 text-amber-400 font-mono font-bold flex items-center justify-center text-xs hover:border-amber-400 transition-colors focus:outline-none"
                 title={user.fullName}
                 aria-label="User Profile Menu"
               >
@@ -176,23 +180,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
               {/* Profile Menu Popup */}
               {userDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-[#141210] p-2 shadow-premium border border-[#E7E5DF] dark:border-[#2B231D] text-sm z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+                  className="absolute right-0 mt-2 w-56 rounded-xl bg-[#1f2937] p-2 border border-slate-800 text-xs font-mono z-50 shadow-2xl"
                   onClick={() => setUserDropdownOpen(false)}
                 >
-                  <div className="px-3 py-2 border-b border-[#E7E5DF] dark:border-[#2B231D] mb-1">
-                    <p className="font-bold text-[#252621] dark:text-[#F5F2EB] truncate">
+                  <div className="px-3 py-2 border-b border-slate-800 mb-1">
+                    <p className="font-bold text-white truncate">
                       {user.fullName}
                     </p>
-                    <p className="text-xs text-[#717167] dark:text-[#9E9488]">
+                    <p className="text-[11px] text-slate-400 mt-0.5">
                       {user.phone}
                     </p>
+                    <span className="mt-1 inline-block text-[10px] px-1.5 py-0.2 rounded bg-cyan-950/70 text-cyan-400 border border-cyan-500/30 font-bold uppercase">
+                      {user.role}
+                    </span>
                   </div>
 
                   <Link
                     to={getDashboardLink()}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#252621] dark:text-[#F5F2EB] hover:bg-[#F8F7F3] dark:hover:bg-[#1A1613] transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-200 hover:bg-[#111827] hover:text-amber-400 transition-colors"
                   >
-                    <LayoutDashboard className="w-4 h-4 text-[#E87532]" />
+                    <LayoutDashboard className="w-3.5 h-3.5 text-amber-400" />
                     <span>
                       {user.role === "ADMIN"
                         ? t("nav.adminDashboard")
@@ -205,28 +212,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
                   {user.role === "CUSTOMER" && (
                     <Link
                       to="/customer/bookings"
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#252621] dark:text-[#F5F2EB] hover:bg-[#F8F7F3] dark:hover:bg-[#1A1613] transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-200 hover:bg-[#111827] hover:text-amber-400 transition-colors"
                     >
-                      <CalendarCheck className="w-4 h-4 text-[#E87532]" />
-                      <span>{t("nav.customerDashboard")}</span>
+                      <CalendarCheck className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Work Orders</span>
                     </Link>
                   )}
 
                   {user.role === "ADMIN" && (
                     <Link
                       to="/admin/technicians/verification"
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#252621] dark:text-[#F5F2EB] hover:bg-[#F8F7F3] dark:hover:bg-[#1A1613] transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-200 hover:bg-[#111827] hover:text-cyan-400 transition-colors"
                     >
-                      <ShieldAlert className="w-4 h-4 text-[#E87532]" />
+                      <ShieldAlert className="w-3.5 h-3.5 text-cyan-400" />
                       <span>KYC Verification</span>
                     </Link>
                   )}
 
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors text-left mt-1 border-t border-[#E7E5DF] dark:border-[#2B231D]"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-rose-400 hover:bg-rose-950/30 transition-colors text-left mt-1 border-t border-slate-800"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-3.5 h-3.5" />
                     <span>{t("nav.logout")}</span>
                   </button>
                 </div>
@@ -237,9 +244,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
               <Button
                 variant="outline"
                 size="sm"
-                leftIcon={<UserIcon className="w-3.5 h-3.5" />}
+                leftIcon={<UserIcon className="w-3.5 h-3.5 text-slate-400" />}
                 onClick={onOpenAuthModal}
-                className="hidden sm:inline-flex bg-white/70 dark:bg-[#141210]/70 backdrop-blur-md border-[#E7E5DF]/80 dark:border-[#2B231D]/90 text-[#252621] dark:text-[#F5F2EB] hover:bg-white dark:hover:bg-[#1A1613] hover:border-[#E87532]/50 shadow-subtle"
+                className="hidden sm:inline-flex bg-[#1f2937] border-slate-800 text-slate-200 hover:text-white hover:border-slate-700 rounded-lg text-xs font-mono uppercase px-3 py-1.5"
               >
                 {t("nav.login")}
               </Button>
@@ -247,7 +254,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="shadow-orange-glow font-bold"
+                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider"
                 >
                   {t("nav.bookService")}
                 </Button>
@@ -255,13 +262,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
             </div>
           )}
 
-          {/* If authenticated, also keep the fast Book CTA accessible */}
+          {/* Book Now Quick CTA (Logged in) */}
           {isAuthenticated && (
             <Link to="/services" className="hidden sm:block">
               <Button
                 variant="primary"
                 size="sm"
-                className="shadow-orange-glow font-bold"
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider"
               >
                 {t("nav.bookService")}
               </Button>
@@ -271,13 +278,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
           {/* Mobile Hamburger Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2.5 rounded-xl text-[#252621] dark:text-[#F5F2EB] bg-white/70 dark:bg-[#141210]/70 backdrop-blur-md border border-[#E7E5DF]/80 dark:border-[#2B231D]/90 hover:border-[#E87532]/50 shadow-subtle"
+            className="lg:hidden p-2 rounded-lg text-slate-300 bg-[#1f2937] border border-slate-800 hover:border-slate-700"
             aria-label="Open Navigation Menu"
           >
             {mobileMenuOpen ? (
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 text-amber-400" />
             ) : (
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             )}
           </button>
         </div>
@@ -285,49 +292,95 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#E7E5DF] dark:border-[#2B231D] bg-[#F8F7F3]/95 dark:bg-[#040404]/95 backdrop-blur-xl px-4 pt-4 pb-6 space-y-4 shadow-xl">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] text-xs font-medium text-[#252621] dark:text-[#F5F2EB]">
-            <MapPin className="w-4 h-4 text-[#E87532] shrink-0" />
+        <div className="lg:hidden border-t border-slate-800 bg-[#0b0f17] px-4 pt-3 pb-5 space-y-3">
+          {/* Location Bar */}
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1f2937] border border-slate-800 text-xs font-mono text-slate-300">
+            <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <span className="truncate">{location.city} - {location.address}</span>
           </div>
 
           {/* Mobile Language Switcher Row */}
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D]">
-            <div className="flex items-center gap-2 text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
-              <Languages className="w-4 h-4 text-[#E87532]" />
-              <span>Language / भाषा</span>
+          <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#1f2937] border border-slate-800">
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+              <Languages className="w-3.5 h-3.5 text-amber-400" />
+              <span>Language: {language === "en" ? "English" : "हिंदी"}</span>
             </div>
             <button
               onClick={toggleLanguage}
-              className="px-3 py-1.5 rounded-xl bg-[#E87532] text-white font-bold text-xs shadow-orange-glow"
+              className="px-2.5 py-1 rounded bg-amber-500 text-slate-950 font-mono font-semibold text-xs uppercase"
             >
-              {language === "en" ? "हिंदी में बदलें" : "Switch to English"}
+              {language === "en" ? "हिंदी" : "English"}
             </button>
           </div>
 
-          <div className="grid gap-2">
+          {/* Navigation Links */}
+          <div className="grid gap-1.5 text-xs font-mono uppercase">
             <Link
               to="/services"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl font-medium text-[#252621] dark:text-[#F5F2EB] hover:bg-white dark:hover:bg-[#141210] transition-colors"
+              className="px-3 py-2 rounded-lg text-slate-200 hover:bg-[#1f2937] hover:text-amber-400 transition-colors flex items-center justify-between"
             >
-              {t("nav.allServices")}
+              <span>{t("nav.allServices")}</span>
+              <span className="text-slate-500 font-mono">→</span>
             </Link>
             <Link
               to="/technicians"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl font-medium text-[#252621] dark:text-[#F5F2EB] hover:bg-white dark:hover:bg-[#141210] transition-colors"
+              className="px-3 py-2 rounded-lg text-slate-200 hover:bg-[#1f2937] hover:text-amber-400 transition-colors flex items-center justify-between"
             >
-              {t("nav.findMechanics")}
+              <span>{t("nav.findMechanics")}</span>
+              <span className="text-slate-500 font-mono">→</span>
+            </Link>
+            <Link
+              to="/pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded-lg text-slate-200 hover:bg-[#1f2937] hover:text-amber-400 transition-colors flex items-center justify-between"
+            >
+              <span>Rate Card</span>
+              <span className="text-slate-500 font-mono">→</span>
             </Link>
             <Link
               to="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl font-medium text-[#252621] dark:text-[#F5F2EB] hover:bg-white dark:hover:bg-[#141210] transition-colors"
+              className="px-3 py-2 rounded-lg text-slate-200 hover:bg-[#1f2937] hover:text-amber-400 transition-colors flex items-center justify-between"
             >
-              {t("nav.aboutUs")}
+              <span>{t("nav.aboutUs")}</span>
+              <span className="text-slate-500 font-mono">→</span>
+            </Link>
+            <Link
+              to="/help"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded-lg text-slate-200 hover:bg-[#1f2937] hover:text-amber-400 transition-colors flex items-center justify-between"
+            >
+              <span>{t("nav.help")}</span>
+              <span className="text-slate-500 font-mono">→</span>
             </Link>
           </div>
+
+          {!isAuthenticated && (
+            <div className="pt-2 border-t border-slate-800 flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAuthModal?.();
+                }}
+                className="w-full bg-[#1f2937] border-slate-800 text-slate-200 text-xs font-mono uppercase"
+              >
+                {t("nav.login")}
+              </Button>
+              <Link to="/services" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs font-mono uppercase"
+                >
+                  {t("nav.bookService")}
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </header>
