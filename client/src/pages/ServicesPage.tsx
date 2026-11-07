@@ -1915,13 +1915,13 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                     </div>
 
                     {/* Card Footer: Price & Book CTA */}
-                    <div className="pt-4 mt-4 border-t border-white/[0.06] flex items-center justify-between gap-2">
-                      <div>
+                    <div className="pt-4 mt-4 border-t border-white/[0.06] flex items-center justify-between gap-3">
+                      <div className="min-w-0">
                         <span className="text-[10px] uppercase font-medium tracking-wider text-slate-500 block">
                           {t("categories.starts")}
                         </span>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-black tracking-tight text-white font-mono">
+                          <span className="text-xl sm:text-2xl font-black tracking-tight text-white font-mono">
                             ₹{service.defaultPrice}
                           </span>
                         </div>
@@ -1932,7 +1932,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                           setSelectedService(service);
                           setBookingModalOpen(true);
                         }}
-                        className="inline-flex flex-row items-center justify-center gap-1.5 px-4.5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs sm:text-sm shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+                        className="inline-flex flex-row items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs sm:text-sm shadow-[0_4px_16px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_24px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap shrink-0"
                       >
                         <span>{t("common.bookNow")}</span>
                         <ArrowRight className="w-3.5 h-3.5 shrink-0" />
