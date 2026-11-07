@@ -8,24 +8,25 @@ import {
   MessageSquare,
   ChevronDown,
   ChevronUp,
-  CreditCard,
-  CalendarCheck,
-  ShieldAlert,
   Send,
   CheckCircle,
-  FileQuestion,
-  Wrench,
   Clock,
-  Radio,
-  MapPin,
   ShieldCheck,
   FileText,
-  AlertTriangle,
   ExternalLink,
+  ArrowRight,
+  Sparkles,
+  Car,
+  Wrench,
+  Check,
 } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 import { Button } from "../components/ui/Button";
 
 export const HelpPage: React.FC = () => {
+  const { language } = useLanguage();
+  const isHi = language === "hi";
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
@@ -45,57 +46,102 @@ export const HelpPage: React.FC = () => {
     {
       id: "f-1",
       category: "BOOKING",
-      q: "How does doorstep and emergency roadside breakdown dispatch work?",
-      a: "Navigate to Services, select your issue (such as Battery Jumpstart, Flat Tyre, Engine Diagnostic, or Electrical Short Circuit), enter your live doorstep or roadside location, and confirm booking. Our proximity dispatch radar assigns the closest certified technician equipped with diagnostic rigs within 3 minutes.",
+      q: isHi
+        ? "डोरस्टेप और इमरजेंसी ब्रेकडाउन डिस्पैच कैसे काम करता है?"
+        : "How does doorstep and emergency roadside breakdown dispatch work?",
+      a: isHi
+        ? "सर्विसेज पेज पर जाएं, अपनी समस्या (जैसे बैटरी जंपस्टार्ट, फ्लैट टायर, इंजन डायग्नोस्टिक या इलेक्ट्रिकल शॉर्ट-सर्किट) चुनें, अपनी लाइव लोकेशन दर्ज करें और बुकिंग कन्फर्म करें। हमारा प्रॉक्सिमिटी रडार 3 मिनट के भीतर नजदीकी प्रमाणित मैकेनिक को डिस्पैच करता है।"
+        : "Navigate to Services, select your vehicle and issue (such as Battery Jumpstart, Flat Tyre, Engine Diagnostics, or Electrical Short Circuit), enter your doorstep or roadside location, and confirm booking. Our proximity dispatch radar assigns the nearest certified technician equipped with specialized diagnostic tools in under 3 minutes.",
     },
     {
       id: "f-2",
       category: "BOOKING",
-      q: "Can I cancel or reschedule my service appointment? Are there any fees?",
-      a: "Yes. You can freely reschedule or cancel anytime before the technician arrives at your site directly from your Customer Bookings dashboard or by calling dispatch at +91 84396 16833. There are strictly ₹0 cancellation charges if cancelled prior to doorstep arrival.",
+      q: isHi
+        ? "क्या मैं सर्विस अपॉइंटमेंट रद्द या पुनर्निर्धारित कर सकता हूँ? क्या कोई शुल्क है?"
+        : "Can I cancel or reschedule my service appointment? Are there any fees?",
+      a: isHi
+        ? "हाँ। आप तकनीशियन के आने से पहले अपने ग्राहक पोर्टल से या हेल्पलाइन पर कॉल करके कभी भी सर्विस रद्द या रीशेड्यूल कर सकते हैं। तकनीशियन के आने से पहले रद्द करने पर ₹0 कैंसिलेशन चार्ज है।"
+        : "Yes. You can freely reschedule or cancel anytime before the technician arrives at your site directly from your Customer Portal or by calling dispatch at +91 84396 16833. There are strictly ₹0 cancellation charges if cancelled prior to technician arrival.",
     },
     {
       id: "f-3",
       category: "PAYMENT",
-      q: "When do I pay for my service, and what payment methods are supported?",
-      a: "Payment is strictly collected AFTER the technician has completed the repair, conducted a dual-run verification test in your presence, and you have authorized sign-off. We accept all UPI applications (Google Pay, PhonePe, Paytm, BHIM), Debit/Credit Cards, Net Banking, and direct Cash.",
+      q: isHi
+        ? "सर्विस का भुगतान कब करना होता है और कौन से पेमेंट मोड स्वीकार्य हैं?"
+        : "When do I pay for my service, and what payment methods are supported?",
+      a: isHi
+        ? "भुगतान केवल तभी लिया जाता है जब तकनीशियन काम पूरा कर ले, आपके सामने टेस्ट-ड्राइव या जांच कर ले, और आप पूरी तरह संतुष्ट हों। हम यूपीआई (Google Pay, PhonePe, Paytm), डेबिट/क्रेडिट कार्ड, नेट बैंकिंग और नकद स्वीकार करते हैं।"
+        : "Payment is strictly collected AFTER the technician has completed the repair, conducted a dual-run verification test in your presence, and you have authorized sign-off. We accept all UPI applications (Google Pay, PhonePe, Paytm, BHIM), Cards, Net Banking, and direct Cash.",
     },
     {
       id: "f-4",
       category: "PAYMENT",
-      q: "How does the refund process work if an online booking cannot be fulfilled?",
-      a: "If you made an advance digital payment and the work could not be fulfilled due to parts unavailability or cancellation, a 100% refund is initiated automatically to your original payment method within 24 to 48 banking hours. A digital refund confirmation slip is sent via SMS.",
+      q: isHi
+        ? "यदि ऑनलाइन बुकिंग पूरी नहीं हो पाती है तो रिफंड कैसे मिलता है?"
+        : "How does the refund process work if an online booking cannot be fulfilled?",
+      a: isHi
+        ? "यदि आपने डिजिटल अग्रिम भुगतान किया था और पार्ट्स की अनुपलब्धता या रद्दीकरण के कारण काम नहीं हो सका, तो 100% रिफंड 24 से 48 बैंकिंग घंटों के भीतर मूल भुगतान माध्यम में स्वतः ट्रांसफर कर दिया जाता है।"
+        : "If you made an advance digital payment and the work could not be fulfilled due to parts unavailability or cancellation, a 100% refund is initiated automatically to your original payment method within 24 to 48 banking hours with an SMS confirmation slip.",
     },
     {
       id: "f-5",
       category: "SAFETY",
-      q: "What is the 4-digit Start OTP and why is it mandatory before work begins?",
-      a: "The Start OTP prevents unauthorized billing and verifies that the technician who arrived matches the certified engineer assigned on your dashboard. The technician cannot access your vehicle or start work without you sharing this 4-digit OTP from your booking card.",
+      q: isHi
+        ? "4-अंकीय स्टार्ट OTP क्या है और काम शुरू होने से पहले यह क्यों जरूरी है?"
+        : "What is the 4-digit Start OTP and why is it mandatory before work begins?",
+      a: isHi
+        ? "स्टार्ट OTP अनधिकृत बिलिंग को रोकता है और यह सुनिश्चित करता है कि आया हुआ तकनीशियन वही है जो आपके ऐप पर असाइन हुआ है। जब तक आप यह OTP शेयर नहीं करते, तकनीशियन काम शुरू नहीं कर सकता।"
+        : "The Start OTP prevents unauthorized billing and verifies that the technician who arrived matches the certified engineer assigned on your dashboard. The technician cannot access your vehicle or start work without you sharing this secure 4-digit OTP from your booking card.",
     },
     {
       id: "f-6",
       category: "WARRANTY",
-      q: "What guarantee or warranty do I receive on automotive and home repairs?",
-      a: "Every repair on JantaGaraj carries a standardized 30-day / 1,000 KM doorstep workmanship warranty. If the exact same issue reoccurs within 30 days, we dispatch a senior inspector to rectify it with zero service or visiting charges.",
+      q: isHi
+        ? "मरम्मत पर मुझे क्या गारंटी या वारंटी मिलती है?"
+        : "What guarantee or warranty do I receive on automotive and home repairs?",
+      a: isHi
+        ? "जनता गैराज पर प्रत्येक रिपेयर 30 दिन की निःशुल्क वर्कमैनशिप वारंटी के साथ आती है। यदि 30 दिनों के भीतर वही समस्या पुनः आती है, तो हमारे सीनियर इंस्पेक्टर बिना किसी विज़िटिंग या सर्विस चार्ज के पुनः जांच और सुधार करते हैं।"
+        : "Every repair on JantaGaraj carries a standardized 30-day / 1,000 KM doorstep workmanship warranty. If the exact same issue reoccurs within 30 days, we dispatch a senior inspector to rectify it with zero service or visiting charges.",
     },
     {
       id: "f-7",
       category: "WARRANTY",
-      q: "Are replacement spare parts genuine and covered under manufacturer warranty?",
-      a: "Yes. JantaGaraj technicians source exclusively from verified OEM/OES authorized distributors (Bosch, Denso, Tata Motors, MGP, Schneider, Havells). Every part invoice includes serial tracking and manufacturer warranties ranging from 6 months to 2 years.",
+      q: isHi
+        ? "क्या स्पेयर पार्ट्स असली होते हैं और क्या उन पर निर्माता की वारंटी मिलती है?"
+        : "Are replacement spare parts genuine and covered under manufacturer warranty?",
+      a: isHi
+        ? "हाँ। जनता गैराज के तकनीशियन केवल अधिकृत ओईएम/ओईएस वितरकों (Bosch, Denso, Tata Motors, MGP, Havells) से पार्ट्स लाते हैं। हर इनवॉइस में सीरियल नंबर और 6 महीने से 2 साल तक की वारंटी दर्ज होती है।"
+        : "Yes. JantaGaraj technicians source exclusively from verified OEM/OES authorized distributors (Bosch, Denso, Tata Motors, MGP, Schneider, Havells). Every part invoice includes serial tracking and manufacturer warranties ranging from 6 months to 2 years.",
     },
     {
       id: "f-8",
       category: "TECHNICIAN",
-      q: "How can certified mechanics and electricians join the JantaGaraj fleet?",
-      a: "Independent technicians and garage owners can register via our Partner Portal. You must submit Government ID (Aadhaar / Driving License), proof of trade experience or ITI diploma, and pass an in-person diagnostic trade assessment. Once verified, you receive direct local dispatch requests.",
+      q: isHi
+        ? "प्रमाणित मैकेनिक और इलेक्ट्रीशियन जनता गैराज फ्लीट से कैसे जुड़ सकते हैं?"
+        : "How can certified mechanics and electricians join the JantaGaraj fleet?",
+      a: isHi
+        ? "स्वतंत्र तकनीशियन हमारे पार्टनर पोर्टल के जरिए रजिस्टर कर सकते हैं। आपको सरकारी पहचान पत्र, अनुभव प्रमाण और इन-पर्सन डायग्नोस्टिक टेस्ट पास करना होगा। सत्यापन के बाद आपको सीधे ग्राहक बुकिंग्स मिलेंगी।"
+        : "Independent technicians and garage owners can register via our Partner Portal. You must submit Government ID (Aadhaar / Driving License), proof of trade experience, and pass an in-person trade assessment. Once verified, you receive direct local dispatch requests.",
     },
     {
       id: "f-9",
       category: "TECHNICIAN",
-      q: "How does JantaGaraj handle rate disputes or unexpected additional repairs?",
-      a: "Technicians cannot charge arbitrary amounts. If an additional part or labor is needed during diagnosis, the technician must log the exact line-item in the digital work order. You will receive an OTP prompt to approve the revised estimate before work continues.",
+      q: isHi
+        ? "यदि डायग्नोसिस के दौरान अतिरिक्त काम निकलता है तो जनता गैराज इसे कैसे संभालता है?"
+        : "How does JantaGaraj handle rate disputes or unexpected additional repairs?",
+      a: isHi
+        ? "तकनीशियन कोई भी मनमाना शुल्क नहीं ले सकते। यदि डायग्नोसिस में कोई नया पार्ट या श्रम आवश्यक होता है, तो तकनीशियन को डिजिटल वर्क ऑर्डर में दर्ज करना होता है और आपके OTP अनुमोदन के बाद ही आगे काम होता है।"
+        : "Technicians cannot charge arbitrary amounts. If an additional part or labor is needed during diagnosis, the technician must log the exact line-item in the digital work order. You will receive an OTP prompt to approve the revised estimate before work continues.",
     },
+  ];
+
+  const categories = [
+    { id: "ALL", label: isHi ? "सभी विषय" : "All Topics" },
+    { id: "BOOKING", label: isHi ? "बुकिंग व डिस्पैच" : "Bookings & Dispatch" },
+    { id: "PAYMENT", label: isHi ? "भुगतान व दरें" : "Payments & Pricing" },
+    { id: "SAFETY", label: isHi ? "सुरक्षा व OTP" : "Safety & OTP" },
+    { id: "WARRANTY", label: isHi ? "वारंटी व दावे" : "Warranty & Claims" },
+    { id: "TECHNICIAN", label: isHi ? "फ्लीट पार्टनर" : "Fleet Partners" },
   ];
 
   const filteredFaqs = useMemo(() => {
@@ -121,226 +167,354 @@ export const HelpPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#0b0f17] text-white min-h-screen selection:bg-amber-500 selection:text-slate-950 pb-20 relative">
-      {/* Precision Blueprint Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none -z-0" />
+    <div className="bg-[#080b11] text-slate-100 min-h-screen selection:bg-amber-500 selection:text-slate-950 pb-28 font-sans relative overflow-x-hidden">
+      {/* ========================================================= */}
+      {/* QUIET, PREMIUM LIGHTING & ATMOSPHERE                      */}
+      {/* ========================================================= */}
+      {/* Soft, diffuse overhead ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[560px] bg-[radial-gradient(ellipse_70%_50%_at_50%_-15%,rgba(255,255,255,0.04),transparent_70%)] pointer-events-none -z-0" />
+      {/* Micro-warm amber accent whisper */}
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[600px] h-[360px] bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(245,158,11,0.035),transparent_65%)] pointer-events-none -z-0" />
+      {/* Subtle organic grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:40px_40px] opacity-40 pointer-events-none -z-0" />
 
       {/* ========================================================= */}
-      {/* 01 TOP OPERATIONAL DISPATCH TELEMETRY BAR                 */}
+      {/* 01 MODERN HERO: OPEN & WELCOMING SEARCH                   */}
       {/* ========================================================= */}
-      <div className="relative z-20 border-b border-slate-800 bg-[#111827] px-4 sm:px-6 lg:px-8 py-2">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-cyan-950/70 border border-cyan-500/30 text-cyan-400 font-mono font-medium">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              <span>DISPATCH DESK: ONLINE</span>
-            </span>
-            <span className="text-slate-400 hidden sm:inline font-mono">
-              CENTRAL CUSTOMER RESOLUTION &amp; ROADSIDE ASSISTANCE
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 ml-auto text-slate-400 font-mono">
-            <div className="flex items-center gap-1.5 text-slate-300">
-              <Clock className="w-3.5 h-3.5 text-cyan-400" />
-              <span>RESOLUTION SLA: &lt; 120 MINS</span>
-            </div>
-            <span className="text-slate-700">|</span>
-            <div className="flex items-center gap-1.5 text-amber-400 font-medium">
-              <Phone className="w-3.5 h-3.5" />
-              <span>EMERGENCY: 24/7 HOTLINE</span>
-            </div>
-          </div>
+      <section className="relative z-10 pt-20 sm:pt-28 pb-16 sm:pb-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Quiet Brand Pill */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-slate-300 text-xs font-medium backdrop-blur-md shadow-sm mb-6 sm:mb-8">
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+          <span>
+            {isHi ? "ग्राहक सहायता एवं समाधान केंद्र" : "Customer Support & Incident Resolution"}
+          </span>
         </div>
-      </div>
 
-      {/* ========================================================= */}
-      {/* 02 HERO HEADER & SEARCH TERMINAL                          */}
-      {/* ========================================================= */}
-      <section className="relative z-10 pt-12 sm:pt-16 pb-12 sm:pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-slate-800 text-center">
-        <div className="max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#1f2937] border border-slate-800 text-cyan-400 text-xs font-mono font-medium">
-            <HelpCircle className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="tracking-wide">OPERATIONS &amp; CUSTOMER CARE DESK</span>
-          </div>
+        {/* Clean, Human Headline */}
+        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.14] max-w-3xl mx-auto">
+          {isHi ? (
+            <>
+              हम आपकी कैसे <span className="text-slate-400 font-normal">सहायता कर सकते हैं?</span>
+            </>
+          ) : (
+            <>
+              How can we <span className="text-slate-400 font-normal">help you today?</span>
+            </>
+          )}
+        </h1>
 
-          <h1 className="text-3xl sm:text-4xl font-bold font-display text-white tracking-tight leading-tight">
-            How Can Our Technical Operations Assist You?
-          </h1>
+        {/* Fluid Description */}
+        <p className="mt-5 sm:mt-6 text-base sm:text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto font-normal">
+          {isHi
+            ? "इमरजेंसी ब्रेकडाउन सहायता, रद्दीकरण नियम, तय रेट कार्ड, स्टार्ट OTP सुरक्षा और 30 दिन की लिखित वारंटी के संबंध में तत्काल उत्तर पाएं।"
+            : "Search verified service protocols, emergency roadside assistance guidelines, rate cards, and 30-day workmanship warranty claims."}
+        </p>
 
-          <p className="text-sm text-slate-400 leading-relaxed max-w-xl mx-auto">
-            Search verified diagnostic protocols, OTP security guidelines, flat-rate pricing rules, and 30-day workmanship warranty claims.
-          </p>
-
-          {/* Search Bar Terminal */}
-          <div className="pt-2 max-w-2xl mx-auto">
-            <div className="relative p-1.5 rounded-xl bg-[#1f2937] border border-slate-800 flex items-center">
-              <Search className="w-4 h-4 text-slate-500 ml-3 shrink-0" />
-              <input
-                type="text"
-                placeholder="Search help topics (e.g. cancellation, refund, OTP, battery warranty, rate card)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent border-none text-xs sm:text-sm text-white placeholder:text-slate-500 px-3 py-2 focus:outline-none"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="text-xs font-mono text-slate-400 hover:text-white px-3 py-1"
-                >
-                  CLEAR
-                </button>
-              )}
-            </div>
+        {/* Floating Glass Search Input */}
+        <div className="mt-8 sm:mt-10 max-w-2xl mx-auto">
+          <div className="relative p-2 rounded-2xl bg-gradient-to-b from-white/[0.05] to-white/[0.02] border border-white/[0.1] hover:border-white/[0.18] focus-within:border-white/[0.25] shadow-2xl backdrop-blur-xl transition-all flex items-center">
+            <Search className="w-5 h-5 text-slate-400 ml-3.5 shrink-0" />
+            <input
+              type="text"
+              placeholder={
+                isHi
+                  ? "सवाल या विषय खोजें (उदा. कैंसिलेशन, वारंटी, रिफंड, ओटीपी, रेट कार्ड)..."
+                  : "Search topics (e.g. cancellation, refund, OTP, battery warranty, rate card)..."
+              }
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-transparent border-none text-sm text-white placeholder:text-slate-500 px-3.5 py-2 focus:outline-none"
+            />
             {searchQuery && (
-              <p className="text-[11px] font-mono text-cyan-400 mt-2 text-left px-1">
-                Found {filteredFaqs.length} matching guidelines
-              </p>
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="text-xs text-slate-400 hover:text-white px-3 py-1 font-medium transition-colors"
+              >
+                {isHi ? "हटाएं" : "Clear"}
+              </button>
             )}
           </div>
+          {searchQuery && (
+            <p className="text-xs text-slate-400 mt-2.5 text-left px-2">
+              {isHi
+                ? `${filteredFaqs.length} संबंधित परिणाम मिले`
+                : `Showing ${filteredFaqs.length} matching guidelines`}
+            </p>
+          )}
         </div>
       </section>
 
-      {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 space-y-14">
+      {/* Main Container */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 sm:space-y-28">
         {/* ========================================================= */}
-        {/* 03 FAST ESCALATION CHANNELS                               */}
+        {/* 02 THE 1-2-3 RESOLUTION PROCESS                           */}
         {/* ========================================================= */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
-          {/* Card 1: 24/7 Phone Support */}
-          <div className="p-5 rounded-xl bg-[#1f2937] border border-slate-800 flex flex-col justify-between group hover:border-amber-500/50 transition-colors">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-mono font-semibold text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded uppercase">
-                  &lt; 30 SEC CONNECT
-                </span>
-              </div>
-              <h3 className="text-base font-semibold text-white">24/7 Roadside &amp; Home Hotline</h3>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                Direct phone link to central dispatch for stranded vehicles, urgent power outages, and active jobs.
-              </p>
-            </div>
-
-            <div className="pt-4 mt-4 border-t border-slate-800 flex items-center justify-between">
-              <a
-                href="tel:+918439616833"
-                className="text-sm font-bold font-mono text-white hover:text-amber-400 transition-colors"
-              >
-                +91 84396 16833
-              </a>
-              <a
-                href="tel:+918439616833"
-                className="px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-semibold font-mono uppercase transition-colors"
-              >
-                Call Now
-              </a>
-            </div>
-          </div>
-
-          {/* Card 2: WhatsApp Live Desk */}
-          <div className="p-5 rounded-xl bg-[#1f2937] border border-slate-800 flex flex-col justify-between group hover:border-cyan-500/50 transition-colors">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center">
-                  <MessageSquare className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-mono font-semibold text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded uppercase">
-                  PHOTO &amp; VIDEO TRIAGE
-                </span>
-              </div>
-              <h3 className="text-base font-semibold text-white">WhatsApp Operations Desk</h3>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                Send vehicle diagnostic dashboard photos, circuit breaker video clips, or share live GPS coordinates.
-              </p>
-            </div>
-
-            <div className="pt-4 mt-4 border-t border-slate-800 flex items-center justify-between">
-              <span className="text-xs font-mono text-slate-400">Live 8 AM - 11 PM</span>
-              <a
-                href="https://wa.me/918439616833"
-                target="_blank"
-                rel="noreferrer"
-                className="px-3 py-1.5 rounded-md bg-[#111827] hover:bg-slate-800 text-cyan-400 border border-cyan-500/40 text-xs font-semibold font-mono uppercase transition-colors flex items-center gap-1.5"
-              >
-                <span>Chat Desk</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-          </div>
-
-          {/* Card 3: Warranty & Grievance Desk */}
-          <div className="p-5 rounded-xl bg-[#1f2937] border border-slate-800 flex flex-col justify-between group hover:border-slate-700 transition-colors">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-mono font-semibold text-slate-400 bg-slate-800 px-2 py-0.5 rounded uppercase">
-                  AUDITED RESOLUTION
-                </span>
-              </div>
-              <h3 className="text-base font-semibold text-white">Warranty &amp; Grievance Email</h3>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                For formal invoice rectifications, corporate fleet partnerships, and 30-day warranty inspections.
-              </p>
-            </div>
-
-            <div className="pt-4 mt-4 border-t border-slate-800 flex items-center justify-between">
-              <a
-                href="mailto:support@jantagaraj.in"
-                className="text-xs font-mono text-slate-300 hover:text-white transition-colors"
-              >
-                support@jantagaraj.in
-              </a>
-              <a
-                href="mailto:support@jantagaraj.in"
-                className="px-3 py-1.5 rounded-md bg-[#111827] hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold font-mono uppercase transition-colors"
-              >
-                Write Email
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* ========================================================= */}
-        {/* 04 FAQS KNOWLEDGE BASE                                    */}
-        {/* ========================================================= */}
-        <div className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-slate-800">
-            <div>
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
-                VERIFIED OPERATIONAL GUIDELINES
+        <section className="space-y-12">
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 text-xs font-medium text-slate-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+              <span className="uppercase tracking-wider">
+                {isHi ? "समाधान प्रोटोकॉल" : "Resolution Protocol"}
               </span>
-              <h2 className="text-2xl font-bold font-display text-white tracking-tight mt-1">
-                Frequently Addressed Protocols
-              </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Transparent rules regarding emergency dispatch, rate cards, OTP verification, and warranty claims
-              </p>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight">
+              {isHi ? "त्वरित समाधान के 3 सरल चरण" : "Clear, predictable support in 3 steps."}
+            </h2>
+            <p className="text-sm sm:text-base text-slate-400 leading-relaxed font-normal">
+              {isHi
+                ? "किसी भी समस्या या सवाल का पारदर्शी और जवाबदेह समाधान।"
+                : "Every request is handled with full accountability, logged SLAs, and zero friction."}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            {/* Step 01 */}
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.07] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between shadow-sm group">
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-xs font-mono text-slate-400 tracking-wider">
+                    STEP 01
+                  </span>
+                  <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300 group-hover:text-white transition-colors">
+                    <Search className="w-5 h-5" />
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-semibold text-white mb-2.5">
+                  {isHi ? "प्रोटोकॉल व नियम देखें" : "Instant Self-Service"}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                  {isHi
+                    ? "हमारे वेरिफाइड नॉलेज बेस में रिफंड, वारंटी क्लेम और फिक्स्ड रेट कार्ड के सभी नियम तुरंत पढ़ें।"
+                    : "Access clear operational guidelines on emergency dispatch, rate formulas, cancellations, and warranty rights."}
+                </p>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-white/[0.06] text-xs text-slate-400 flex items-center justify-between font-mono">
+                <span>{isHi ? "24/7 तत्काल उपलब्ध" : "Available 24/7"}</span>
+                <span className="text-slate-500">INSTANT</span>
+              </div>
             </div>
 
-            {/* Category Filter Pills */}
-            <div className="flex items-center gap-1.5 flex-wrap">
-              {[
-                { id: "ALL", label: "ALL TOPICS" },
-                { id: "BOOKING", label: "BOOKINGS & DISPATCH" },
-                { id: "PAYMENT", label: "PAYMENTS & RATES" },
-                { id: "SAFETY", label: "SAFETY & OTP" },
-                { id: "WARRANTY", label: "WARRANTY & CLAIMS" },
-                { id: "TECHNICIAN", label: "FLEET PARTNERS" },
-              ].map((tab) => (
+            {/* Step 02 */}
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.07] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between shadow-sm group">
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-xs font-mono text-slate-400 tracking-wider">
+                    STEP 02
+                  </span>
+                  <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300 group-hover:text-white transition-colors">
+                    <Phone className="w-5 h-5" />
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-semibold text-white mb-2.5">
+                  {isHi ? "सीधी हॉटलाइन या व्हाट्सएप" : "Direct Priority Escalation"}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                  {isHi
+                    ? "सड़क पर फंसे वाहन या लाइव सर्विस में देरी होने पर 24/7 सेंट्रल कंट्रोल डेस्क से तुरंत संपर्क करें।"
+                    : "Connect directly with our central dispatch desk for en-route delays, roadside breakdowns, or urgent triage."}
+                </p>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-white/[0.06] text-xs text-slate-400 flex items-center justify-between font-mono">
+                <span>{isHi ? "&lt; 30 सेकंड में कनेक्ट" : "&lt; 30s Phone SLA"}</span>
+                <span className="text-slate-500">HOTLINE</span>
+              </div>
+            </div>
+
+            {/* Step 03 */}
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.07] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between shadow-sm group">
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-xs font-mono text-slate-400 tracking-wider">
+                    STEP 03
+                  </span>
+                  <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300 group-hover:text-white transition-colors">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-semibold text-white mb-2.5">
+                  {isHi ? "120 मिनट समाधान गारंटी" : "120-Minute Resolution SLA"}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                  {isHi
+                    ? "हर शिकायत वरिष्ठ ऑपरेशंस मैनेजर को असाइन होती है। 30 दिनों के भीतर समस्या होने पर ₹0 री-विजिट गारंटी।"
+                    : "Each ticket is assigned to a senior operations supervisor. If workmanship fails within 30 days, re-dispatch is 100% free."}
+                </p>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-white/[0.06] text-xs text-slate-400 flex items-center justify-between font-mono">
+                <span>{isHi ? "नि:शुल्क पुनः जांच" : "100% Free Re-check"}</span>
+                <span className="text-slate-500">GUARANTEED</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================= */}
+        {/* 03 FAST ESCALATION CHANNELS (Floating Glass Cards)        */}
+        {/* ========================================================= */}
+        <section className="space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 text-xs font-medium text-slate-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                <span className="uppercase tracking-wider">
+                  {isHi ? "सीधे संपर्क माध्यम" : "Direct Channels"}
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight">
+                {isHi ? "तत्काल सहायता के तीन तरीके" : "Immediate support channels."}
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1: 24/7 Phone Support */}
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between shadow-sm group">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-11 h-11 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300 group-hover:text-white transition-colors">
+                    <Phone className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-mono text-slate-400">
+                    24/7 HOTLINE
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-white">
+                  {isHi ? "24/7 इमरजेंसी हेल्पलाइन" : "24/7 Roadside & Home Hotline"}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                  {isHi
+                    ? "सड़क पर फंसे वाहनों, आपातकालीन पावर शॉर्ट-सर्किट और लाइव जॉब स्टेटस के लिए सेंट्रल डिस्पैच से सीधा संपर्क।"
+                    : "Direct telephonic link to our central operations room for stranded vehicles, urgent power outages, and active jobs."}
+                </p>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-white/[0.06] flex items-center justify-between">
+                <a
+                  href="tel:+918439616833"
+                  className="text-sm font-semibold font-mono text-white hover:text-amber-400 transition-colors"
+                >
+                  +91 84396 16833
+                </a>
+                <a
+                  href="tel:+918439616833"
+                  className="px-4 py-2 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 hover:text-white border border-white/[0.08] text-xs font-medium transition-colors"
+                >
+                  {isHi ? "कॉल करें" : "Call Now"}
+                </a>
+              </div>
+            </div>
+
+            {/* Card 2: WhatsApp Live Desk */}
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between shadow-sm group">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-11 h-11 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300 group-hover:text-white transition-colors">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-mono text-slate-400">
+                    PHOTO &amp; GPS
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-white">
+                  {isHi ? "व्हाट्सएप ऑपरेशंस डेस्क" : "WhatsApp Operations Desk"}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                  {isHi
+                    ? "वाहन के डैशबोर्ड की फोटो, सर्किट ब्रेकर का वीडियो या लाइव जीपीएस लोकेशन भेजकर तुरंत सलाह पाएं।"
+                    : "Share dashboard warning light photos, circuit trip videos, or broadcast live GPS coordinates for rapid technician routing."}
+                </p>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-white/[0.06] flex items-center justify-between">
+                <span className="text-xs text-slate-500 font-mono">
+                  {isHi ? "सुबह 8 से रात 11" : "8:00 AM – 11:00 PM"}
+                </span>
+                <a
+                  href="https://wa.me/918439616833"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 hover:text-white border border-white/[0.08] text-xs font-medium transition-colors flex items-center gap-1.5"
+                >
+                  <span>WhatsApp</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                </a>
+              </div>
+            </div>
+
+            {/* Card 3: Warranty & Grievance Desk */}
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between shadow-sm group">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-11 h-11 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300 group-hover:text-white transition-colors">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-mono text-slate-400">
+                    AUDITED EMAIL
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-white">
+                  {isHi ? "वारंटी एवं शिकायत ईमेल" : "Warranty & Grievance Desk"}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                  {isHi
+                    ? "बिलिंग सुधार, कॉरपोरेट फ्लीट पार्टनरशिप और 30 दिन की लिखित वारंटी के औपचारिक दावों के लिए।"
+                    : "For formal invoice rectifications, corporate fleet accounts, and certified 30-day workmanship warranty inspections."}
+                </p>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-white/[0.06] flex items-center justify-between">
+                <a
+                  href="mailto:support@jantagaraj.in"
+                  className="text-xs font-mono text-slate-400 hover:text-white transition-colors"
+                >
+                  support@jantagaraj.in
+                </a>
+                <a
+                  href="mailto:support@jantagaraj.in"
+                  className="px-4 py-2 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 hover:text-white border border-white/[0.08] text-xs font-medium transition-colors"
+                >
+                  {isHi ? "ईमेल लिखें" : "Email Desk"}
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================= */}
+        {/* 04 FAQS KNOWLEDGE BASE (Clean Accordion)                   */}
+        {/* ========================================================= */}
+        <section className="space-y-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.06]">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 text-xs font-medium text-slate-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                <span className="uppercase tracking-wider">
+                  {isHi ? "प्रश्नोत्तरी" : "Knowledge Base"}
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight">
+                {isHi ? "अक्सर पूछे जाने वाले सवाल" : "Frequently answered questions."}
+              </h2>
+            </div>
+
+            {/* Category Filter Pills: Quiet rounded-full styling */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {categories.map((tab) => (
                 <button
                   type="button"
                   key={tab.id}
                   onClick={() => setSelectedCategory(tab.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                     selectedCategory === tab.id
-                      ? "bg-amber-500 text-slate-950 font-bold"
-                      : "bg-[#1f2937] border border-slate-800 text-slate-400 hover:text-white"
+                      ? "bg-white text-slate-950 font-semibold shadow-sm"
+                      : "bg-white/[0.03] text-slate-400 hover:text-white hover:bg-white/[0.06] border border-white/[0.06]"
                   }`}
                 >
                   {tab.label}
@@ -350,116 +524,143 @@ export const HelpPage: React.FC = () => {
           </div>
 
           {/* FAQ Accordion List */}
-          <div className="space-y-3">
+          <div className="space-y-3.5">
             {filteredFaqs.length > 0 ? (
               filteredFaqs.map((faq, idx) => {
                 const isOpen = openFaqIndex === idx;
                 return (
                   <div
                     key={faq.id}
-                    className={`rounded-xl border transition-colors overflow-hidden ${
+                    className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
                       isOpen
-                        ? "bg-[#1f2937] border-amber-500/50"
-                        : "bg-[#1f2937] border-slate-800 hover:border-slate-700"
+                        ? "bg-white/[0.04] border-white/[0.14] shadow-md"
+                        : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.1]"
                     }`}
                   >
                     <button
                       type="button"
                       onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                      className="w-full flex items-center justify-between p-4 sm:p-5 text-left font-semibold text-sm text-white"
+                      className="w-full flex items-center justify-between p-5 sm:p-6 text-left font-medium text-sm sm:text-base text-white"
                     >
-                      <span className="pr-4 flex items-center gap-2">
-                        <span className="text-xs font-mono text-cyan-400 font-bold">
-                          Q{idx + 1}.
-                        </span>
-                        <span>{faq.q}</span>
-                      </span>
+                      <span className="pr-4 leading-relaxed">{faq.q}</span>
                       {isOpen ? (
-                        <ChevronUp className="w-4 h-4 text-amber-400 shrink-0" />
+                        <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" />
                       ) : (
                         <ChevronDown className="w-4 h-4 text-slate-500 shrink-0" />
                       )}
                     </button>
                     {isOpen && (
-                      <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 bg-[#111827]/70">
-                        <div className="flex items-start gap-2 pt-2">
-                          <CheckCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                          <p>{faq.a}</p>
-                        </div>
+                      <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-0 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-white/[0.06]">
+                        <p className="pt-4">{faq.a}</p>
                       </div>
                     )}
                   </div>
                 );
               })
             ) : (
-              <div className="p-8 text-center text-xs font-mono text-slate-400 bg-[#1f2937] rounded-xl border border-slate-800">
-                No matching technical guidelines found. Please log a ticket below for manual review.
+              <div className="p-10 text-center text-sm text-slate-400 bg-white/[0.02] rounded-3xl border border-white/[0.06]">
+                {isHi
+                  ? "कोई परिणाम नहीं मिला। कृपया नीचे दिया गया फॉर्म भरकर टिकट दर्ज करें।"
+                  : "No matching guidelines found. You can submit a support ticket below for direct assistance."}
               </div>
             )}
           </div>
-        </div>
+        </section>
 
         {/* ========================================================= */}
         {/* 05 DIRECT TICKET SUBMISSION TERMINAL                      */}
         {/* ========================================================= */}
-        <div className="p-6 sm:p-10 rounded-2xl bg-[#1f2937] border border-slate-800">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Left Column: Resolution Standards */}
-            <div className="lg:col-span-5 space-y-4">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
-                INCIDENT &amp; WARRANTY DESK
-              </span>
-              <h2 className="text-2xl font-bold font-display text-white tracking-tight">
-                Log a Central Support Ticket
+        <section className="p-8 sm:p-14 rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/[0.08] shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            {/* Left Column: Resolution Commitments */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="inline-flex items-center gap-2 text-xs font-medium text-slate-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                <span className="uppercase tracking-wider">
+                  {isHi ? "टिकट व वारंटी डेस्क" : "Priority Ticket Desk"}
+                </span>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-tight">
+                {isHi ? "सेंट्रल ऑपरेशंस टिकट दर्ज करें" : "Submit a priority support ticket."}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                Whether you need to report an en-route technician delay, initiate a 30-day workmanship warranty claim, or dispute an invoice line-item, our central operations supervisor logs and addresses every case with an auditable SLA.
+
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                {isHi
+                  ? "तकनीशियन की देरी, 30 दिन के वारंटी दावे या बिलिंग विसंगतियों के लिए सीधा टिकट दर्ज करें। हमारे वरिष्ठ सुपरवाइजर लिखित एसएलए के साथ संपर्क करेंगे।"
+                  : "Whether you need to report an en-route technician delay, file a 30-day workmanship warranty claim, or dispute a bill, our central operations team logs and tracks every case with complete accountability."}
               </p>
 
-              <div className="space-y-3 pt-3">
-                <div className="p-3 rounded-lg bg-[#111827] border border-slate-800 flex items-start gap-3">
-                  <Clock className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+              <div className="space-y-4 pt-2">
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start gap-3.5">
+                  <Clock className="w-5 h-5 text-slate-300 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-xs font-bold font-mono text-white">120-Minute Resolution SLA</h4>
-                    <p className="text-[11px] text-slate-400 mt-0.5">Direct phone call from a senior support manager within 2 hours.</p>
+                    <h4 className="text-xs sm:text-sm font-semibold text-white">
+                      {isHi ? "120 मिनट समाधान एसएलए" : "120-Minute Resolution SLA"}
+                    </h4>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      {isHi
+                        ? "2 घंटे के भीतर वरिष्ठ ऑपरेशंस मैनेजर द्वारा सीधी कॉल।"
+                        : "Direct callback from a senior operations manager within 2 hours."}
+                    </p>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#111827] border border-slate-800 flex items-start gap-3">
-                  <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start gap-3.5">
+                  <ShieldCheck className="w-5 h-5 text-slate-300 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-xs font-bold font-mono text-white">Zero-Cost Re-Inspection</h4>
-                    <p className="text-[11px] text-slate-400 mt-0.5">If repair workmanship fails within 30 days, re-dispatch is 100% free.</p>
+                    <h4 className="text-xs sm:text-sm font-semibold text-white">
+                      {isHi ? "शून्य-लागत पुनः जांच गारंटी" : "Zero-Cost Re-Inspection"}
+                    </h4>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      {isHi
+                        ? "30 दिनों के भीतर समस्या आने पर पुनः डिस्पैच 100% निःशुल्क।"
+                        : "If repair workmanship fails within 30 days, re-dispatch is ₹0."}
+                    </p>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#111827] border border-slate-800 flex items-start gap-3">
-                  <FileText className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start gap-3.5">
+                  <FileText className="w-5 h-5 text-slate-300 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-xs font-bold font-mono text-white">Digital Audit Trail</h4>
-                    <p className="text-[11px] text-slate-400 mt-0.5">Every grievance is tied to your Work Order and recorded in our permanent database.</p>
+                    <h4 className="text-xs sm:text-sm font-semibold text-white">
+                      {isHi ? "डिजिटल ऑडिट ट्रेल" : "Permanent Digital Audit Trail"}
+                    </h4>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      {isHi
+                        ? "हर शिकायत आपके जॉब कार्ड और वर्क ऑर्डर से स्थायी रूप से जुड़ी रहती है।"
+                        : "Every ticket is tied to your Work Order and logged in our central database."}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Ticket Form */}
+            {/* Right Column: Clean Ticket Form */}
             <div className="lg:col-span-7">
               {formSubmitted ? (
-                <div className="p-8 text-center rounded-xl bg-[#111827] border border-cyan-500/40 space-y-4">
-                  <div className="w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mx-auto">
-                    <CheckCircle className="w-6 h-6" />
+                <div className="p-8 sm:p-10 text-center rounded-3xl bg-white/[0.02] border border-white/[0.1] space-y-5">
+                  <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto">
+                    <Check className="w-6 h-6" />
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">
-                      TICKET LOGGED IN CENTRAL DISPATCH
+                  <div className="space-y-1.5">
+                    <span className="text-xs font-mono text-emerald-400 uppercase tracking-wider block">
+                      {isHi ? "टिकट सफलतापूर्वक दर्ज किया गया" : "Ticket Logged with Central Dispatch"}
                     </span>
-                    <h3 className="text-xl font-bold font-mono text-white">
+                    <h3 className="text-2xl font-bold font-mono text-white">
                       {ticketId}
                     </h3>
                   </div>
-                  <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
-                    Thank you, <strong className="text-white">{formData.fullName}</strong>. Your ticket has been assigned to a central operations supervisor. We will contact you at <span className="font-mono text-amber-400 font-bold">{formData.phone}</span> within 120 minutes.
+                  <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
+                    {isHi ? (
+                      <>
+                        धन्यवाद, <strong className="text-white">{formData.fullName}</strong>। आपकी शिकायत ऑपरेशंस टीम को सौंप दी गई है। हम 120 मिनट के भीतर आपके नंबर <span className="font-mono text-white">{formData.phone}</span> पर संपर्क करेंगे।
+                      </>
+                    ) : (
+                      <>
+                        Thank you, <strong className="text-white">{formData.fullName}</strong>. Your ticket has been routed to our duty supervisor. We will contact you at <span className="font-mono text-white">{formData.phone}</span> within 120 minutes.
+                      </>
+                    )}
                   </p>
 
                   <div className="pt-2">
@@ -476,9 +677,9 @@ export const HelpPage: React.FC = () => {
                           message: "",
                         });
                       }}
-                      className="bg-[#1f2937] hover:bg-slate-800 text-white border border-slate-700 text-xs font-mono uppercase"
+                      className="bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/[0.1] text-xs rounded-full px-5 py-2 font-medium"
                     >
-                      Log Another Ticket
+                      {isHi ? "दूसरा टिकट दर्ज करें" : "Log Another Ticket"}
                     </Button>
                   </div>
                 </div>
@@ -486,42 +687,42 @@ export const HelpPage: React.FC = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-300">
-                        Your Full Name *
+                      <label className="block text-xs font-medium text-slate-300">
+                        {isHi ? "आपका पूरा नाम *" : "Your Full Name *"}
                       </label>
                       <input
                         type="text"
                         required
-                        placeholder="e.g. Vikram Malhotra"
+                        placeholder={isHi ? "उदा. विक्रम मल्होत्रा" : "e.g. Vikram Malhotra"}
                         value={formData.fullName}
                         onChange={(e) =>
                           setFormData({ ...formData, fullName: e.target.value })
                         }
-                        className="w-full rounded-lg bg-[#111827] border border-slate-800 text-xs sm:text-sm text-white placeholder:text-slate-500 px-3.5 py-2.5 focus:outline-none focus:border-amber-500 transition-colors"
+                        className="w-full rounded-2xl bg-white/[0.03] border border-white/[0.08] text-sm text-white placeholder:text-slate-500 px-4 py-3 focus:outline-none focus:border-white/[0.25] transition-colors"
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-300">
-                        Contact Phone Number *
+                      <label className="block text-xs font-medium text-slate-300">
+                        {isHi ? "फोन नंबर *" : "Contact Phone Number *"}
                       </label>
                       <input
                         type="tel"
                         required
-                        placeholder="10-digit mobile number"
+                        placeholder={isHi ? "10-अंकीय मोबाइल नंबर" : "10-digit mobile number"}
                         value={formData.phone}
                         onChange={(e) =>
                           setFormData({ ...formData, phone: e.target.value })
                         }
-                        className="w-full rounded-lg bg-[#111827] border border-slate-800 text-xs sm:text-sm text-white placeholder:text-slate-500 px-3.5 py-2.5 focus:outline-none focus:border-amber-500 transition-colors"
+                        className="w-full rounded-2xl bg-white/[0.03] border border-white/[0.08] text-sm text-white placeholder:text-slate-500 px-4 py-3 focus:outline-none focus:border-white/[0.25] transition-colors"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-300">
-                        Work Order / Job # (Optional)
+                      <label className="block text-xs font-medium text-slate-300">
+                        {isHi ? "जॉब या बुकिंग # (वैकल्पिक)" : "Work Order / Job # (Optional)"}
                       </label>
                       <input
                         type="text"
@@ -530,60 +731,75 @@ export const HelpPage: React.FC = () => {
                         onChange={(e) =>
                           setFormData({ ...formData, bookingNumber: e.target.value })
                         }
-                        className="w-full rounded-lg bg-[#111827] border border-slate-800 text-xs sm:text-sm text-white placeholder:text-slate-500 px-3.5 py-2.5 focus:outline-none focus:border-amber-500 transition-colors"
+                        className="w-full rounded-2xl bg-white/[0.03] border border-white/[0.08] text-sm text-white placeholder:text-slate-500 px-4 py-3 focus:outline-none focus:border-white/[0.25] transition-colors font-mono"
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-300">
-                        Issue Classification *
+                      <label className="block text-xs font-medium text-slate-300">
+                        {isHi ? "मुद्दे का प्रकार *" : "Issue Classification *"}
                       </label>
                       <select
                         value={formData.issueType}
                         onChange={(e) =>
                           setFormData({ ...formData, issueType: e.target.value })
                         }
-                        className="w-full rounded-lg bg-[#111827] border border-slate-800 text-xs sm:text-sm text-white px-3.5 py-2.5 focus:outline-none focus:border-amber-500 transition-colors"
+                        className="w-full rounded-2xl bg-[#0e131d] border border-white/[0.08] text-sm text-white px-4 py-3 focus:outline-none focus:border-white/[0.25] transition-colors"
                       >
-                        <option value="BOOKING_HELP">En Route Technician Delay / No-show</option>
-                        <option value="QUALITY_WARRANTY">30-Day Workmanship Warranty Claim</option>
-                        <option value="PAYMENT_REFUND">Billing / Rate Card Discrepancy</option>
-                        <option value="TECHNICIAN_HELP">Technician Partner Fleet Support</option>
-                        <option value="OTHER">General Grievance / Feedback</option>
+                        <option value="BOOKING_HELP">
+                          {isHi ? "तकनीशियन की देरी / नहीं पहुंचना" : "En-route Technician Delay / No-show"}
+                        </option>
+                        <option value="QUALITY_WARRANTY">
+                          {isHi ? "30 दिन की वारंटी का दावा" : "30-Day Workmanship Warranty Claim"}
+                        </option>
+                        <option value="PAYMENT_REFUND">
+                          {isHi ? "बिलिंग या रेट कार्ड विसंगति" : "Billing / Rate Card Discrepancy"}
+                        </option>
+                        <option value="TECHNICIAN_HELP">
+                          {isHi ? "तकनीशियन फ्लीट पार्टनर सपोर्ट" : "Technician Partner Fleet Support"}
+                        </option>
+                        <option value="OTHER">
+                          {isHi ? "सामान्य प्रतिक्रिया / अन्य" : "General Grievance / Feedback"}
+                        </option>
                       </select>
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-slate-300">
-                      Describe the Situation *
+                    <label className="block text-xs font-medium text-slate-300">
+                      {isHi ? "स्थिति का विवरण दें *" : "Describe the Situation *"}
                     </label>
                     <textarea
                       required
                       rows={4}
-                      placeholder="Please specify vehicle/equipment model, location, and the specific breakdown or warranty issue..."
+                      placeholder={
+                        isHi
+                          ? "कृपया वाहन का मॉडल, स्थान और समस्या का संक्षिप्त विवरण लिखें..."
+                          : "Please specify vehicle/equipment model, location, and the specific breakdown or warranty concern..."
+                      }
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
-                      className="w-full rounded-lg bg-[#111827] border border-slate-800 text-xs sm:text-sm text-white placeholder:text-slate-500 p-3.5 focus:outline-none focus:border-amber-500 transition-colors"
+                      className="w-full rounded-2xl bg-white/[0.03] border border-white/[0.08] text-sm text-white placeholder:text-slate-500 p-4 focus:outline-none focus:border-white/[0.25] transition-colors leading-relaxed"
                     />
                   </div>
 
+                  {/* Primary Amber CTA Button */}
                   <Button
                     type="submit"
                     variant="primary"
                     size="md"
-                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold py-3 rounded-lg text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold py-3.5 rounded-full text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.32)] transition-all hover:scale-[1.01]"
                   >
                     <Send className="w-4 h-4" />
-                    <span>Submit Central Support Ticket</span>
+                    <span>{isHi ? "सपोर्ट टिकट सबमिट करें" : "Submit Priority Support Ticket"}</span>
                   </Button>
                 </form>
               )}
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
