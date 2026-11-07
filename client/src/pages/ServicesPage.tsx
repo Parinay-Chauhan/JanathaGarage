@@ -19,6 +19,7 @@ import {
   Tv,
   Car,
   Check,
+  CheckCircle2,
   Wrench,
   Shield,
   ArrowRight,
@@ -1359,47 +1360,54 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
   }, [filteredServices, currentPage, pageSize]);
 
   return (
-    <div className="relative bg-[#F8F7F3] dark:bg-[#070605] text-[#252621] dark:text-[#F5F2EB] min-h-screen pb-24 transition-colors">
-      {/* Ambient Top Glow Mesh */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1560px] h-96 bg-gradient-to-b from-[#FF771C]/15 via-[#FF771C]/5 to-transparent blur-3xl pointer-events-none -z-10" />
+    <div className="relative bg-[#080b11] text-slate-100 min-h-screen selection:bg-amber-500 selection:text-slate-950 font-sans relative overflow-x-hidden pb-24">
+      {/* ========================================================= */}
+      {/* 00 QUIET, PREMIUM LIGHTING & ATMOSPHERE                   */}
+      {/* ========================================================= */}
+      {/* Soft, diffuse overhead ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[560px] bg-[radial-gradient(ellipse_70%_50%_at_50%_-15%,rgba(255,255,255,0.04),transparent_70%)] pointer-events-none -z-0" />
+      {/* Micro-warm amber accent whisper */}
+      <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[600px] h-[360px] bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(245,158,11,0.035),transparent_65%)] pointer-events-none -z-0" />
+      {/* Subtle organic grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:40px_40px] opacity-40 pointer-events-none -z-0" />
 
       {/* ========================================================= */}
       {/* 01 BREADCRUMB & HERO HEADER SECTION                       */}
       {/* ========================================================= */}
-      <div className="border-b border-[#E7E5DF] dark:border-[#221B16] bg-white/60 dark:bg-[#120F0D]/70 backdrop-blur-md relative z-10">
-        <div className="max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="border-b border-white/[0.06] bg-[#080b11]/70 backdrop-blur-md relative z-10">
+        <div className="max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6">
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs font-medium text-[#717167] dark:text-[#9E9488]">
-            <Link to="/" className="hover:text-[#FF771C] transition-colors">
+          <nav className="flex items-center gap-2 text-xs font-normal text-slate-400">
+            <Link to="/" className="hover:text-white transition-colors">
               {t("common.home")}
             </Link>
-            <span>/</span>
-            <span className="text-[#FF771C] font-semibold">
+            <span className="text-slate-600">/</span>
+            <span className="text-slate-200 font-medium">
               {t("servicesPage.allServices")}
             </span>
           </nav>
 
           {/* Title Badge & Heading Row */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
+            <div className="space-y-4 max-w-2xl">
               {/* Trust Tag */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF771C]/10 dark:bg-[#FF771C]/15 border border-[#FF771C]/30 text-[#FF771C] text-xs font-bold tracking-wide shadow-sm">
-                <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#FF771C]" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300 text-xs font-medium backdrop-blur-md">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                 <span>
                   {language === "hi"
-                    ? "सत्यापित मैकेनिक व पेशेवर तकनीशियन"
-                    : "Standardized Doorstep & Emergency Services"}
+                    ? "सत्यापित मैकेनिक व पेशेवर तकनीशियन फ्लीट"
+                    : "Standardized Doorstep & Emergency Fleet"}
                 </span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black font-display tracking-tight text-[#252621] dark:text-[#F5F2EB] leading-[1.2]">
-                {language === "hi" ? "विश्वसनीय होम व ऑटो " : "Reliable Home & Auto "}
-                <span className="bg-gradient-to-r from-[#FF771C] via-[#FFA463] to-[#FF771C] bg-clip-text text-transparent">
-                  {language === "hi" ? "रिपेयर सेवाएं" : "Repair Services"}
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.12]">
+                {language === "hi" ? "सटीक ऑटोमोटिव व " : "Precision automotive & "}
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-white">
+                  {language === "hi" ? "होम इंजीनियरिंग सेवाएं।" : "home engineering services."}
                 </span>
               </h1>
 
-              <p className="text-sm text-[#717167] dark:text-[#A89E92] leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-400 leading-relaxed font-normal">
                 {t("servicesPage.headerSubtitle")}
               </p>
             </div>
@@ -1407,18 +1415,18 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
             {/* Glowing Top Search Input */}
             <div className="w-full lg:w-96">
               <div className="relative group">
-                <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[#FF771C] pointer-events-none transition-transform group-focus-within:scale-110" />
+                <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-amber-400 transition-colors pointer-events-none" />
                 <input
                   type="text"
                   placeholder={t("servicesPage.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  className="w-full pl-11 pr-10 py-3 rounded-2xl bg-white dark:bg-[#181411] border border-[#E7E5DF] dark:border-[#2D241E] text-xs sm:text-sm text-[#252621] dark:text-[#F5F2EB] placeholder:text-[#8F8F85] focus:outline-none focus:ring-4 focus:ring-[#FF771C]/15 focus:border-[#FF771C] shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] transition-all"
+                  className="w-full pl-11 pr-10 py-3.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400/50 shadow-sm transition-all"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => handleSearchChange("")}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-[#8F8F85] hover:text-[#252621] dark:hover:text-white transition-colors"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-slate-400 hover:text-white transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -1428,7 +1436,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
           </div>
 
           {/* Quick Category Chips Strip */}
-          <div className="pt-2 border-t border-[#E7E5DF]/60 dark:border-[#221B16] flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <div className="pt-3 border-t border-white/[0.06] flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             {quickChips.map((chip) => {
               const Icon = chip.icon;
               const isActive = selectedCategory === chip.id;
@@ -1436,13 +1444,13 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 <button
                   key={chip.id}
                   onClick={() => handleCategoryChange(chip.id)}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 ${
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 ${
                     isActive
-                      ? "bg-gradient-to-r from-[#FF771C] to-[#E56814] text-white shadow-[0_4px_16px_rgba(255,119,28,0.4)] scale-[1.03]"
-                      : "bg-white/80 dark:bg-[#181411] text-[#717167] dark:text-[#9E9488] hover:text-[#252621] dark:hover:text-white border border-[#E7E5DF] dark:border-[#2B231D] hover:border-[#FF771C]/40"
+                      ? "bg-amber-500 text-slate-950 font-semibold shadow-[0_4px_16px_rgba(245,158,11,0.25)] scale-[1.02]"
+                      : "bg-white/[0.03] hover:bg-white/[0.06] text-slate-300 hover:text-white border border-white/[0.08] hover:border-white/[0.16]"
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-[#FF771C]"}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-slate-950" : "text-amber-400"}`} />
                   <span>{chip.label}</span>
                 </button>
               );
@@ -1451,55 +1459,113 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
         </div>
       </div>
 
-      {/* Main Layout: Left Filters Sidebar + Right Grid */}
+      {/* ========================================================= */}
+      {/* 02 NATURAL METRICS STRIP                                  */}
+      {/* ========================================================= */}
+      <div className="max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.02] border border-white/[0.06] grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="space-y-1">
+            <p className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
+              100+ Rates
+            </p>
+            <p className="text-xs sm:text-sm text-slate-300 font-medium">
+              {language === "hi" ? "तय डिजिटल रेट कार्ड" : "Pre-Published Rate Cards"}
+            </p>
+            <p className="text-[11px] text-slate-500 font-normal">
+              {language === "hi" ? "कोई छिपा शुल्क नहीं" : "Zero surge markups"}
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
+              &lt; 28 min
+            </p>
+            <p className="text-xs sm:text-sm text-slate-300 font-medium">
+              {language === "hi" ? "औसत रोडसाइड डिस्पैच" : "Roadside Dispatch SLA"}
+            </p>
+            <p className="text-[11px] text-slate-500 font-normal">
+              {language === "hi" ? "लाइव जीपीएस ट्रैकिंग" : "Active GPS telemetry"}
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
+              30-Day SLA
+            </p>
+            <p className="text-xs sm:text-sm text-slate-300 font-medium">
+              {language === "hi" ? "लिखित डोरस्टेप वारंटी" : "Doorstep Written Warranty"}
+            </p>
+            <p className="text-[11px] text-slate-500 font-normal">
+              {language === "hi" ? "मुफ्त पुनः समाधान" : "Free senior re-inspection"}
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
+              100% KYC
+            </p>
+            <p className="text-xs sm:text-sm text-slate-300 font-medium">
+              {language === "hi" ? "पुलिस व आधार सत्यापित" : "Background Audited Fleet"}
+            </p>
+            <p className="text-[11px] text-slate-500 font-normal">
+              {language === "hi" ? "4.85+ स्टार औसत रेटिंग" : "4.85+ average rating"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* 03 MAIN LAYOUT: FILTERS SIDEBAR + SERVICES GRID           */}
+      {/* ========================================================= */}
       <div className="max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {/* Mobile Filter Toggle & Sort Header */}
-        <div className="lg:hidden flex items-center justify-between pb-4 mb-4 border-b border-[#E7E5DF] dark:border-[#2B231D]">
-          <Button
-            variant="outline"
-            size="sm"
-            leftIcon={<Filter className="w-4 h-4 text-[#E87532]" />}
+        <div className="lg:hidden flex items-center justify-between pb-4 mb-4 border-b border-white/[0.06]">
+          <button
+            type="button"
             onClick={() => setMobileFilterOpen(true)}
-            className="text-xs font-bold"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold text-slate-200"
           >
-            {t("common.filters")}{" "}
-            {selectedCategory !== "ALL" || selectedPriceRange !== "ALL"
-              ? ` • ${t("servicesPage.active")}`
-              : ""}
-          </Button>
+            <Filter className="w-3.5 h-3.5 text-amber-400" />
+            <span>
+              {t("common.filters")}{" "}
+              {selectedCategory !== "ALL" || selectedPriceRange !== "ALL"
+                ? ` • ${t("servicesPage.active")}`
+                : ""}
+            </span>
+          </button>
 
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-[#717167]">{t("common.sort")}:</span>
+            <span className="text-slate-400">{t("common.sort")}:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-white dark:bg-[#141210] border border-[#E7E5DF] dark:border-[#2B231D] rounded-lg px-2.5 py-1 text-xs font-semibold text-[#252621] dark:text-[#F5F2EB] focus:outline-none"
+              className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-2.5 py-1 text-xs font-medium text-slate-200 focus:outline-none"
             >
-              <option value="featured">{t("servicesPage.featured")}</option>
-              <option value="price_asc">{t("servicesPage.priceLowHigh")}</option>
-              <option value="price_desc">{t("servicesPage.priceHighLow")}</option>
-              <option value="rating">{t("servicesPage.rating")}</option>
+              <option value="featured" className="bg-[#080b11]">{t("servicesPage.featured")}</option>
+              <option value="price_asc" className="bg-[#080b11]">{t("servicesPage.priceLowHigh")}</option>
+              <option value="price_desc" className="bg-[#080b11]">{t("servicesPage.priceHighLow")}</option>
+              <option value="rating" className="bg-[#080b11]">{t("servicesPage.rating")}</option>
             </select>
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-5 lg:gap-6 items-start relative">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
           {/* ========================================================= */}
-          {/* 02 LEFT FILTERS SIDEBAR (Desktop) - STICKY                */}
+          {/* LEFT FILTERS SIDEBAR (Desktop) - STICKY                   */}
           {/* ========================================================= */}
-          <aside className="hidden lg:block w-56 xl:w-64 shrink-0 sticky top-20 self-start z-20">
-            <div className="p-4.5 sm:p-5 rounded-3xl bg-white dark:bg-[#14100D] border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.5)] space-y-5 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-thin">
+          <aside className="hidden lg:block w-64 xl:w-72 shrink-0 sticky top-24 self-start z-20">
+            <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-6 max-h-[calc(100vh-7rem)] overflow-y-auto scrollbar-thin">
               {/* Header & Reset */}
-              <div className="flex items-center justify-between pb-4 border-b border-[#E7E5DF] dark:border-[#261E18]">
+              <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-orange-500/10 dark:bg-[#FF771C]/15 border border-[#FF771C]/25 flex items-center justify-center text-[#FF771C]">
-                    <SlidersHorizontal className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300">
+                    <SlidersHorizontal className="w-4 h-4 text-amber-400" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-sm text-[#252621] dark:text-[#F5F2EB]">
+                    <h3 className="font-semibold text-sm text-white">
                       {t("common.filters")}
                     </h3>
-                    <p className="text-[10px] text-[#8F8F85]">
+                    <p className="text-[11px] text-slate-400">
                       {filteredServices.length} {t("servicesPage.servicesCount")}
                     </p>
                   </div>
@@ -1510,10 +1576,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                   searchQuery) && (
                   <button
                     onClick={resetFilters}
-                    className="text-[11px] font-bold text-[#FF771C] hover:text-[#E56814] flex items-center gap-1 px-2.5 py-1 rounded-lg bg-orange-50 dark:bg-[#23170E] border border-orange-200/60 dark:border-[#FF771C]/30 transition-colors"
+                    className="text-[11px] font-medium text-amber-400 hover:text-amber-300 flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] transition-colors"
                   >
                     <RotateCcw className="w-3 h-3" />
-                    {t("common.clear")}
+                    <span>{t("common.clear")}</span>
                   </button>
                 )}
               </div>
@@ -1521,23 +1587,23 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               {/* Instant Dispatch Toggle Card */}
               <div
                 onClick={() => setInstantDispatchOnly(!instantDispatchOnly)}
-                className={`p-3.5 rounded-2xl border transition-all duration-300 cursor-pointer select-none ${
+                className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer select-none ${
                   instantDispatchOnly
-                    ? "bg-gradient-to-br from-emerald-500/10 to-teal-500/5 dark:from-emerald-950/40 dark:to-teal-950/20 border-emerald-500/40 shadow-[0_4px_16px_rgba(16,185,129,0.15)]"
-                    : "bg-[#F8F7F3] dark:bg-[#1A1410] border-[#E7E5DF] dark:border-[#261E18] hover:border-[#FF771C]/30"
+                    ? "bg-emerald-500/10 border-emerald-500/30 shadow-[0_4px_16px_rgba(16,185,129,0.15)]"
+                    : "bg-white/[0.015] border-white/[0.06] hover:border-white/[0.12]"
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5">
                     <span className="relative flex h-2.5 w-2.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
                     </span>
                     <div>
-                      <p className="text-xs font-extrabold text-[#252621] dark:text-[#F5F2EB]">
+                      <p className="text-xs font-semibold text-white">
                         {t("servicesPage.instantDispatch")}
                       </p>
-                      <p className="text-[10px] text-[#717167] dark:text-[#9E9488]">
+                      <p className="text-[11px] text-slate-400">
                         {t("servicesPage.instantDispatchSub")}
                       </p>
                     </div>
@@ -1547,7 +1613,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                     className={`w-9 h-5 rounded-full transition-colors relative flex items-center p-0.5 ${
                       instantDispatchOnly
                         ? "bg-emerald-500 justify-end"
-                        : "bg-[#D8D5CD] dark:bg-[#342A22] justify-start"
+                        : "bg-white/[0.1] justify-start"
                     }`}
                   >
                     <div className="w-4 h-4 rounded-full bg-white shadow-sm transition-all" />
@@ -1558,14 +1624,14 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               {/* All Categories Filter */}
               <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#8F8F85] dark:text-[#9E9488]">
+                  <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     {t("categories.allCategories")}
                   </h4>
-                  <span className="text-[10px] font-semibold text-[#8F8F85]">
+                  <span className="text-[10px] font-medium text-slate-500">
                     {categoriesList.length}
                   </span>
                 </div>
-                <div className="space-y-1.5 max-h-[260px] overflow-y-auto pr-1 scrollbar-thin">
+                <div className="space-y-1 max-h-[260px] overflow-y-auto pr-1 scrollbar-thin">
                   {categoriesList.map((cat) => {
                     const isSelected = selectedCategory === cat.id;
                     const IconComp = getCategoryIcon(cat.id);
@@ -1573,25 +1639,25 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                       <button
                         key={cat.id}
                         onClick={() => handleCategoryChange(cat.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 group ${
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 group ${
                           isSelected
-                            ? "bg-gradient-to-r from-[#FF771C] to-[#E56814] text-white shadow-[0_4px_16px_rgba(255,119,28,0.35)] scale-[1.02]"
-                            : "text-[#717167] dark:text-[#9E9488] hover:bg-[#F8F7F3] dark:hover:bg-[#1F1813] hover:text-[#252621] dark:hover:text-[#F5F2EB]"
+                            ? "bg-amber-500 text-slate-950 font-semibold shadow-[0_4px_16px_rgba(245,158,11,0.25)]"
+                            : "text-slate-300 hover:bg-white/[0.04] hover:text-white"
                         }`}
                       >
                         <div className="flex items-center gap-2.5 truncate">
                           <IconComp
-                            className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${
-                              isSelected ? "text-white" : "text-[#FF771C]"
+                            className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:scale-105 ${
+                              isSelected ? "text-slate-950" : "text-amber-400"
                             }`}
                           />
                           <span className="truncate">{tc(cat.name)}</span>
                         </div>
                         <span
-                          className={`text-[10px] px-2 py-0.5 rounded-full font-bold ml-2 shrink-0 ${
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-medium ml-2 shrink-0 ${
                             isSelected
-                              ? "bg-white/20 text-white"
-                              : "bg-[#EFECE6] dark:bg-[#251E17] text-[#8F8F85] group-hover:text-[#252621] dark:group-hover:text-white"
+                              ? "bg-black/20 text-slate-950"
+                              : "bg-white/[0.04] text-slate-400 group-hover:text-white"
                           }`}
                         >
                           {cat.count}
@@ -1603,8 +1669,8 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               </div>
 
               {/* Price Filter */}
-              <div className="space-y-3 pt-3 border-t border-[#E7E5DF] dark:border-[#261E18]">
-                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#8F8F85] dark:text-[#9E9488]">
+              <div className="space-y-3 pt-3 border-t border-white/[0.06]">
+                <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                   {t("servicesPage.priceRange")}
                 </h4>
                 <div className="grid grid-cols-1 gap-1.5 text-xs">
@@ -1624,15 +1690,15 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                           setSelectedPriceRange(range.id);
                           setCurrentPage(1);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-bold transition-all ${
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-medium transition-all ${
                           isSelected
-                            ? "bg-orange-50 dark:bg-[#2A1A10] text-[#FF771C] border border-[#FF771C]/50"
-                            : "bg-[#F8F7F3]/70 dark:bg-[#1A1410] border border-transparent text-[#717167] dark:text-[#9E9488] hover:text-[#252621] dark:hover:text-[#F5F2EB] hover:bg-[#F0EDE6] dark:hover:bg-[#221A15]"
+                            ? "bg-white/[0.06] text-white border border-amber-500/40"
+                            : "bg-white/[0.015] border border-transparent text-slate-400 hover:text-white hover:bg-white/[0.03]"
                         }`}
                       >
                         <span>{range.label}</span>
                         {isSelected && (
-                          <span className="w-2 h-2 rounded-full bg-[#FF771C] shadow-[0_0_8px_#FF771C]" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
                         )}
                       </button>
                     );
@@ -1641,16 +1707,15 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               </div>
 
               {/* Guarantee Highlight Card */}
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent dark:from-[#2A180E] dark:to-[#17100B] border border-orange-500/20 dark:border-[#FF771C]/25 space-y-2 relative overflow-hidden">
-                <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-[#FF771C]/10 rounded-full blur-xl pointer-events-none" />
-                <div className="flex items-center gap-2 text-xs font-extrabold text-[#FF771C]">
-                  <ShieldCheck className="w-4 h-4 shrink-0" />
+              <div className="p-4 rounded-2xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] border border-white/[0.06] space-y-2 relative overflow-hidden">
+                <div className="flex items-center gap-2 text-xs font-semibold text-white">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>{t("servicesPage.doorstepWarranty")}</span>
                 </div>
-                <p className="text-[11px] text-[#717167] dark:text-[#B3A99B] leading-relaxed">
+                <p className="text-[11px] text-slate-400 leading-relaxed font-normal">
                   {t("servicesPage.warrantyDesc")}
                 </p>
-                <div className="pt-2 border-t border-orange-500/15 flex items-center justify-between text-[10px] font-semibold text-[#8F8F85]">
+                <div className="pt-2 border-t border-white/[0.04] flex items-center justify-between text-[10px] text-slate-400 font-medium">
                   <span>✓ 100% Genuine Spares</span>
                   <span>✓ Verified Pros</span>
                 </div>
@@ -1659,29 +1724,29 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
           </aside>
 
           {/* ========================================================= */}
-          {/* 03 RIGHT CONTENT: SERVICE CARDS GRID                      */}
+          {/* RIGHT CONTENT: SERVICE CARDS GRID                        */}
           {/* ========================================================= */}
           <main className="flex-1 min-w-0 space-y-6">
             {/* Top Toolbar: Active Filters & Sort */}
-            <div className="p-4 rounded-3xl bg-white dark:bg-[#14100D] border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_4px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex flex-wrap items-center justify-between gap-4">
+            <div className="p-4 sm:p-5 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm flex flex-wrap items-center justify-between gap-4">
               {/* Active Filter Chips */}
               <div className="flex items-center gap-2 flex-wrap text-xs">
-                <span className="text-[#717167] dark:text-[#9E9488] font-bold">
+                <span className="text-slate-400 font-medium">
                   {t("servicesPage.showing")}{" "}
-                  <strong className="text-[#252621] dark:text-[#F5F2EB] font-black">
+                  <strong className="text-white font-semibold">
                     {filteredServices.length}
                   </strong>{" "}
                   {t("servicesPage.servicesCount")}
                 </span>
 
                 {selectedCategory !== "ALL" && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/10 text-[#FF771C] border border-[#FF771C]/30 text-[11px] font-bold">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] text-slate-200 border border-white/[0.08] text-[11px] font-medium">
                     {t("servicesPage.category")}:{" "}
                     {tc(categoriesList.find((c) => c.id === selectedCategory)?.name ||
                       selectedCategory)}
                     <button
                       onClick={() => handleCategoryChange("ALL")}
-                      className="hover:text-red-500 ml-1"
+                      className="hover:text-red-400 ml-0.5"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -1689,11 +1754,11 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 )}
 
                 {selectedPriceRange !== "ALL" && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/10 text-[#FF771C] border border-[#FF771C]/30 text-[11px] font-bold">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] text-slate-200 border border-white/[0.08] text-[11px] font-medium">
                     {t("servicesPage.priceRange")}: {selectedPriceRange.replace(/_/g, " ")}
                     <button
                       onClick={() => setSelectedPriceRange("ALL")}
-                      className="hover:text-red-500 ml-1"
+                      className="hover:text-red-400 ml-0.5"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -1701,12 +1766,12 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 )}
 
                 {instantDispatchOnly && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[11px] font-bold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     {t("servicesPage.instantDispatch")}
                     <button
                       onClick={() => setInstantDispatchOnly(false)}
-                      className="hover:text-red-500 ml-1"
+                      className="hover:text-red-400 ml-0.5"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -1716,18 +1781,18 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
 
               {/* Desktop Sort Dropdown */}
               <div className="hidden lg:flex items-center gap-2 text-xs">
-                <span className="text-[#8F8F85] font-semibold">
+                <span className="text-slate-400 font-medium">
                   {t("common.sort")}:
                 </span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-[#F8F7F3] dark:bg-[#1A1410] border border-[#E7E5DF] dark:border-[#261E18] rounded-xl px-3 py-1.5 text-xs font-bold text-[#252621] dark:text-[#F5F2EB] focus:outline-none focus:border-[#FF771C] transition-colors"
+                  className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-1.5 text-xs font-medium text-slate-200 focus:outline-none focus:border-amber-400/50 transition-colors"
                 >
-                  <option value="featured">{t("servicesPage.featured")}</option>
-                  <option value="price_asc">{t("servicesPage.priceLowHigh")}</option>
-                  <option value="price_desc">{t("servicesPage.priceHighLow")}</option>
-                  <option value="rating">{t("servicesPage.rating")}</option>
+                  <option value="featured" className="bg-[#080b11]">{t("servicesPage.featured")}</option>
+                  <option value="price_asc" className="bg-[#080b11]">{t("servicesPage.priceLowHigh")}</option>
+                  <option value="price_desc" className="bg-[#080b11]">{t("servicesPage.priceHighLow")}</option>
+                  <option value="rating" className="bg-[#080b11]">{t("servicesPage.rating")}</option>
                 </select>
               </div>
             </div>
@@ -1738,50 +1803,49 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div
                     key={i}
-                    className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#14100D] border border-[#E7E5DF] dark:border-[#261E18] shadow-subtle space-y-4"
+                    className="p-5 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-4"
                   >
-                    <Skeleton className="h-44 w-full rounded-xl" />
-                    <Skeleton className="h-5 w-3/4" />
-                    <Skeleton className="h-4 w-full" />
-                    <div className="flex justify-between items-center pt-3 border-t border-[#E7E5DF] dark:border-[#261E18]">
-                      <Skeleton className="h-6 w-20" />
-                      <Skeleton className="h-8 w-24 rounded-xl" />
+                    <Skeleton className="h-44 w-full rounded-2xl bg-white/[0.03]" />
+                    <Skeleton className="h-5 w-3/4 bg-white/[0.03]" />
+                    <Skeleton className="h-4 w-full bg-white/[0.03]" />
+                    <div className="flex justify-between items-center pt-3 border-t border-white/[0.06]">
+                      <Skeleton className="h-6 w-20 bg-white/[0.03]" />
+                      <Skeleton className="h-8 w-24 rounded-full bg-white/[0.03]" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : (servicesError && allServices.length === 0) ? (
               /* Error State */
-              <div className="p-12 text-center rounded-3xl bg-white dark:bg-[#14100D] border border-rose-200 dark:border-rose-900/50 shadow-card space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
+              <div className="p-12 text-center rounded-3xl bg-white/[0.02] border border-rose-500/20 shadow-sm space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto">
                   <AlertCircle className="w-7 h-7" />
                 </div>
-                <h3 className="text-lg font-bold font-display text-[#252621] dark:text-[#F5F2EB]">
+                <h3 className="text-lg font-semibold text-white">
                   Unable to load services right now
                 </h3>
-                <p className="text-xs text-[#717167] dark:text-[#9E9488] max-w-sm mx-auto">
+                <p className="text-xs text-slate-400 max-w-sm mx-auto font-normal">
                   There was an issue connecting to the service catalog. Please verify your connection or try again.
                 </p>
-                <Button
-                  variant="primary"
-                  size="sm"
+                <button
+                  type="button"
                   onClick={() => refetch()}
-                  className="font-bold shadow-orange-glow"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-all shadow-[0_4px_16px_rgba(245,158,11,0.25)]"
                 >
                   {t("servicesPage.retry")}
-                </Button>
+                </button>
               </div>
             ) : paginatedServices.length > 0 ? (
               /* Active Services Grid - Proportional 3-Column Grid */
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4.5 sm:gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {paginatedServices.map((service) => (
                   <div
                     key={service.id}
-                    className="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#15110E] border border-[#E7E5DF] dark:border-[#261E18] shadow-sm hover:shadow-md dark:shadow-none hover:border-[#FF771C]/50 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between group relative overflow-hidden"
+                    className="p-4 sm:p-5 rounded-3xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 shadow-sm flex flex-col justify-between group relative overflow-hidden"
                   >
                     <div>
                       {/* Card Thumbnail Image with Floating Badges */}
-                      <div className="relative rounded-xl overflow-hidden aspect-[16/9] bg-[#1F1813] mb-3">
+                      <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-[#0d121c] mb-4">
                         <img
                           src={service.image || DEFAULT_FALLBACK_IMAGE}
                           alt={service.title}
@@ -1791,111 +1855,112 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                         />
                         {/* Dark Vignette Overlay for Crisp Contrast */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#080b11]/90 via-[#080b11]/20 to-transparent pointer-events-none" />
 
                         {/* Top-Left Verified Badge */}
-                        <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/80 border border-white/15 text-[11px] font-bold text-white flex items-center gap-1.5 shadow-sm">
-                          <Shield className="w-3.5 h-3.5 text-[#FF771C]" />
+                        <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-medium text-white flex items-center gap-1.5 shadow-sm">
+                          <Shield className="w-3 h-3 text-amber-400" />
                           <span>Verified Pro</span>
                         </div>
 
                         {/* Top-Right Glass Rating Pill */}
-                        <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-black/85 border border-white/15 text-xs font-bold text-white flex items-center gap-1 shadow-sm">
-                          <Star className="w-3.5 h-3.5 fill-[#FF771C] text-[#FF771C]" />
+                        <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-semibold text-white flex items-center gap-1 shadow-sm">
+                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                           <span>{service.rating || 4.9}</span>
-                          <span className="text-white/60 font-medium text-[11px]">
+                          <span className="text-slate-400 font-normal text-[10px]">
                             ({service.reviewsCount || 120})
                           </span>
                         </div>
 
                         {/* Bottom Floating Info Over Image */}
                         <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5">
-                          <span className="text-[11px] font-extrabold uppercase tracking-wide text-white bg-[#FF771C] px-2.5 py-0.5 rounded-full shadow-sm truncate max-w-[72%]">
+                          <span className="text-[10px] font-medium uppercase tracking-wide text-white bg-black/60 backdrop-blur-md border border-white/10 px-2.5 py-0.5 rounded-full shadow-sm truncate max-w-[70%]">
                             {tc(service.category?.name || "Service")}
                           </span>
-                          <div className="px-2.5 py-0.5 rounded-full bg-black/80 text-[11px] text-white/90 font-semibold flex items-center gap-1 border border-white/10 shrink-0">
-                            <Clock className="w-3.5 h-3.5 text-[#FF771C]" />
+                          <div className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] text-slate-300 font-medium flex items-center gap-1 border border-white/10 shrink-0">
+                            <Clock className="w-3 h-3 text-slate-400" />
                             <span>{service.durationMinutes || 45} {t("common.mins")}</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-base sm:text-[17px] font-bold font-display text-[#252621] dark:text-[#F5F2EB] group-hover:text-[#FF771C] transition-colors leading-snug tracking-tight line-clamp-1">
+                      <Link
+                        to={`/services/${service.id}`}
+                        className="block text-base font-semibold text-white group-hover:text-amber-400 transition-colors leading-snug tracking-tight line-clamp-1"
+                      >
                         {ts(service.title)}
-                      </h3>
+                      </Link>
 
                       {/* Description */}
-                      <p className="text-[13px] sm:text-[13.5px] text-[#717167] dark:text-[#9E9488] mt-1.5 line-clamp-2 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-400 mt-1.5 line-clamp-2 leading-relaxed font-normal">
                         {service.description}
                       </p>
 
                       {/* Perks Check Row */}
-                      <div className="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-[#E7E5DF]/60 dark:border-[#261E18] text-xs font-semibold text-[#8F8F85]">
+                      <div className="flex items-center justify-between gap-2 mt-4 pt-3 border-t border-white/[0.04] text-[11px] text-slate-400">
                         <span className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                           Doorstep
                         </span>
                         <span className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-[#FF771C]" />
-                          Warranty
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                          30D Warranty
                         </span>
                         <span className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-blue-500" />
-                          Genuine
+                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                          OEM Spares
                         </span>
                       </div>
                     </div>
 
                     {/* Card Footer: Price & Book CTA */}
-                    <div className="pt-3.5 mt-3.5 border-t border-[#E7E5DF] dark:border-[#261E18] flex items-center justify-between gap-2">
+                    <div className="pt-4 mt-4 border-t border-white/[0.06] flex items-center justify-between gap-2">
                       <div>
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-[#8F8F85] block">
+                        <span className="text-[10px] uppercase font-medium tracking-wider text-slate-500 block">
                           {t("categories.starts")}
                         </span>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-[22px] sm:text-2xl font-mono font-black text-[#252621] dark:text-white">
+                          <span className="text-2xl font-black tracking-tight text-white font-mono">
                             ₹{service.defaultPrice}
                           </span>
                         </div>
                       </div>
-                      <Button
-                        variant="primary"
-                        size="sm"
+                      <button
+                        type="button"
                         onClick={() => {
                           setSelectedService(service);
                           setBookingModalOpen(true);
                         }}
-                        className="font-extrabold bg-gradient-to-r from-[#FF771C] to-[#E56814] hover:from-[#FF8433] hover:to-[#EB7220] text-white shadow-[0_3px_14px_rgba(255,119,28,0.35)] px-4 py-2 sm:px-4.5 sm:py-2.5 rounded-xl transition-all duration-300 group/btn flex items-center gap-1.5 text-xs sm:text-[13px]"
+                        className="inline-flex flex-row items-center justify-center gap-1.5 px-4.5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs sm:text-sm shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
                       >
                         <span>{t("common.bookNow")}</span>
-                        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
-                      </Button>
+                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
               /* Empty State */
-              <div className="p-12 text-center rounded-3xl bg-white/90 dark:bg-[#14100D]/90 backdrop-blur-xl border border-[#E7E5DF] dark:border-[#261E18] shadow-card space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-orange-500/10 text-[#FF771C] flex items-center justify-center mx-auto border border-[#FF771C]/25 shadow-sm">
-                  <Search className="w-8 h-8" />
+              <div className="p-12 text-center rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-white/[0.04] text-slate-400 flex items-center justify-center mx-auto border border-white/[0.08]">
+                  <Search className="w-6 h-6 text-amber-400" />
                 </div>
-                <h3 className="text-lg font-bold font-display text-[#252621] dark:text-[#F5F2EB]">
+                <h3 className="text-lg font-semibold text-white">
                   {t("servicesPage.noServicesMatch")}
                 </h3>
-                <p className="text-xs text-[#717167] dark:text-[#9E9488] max-w-sm mx-auto">
+                <p className="text-xs text-slate-400 max-w-sm mx-auto font-normal">
                   {t("servicesPage.adjustSearch")}
                 </p>
-                <Button
-                  variant="outline"
-                  size="sm"
+                <button
+                  type="button"
                   onClick={resetFilters}
-                  leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
-                  className="font-bold border-[#FF771C]/40 text-[#FF771C] hover:bg-orange-50 dark:hover:bg-[#23170E]"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white border border-white/[0.1] text-xs font-medium transition-all"
                 >
-                  {t("common.clear")}
-                </Button>
+                  <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+                  <span>{t("common.clear")}</span>
+                </button>
               </div>
             )}
 
@@ -1903,24 +1968,24 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
             {/* 04 PAGINATION CONTROLS                                    */}
             {/* ========================================================= */}
             {filteredServices.length > pageSize && (
-              <div className="p-4 rounded-3xl bg-white dark:bg-[#14100D] border border-[#E7E5DF] dark:border-[#261E18] shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-medium text-[#717167] dark:text-[#A89E92]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF771C]" />
+              <div className="p-4 sm:p-5 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs sm:text-sm font-normal text-slate-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
                   {language === "hi" ? (
                     <span>
-                      कुल <span className="font-bold text-[#252621] dark:text-[#F5F2EB]">{filteredServices.length}</span> सेवाओं में से{" "}
-                      <span className="font-bold text-[#FF771C]">
+                      कुल <span className="font-semibold text-white">{filteredServices.length}</span> सेवाओं में से{" "}
+                      <span className="font-semibold text-amber-400">
                         {(currentPage - 1) * pageSize + 1} से {Math.min(currentPage * pageSize, filteredServices.length)}
                       </span>
                     </span>
                   ) : (
                     <span>
                       Showing{" "}
-                      <span className="font-bold text-[#FF771C]">
+                      <span className="font-semibold text-amber-400">
                         {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, filteredServices.length)}
                       </span>{" "}
                       of{" "}
-                      <span className="font-bold text-[#252621] dark:text-[#F5F2EB]">
+                      <span className="font-semibold text-white">
                         {filteredServices.length}
                       </span>{" "}
                       services
@@ -1932,7 +1997,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                   <button
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    className="p-2 rounded-xl border border-[#E7E5DF] dark:border-[#261E18] text-[#252621] dark:text-[#F5F2EB] disabled:opacity-30 hover:bg-[#F8F7F3] dark:hover:bg-[#1A1410] transition-colors"
+                    className="p-2 rounded-xl border border-white/[0.08] bg-white/[0.02] text-slate-300 disabled:opacity-30 hover:bg-white/[0.06] transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -1944,10 +2009,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`w-8 h-8 rounded-xl text-xs font-bold transition-all ${
+                        className={`w-8 h-8 rounded-xl text-xs font-semibold transition-all ${
                           isActive
-                            ? "bg-gradient-to-r from-[#FF771C] to-[#E56814] text-white shadow-[0_4px_16px_rgba(255,119,28,0.4)] scale-105"
-                            : "border border-[#E7E5DF] dark:border-[#261E18] text-[#717167] dark:text-[#9E9488] hover:bg-[#F8F7F3] dark:hover:bg-[#1A1410] hover:text-[#252621] dark:hover:text-[#F5F2EB]"
+                            ? "bg-amber-500 text-slate-950 shadow-[0_4px_16px_rgba(245,158,11,0.25)]"
+                            : "border border-white/[0.08] bg-white/[0.02] text-slate-400 hover:bg-white/[0.06] hover:text-white"
                         }`}
                       >
                         {pageNum}
@@ -1960,7 +2025,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                     onClick={() =>
                       setCurrentPage((p) => Math.min(totalPages, p + 1))
                     }
-                    className="p-2 rounded-xl border border-[#E7E5DF] dark:border-[#261E18] text-[#252621] dark:text-[#F5F2EB] disabled:opacity-30 hover:bg-[#F8F7F3] dark:hover:bg-[#1A1410] transition-colors"
+                    className="p-2 rounded-xl border border-white/[0.08] bg-white/[0.02] text-slate-300 disabled:opacity-30 hover:bg-white/[0.06] transition-colors"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -1973,19 +2038,19 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
 
       {/* Mobile Filters Drawer */}
       {mobileFilterOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm lg:hidden">
-          <div className="w-full max-w-xs h-full bg-[#FAFAF8] dark:bg-[#14100D] p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-[#E7E5DF] dark:border-[#261E18]">
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm lg:hidden">
+          <div className="w-full max-w-xs h-full bg-[#080b11] p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-white/[0.08]">
             <div className="space-y-6">
-              <div className="flex items-center justify-between pb-3 border-b border-[#E7E5DF] dark:border-[#261E18]">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
                 <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4 text-[#FF771C]" />
-                  <h3 className="font-extrabold text-base text-[#252621] dark:text-[#F5F2EB]">
+                  <SlidersHorizontal className="w-4 h-4 text-amber-400" />
+                  <h3 className="font-semibold text-base text-white">
                     Filters
                   </h3>
                 </div>
                 <button
                   onClick={() => setMobileFilterOpen(false)}
-                  className="p-1.5 rounded-full hover:bg-stone-200 dark:hover:bg-[#251E17] text-[#8F8F85] transition-colors"
+                  className="p-1.5 rounded-full hover:bg-white/[0.06] text-slate-400 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1996,20 +2061,20 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 onClick={() => setInstantDispatchOnly(!instantDispatchOnly)}
                 className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                   instantDispatchOnly
-                    ? "bg-emerald-500/10 border-emerald-500/40"
-                    : "bg-white dark:bg-[#1A1410] border-[#E7E5DF] dark:border-[#261E18]"
+                    ? "bg-emerald-500/10 border-emerald-500/30"
+                    : "bg-white/[0.02] border-white/[0.06]"
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-bold text-[#252621] dark:text-[#F5F2EB]">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-xs font-semibold text-white">
                       {t("servicesPage.instantDispatch")}
                     </span>
                   </div>
                   <div
                     className={`w-8 h-4 rounded-full relative flex items-center p-0.5 ${
-                      instantDispatchOnly ? "bg-emerald-500 justify-end" : "bg-stone-300 dark:bg-stone-700 justify-start"
+                      instantDispatchOnly ? "bg-emerald-500 justify-end" : "bg-white/[0.1] justify-start"
                     }`}
                   >
                     <div className="w-3 h-3 rounded-full bg-white shadow-xs" />
@@ -2019,7 +2084,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
 
               {/* Mobile Categories */}
               <div className="space-y-2">
-                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#8F8F85]">
+                <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                   Category
                 </h4>
                 <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
@@ -2033,17 +2098,17 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                           handleCategoryChange(cat.id);
                           setMobileFilterOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                           isSelected
-                            ? "bg-gradient-to-r from-[#FF771C] to-[#E56814] text-white shadow-md"
-                            : "text-[#252621] dark:text-[#F5F2EB] bg-white dark:bg-[#1A1410] border border-[#E7E5DF] dark:border-[#261E18]"
+                            ? "bg-amber-500 text-slate-950 font-semibold shadow-md"
+                            : "text-slate-300 bg-white/[0.02] border border-white/[0.06]"
                         }`}
                       >
                         <div className="flex items-center gap-2 truncate">
-                          <IconComp className={`w-3.5 h-3.5 ${isSelected ? "text-white" : "text-[#FF771C]"}`} />
+                          <IconComp className={`w-3.5 h-3.5 ${isSelected ? "text-slate-950" : "text-amber-400"}`} />
                           <span className="truncate">{tc(cat.name)}</span>
                         </div>
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${isSelected ? "bg-white/20 text-white" : "text-[#8F8F85]"}`}>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${isSelected ? "bg-black/20 text-slate-950" : "text-slate-500"}`}>
                           {cat.count}
                         </span>
                       </button>
@@ -2053,8 +2118,8 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               </div>
 
               {/* Mobile Price Filter */}
-              <div className="space-y-2 pt-3 border-t border-[#E7E5DF] dark:border-[#261E18]">
-                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#8F8F85]">
+              <div className="space-y-2 pt-3 border-t border-white/[0.08]">
+                <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                   Price
                 </h4>
                 <div className="grid grid-cols-1 gap-1 text-xs">
@@ -2073,14 +2138,14 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                           setSelectedPriceRange(range.id);
                           setCurrentPage(1);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-left transition-all ${
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-left transition-all ${
                           isSelected
-                            ? "bg-orange-50 dark:bg-[#2A180E] text-[#FF771C] border border-[#FF771C]/50"
-                            : "bg-white dark:bg-[#1A1410] border border-[#E7E5DF] dark:border-[#261E18] text-[#717167] dark:text-[#9E9488]"
+                            ? "bg-white/[0.08] text-white border border-amber-500/40"
+                            : "bg-white/[0.02] border border-white/[0.06] text-slate-400"
                         }`}
                       >
                         <span>{range.label}</span>
-                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#FF771C]" />}
+                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />}
                       </button>
                     );
                   })}
@@ -2088,26 +2153,24 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
               </div>
             </div>
 
-            <div className="pt-6 border-t border-[#E7E5DF] dark:border-[#261E18] space-y-2">
-              <Button
-                variant="primary"
-                size="md"
+            <div className="pt-6 border-t border-white/[0.08] space-y-2">
+              <button
+                type="button"
                 onClick={() => setMobileFilterOpen(false)}
-                className="w-full font-bold bg-[#FF771C] hover:bg-[#E56814] text-white shadow-[0_4px_16px_rgba(255,119,28,0.4)]"
+                className="w-full py-3 rounded-full font-semibold text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-[0_4px_16px_rgba(245,158,11,0.25)] transition-all"
               >
                 Apply Filters
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
+              </button>
+              <button
+                type="button"
                 onClick={() => {
                   resetFilters();
                   setMobileFilterOpen(false);
                 }}
-                className="w-full text-xs font-bold"
+                className="w-full py-2.5 rounded-full text-xs font-medium bg-white/[0.04] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
               >
                 Reset All
-              </Button>
+              </button>
             </div>
           </div>
         </div>
