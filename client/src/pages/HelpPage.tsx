@@ -19,6 +19,12 @@ import {
   Car,
   Wrench,
   Check,
+  Zap,
+  Activity,
+  Layers,
+  Wind,
+  Shield,
+  LifeBuoy,
 } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { Button } from "../components/ui/Button";
@@ -41,6 +47,76 @@ export const HelpPage: React.FC = () => {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [ticketId, setTicketId] = useState("");
+
+  // 6 Sleek Floating Emergency & Service Triage Quick Cards
+  const triageCards = [
+    {
+      id: "triage-battery",
+      title: isHi ? "इमरजेंसी बैटरी जंपस्टार्ट" : "Battery Jumpstart & Alternator",
+      desc: isHi
+        ? "हाईवे या घर पर बैटरी डाउन होने पर 30 मिनट में हेवी-ड्यूटी बूस्टर डिस्पैच।"
+        : "Heavy-duty commercial booster cables & alternator diode test dispatched in < 28 mins.",
+      category: "BOOKING",
+      icon: Zap,
+      actionText: isHi ? "तत्काल सहायता" : "Rapid Triage",
+      route: "/services?search=battery",
+    },
+    {
+      id: "triage-engine",
+      title: isHi ? "इंजन डायग्नोस्टिक व फॉल्ट कोड" : "Engine Diagnostics & Fault Codes",
+      desc: isHi
+        ? "चेक इंजन लाइट या असामान्य आवाज की लाइव OBD-II स्कैनर से जांच।"
+        : "OBD-II CAN-bus scanner analysis, sensor calibration, and verified fault clearing.",
+      category: "BOOKING",
+      icon: Activity,
+      actionText: isHi ? "डायग्नोसिस देखें" : "Scan Support",
+      route: "/services?search=engine",
+    },
+    {
+      id: "triage-warranty",
+      title: isHi ? "30 दिन की लिखित वारंटी" : "30-Day Warranty Claim",
+      desc: isHi
+        ? "सर्विस के बाद 30 दिनों में समस्या आने पर ₹0 चार्ज में पुनः जांच।"
+        : "Re-inspection and defect rectification at ₹0 charge under our corporate guarantee.",
+      category: "WARRANTY",
+      icon: ShieldCheck,
+      actionText: isHi ? "वारंटी दावा" : "File Claim",
+      route: "#ticket-desk",
+    },
+    {
+      id: "triage-cooling",
+      title: isHi ? "एसी कूलिंग व गैस लीकेज" : "HVAC Cooling & Gas Leakage",
+      desc: isHi
+        ? "कार व घर के एसी की जेट क्लीनिंग, गैस प्रेशर टेस्ट व कंप्रेसर जांच।"
+        : "High-pressure foam jet flush, eco gas R32/R410A recharge, and vacuum pressure test.",
+      category: "BOOKING",
+      icon: Wind,
+      actionText: isHi ? "कूलिंग जांच" : "HVAC Help",
+      route: "/services?search=ac",
+    },
+    {
+      id: "triage-electrical",
+      title: isHi ? "शॉर्ट-सर्किट व इनवर्टर फॉल्ट" : "Electrical Circuits & MCB Tripping",
+      desc: isHi
+        ? "एमसीबी ट्रिपिंग, न्यूट्रल लीकेज डिटेक्शन व हाई-लोड इनवर्टर वायरिंग।"
+        : "Phase imbalance triage, insulation resistance check, and dedicated circuit wiring.",
+      category: "SAFETY",
+      icon: Layers,
+      actionText: isHi ? "वायरिंग सहायता" : "Circuit Triage",
+      route: "/services?search=electric",
+    },
+    {
+      id: "triage-ratecard",
+      title: isHi ? "पारदर्शी तय रेट कार्ड" : "Standardized Rate Cards",
+      desc: isHi
+        ? "बिना किसी छुपे शुल्क के सभी 100+ सेवाओं के आधिकारिक रेट देखें।"
+        : "Pre-published parts and labor rate cards with 100% price transparency and ₹0 hidden fees.",
+      category: "PAYMENT",
+      icon: FileText,
+      actionText: isHi ? "रेट कार्ड देखें" : "View Rates",
+      route: "/pricing-guide",
+    },
+  ];
 
   const faqData = [
     {
@@ -243,12 +319,109 @@ export const HelpPage: React.FC = () => {
             </p>
           )}
         </div>
+
+        {/* Resolution Metrics Strip: Natural & Elegant Typography (Not Blocky) */}
+        <div className="mt-14 sm:mt-16 pt-8 border-t border-white/[0.06] grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-left">
+          <div className="space-y-1">
+            <p className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+              &lt; 30 sec
+            </p>
+            <p className="text-xs text-slate-400">
+              {isHi ? "औसत हेल्पलाइन कनेक्ट समय" : "Hotline Connection Time"}
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+              &lt; 28 min
+            </p>
+            <p className="text-xs text-slate-400">
+              {isHi ? "इमरजेंसी रोडसाइड डिस्पैच" : "Roadside Dispatch SLA"}
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+              99.4%
+            </p>
+            <p className="text-xs text-slate-400">
+              {isHi ? "प्रथम विज़िट में समाधान दर" : "First-Visit Resolution Rate"}
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+              ₹0 Cost
+            </p>
+            <p className="text-xs text-slate-400">
+              {isHi ? "30 दिन वारंटी पुनः जांच" : "Warranty Re-Inspection Fee"}
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* Main Container */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 sm:space-y-28">
         {/* ========================================================= */}
-        {/* 02 THE 1-2-3 RESOLUTION PROCESS                           */}
+        {/* 02 SLEEK FLOATING EMERGENCY & SERVICE TRIAGE CARDS        */}
+        {/* ========================================================= */}
+        <section className="space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 text-xs font-medium text-slate-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                <span className="uppercase tracking-wider">
+                  {isHi ? "त्वरित समाधान श्रेणियां" : "Instant Triage"}
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight">
+                {isHi ? "सामान्य आपातकालीन व तकनीकी सहायता" : "Common emergency & technical assistance."}
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            {triageCards.map((card) => {
+              const Icon = card.icon;
+              return (
+                <Link
+                  key={card.id}
+                  to={card.route}
+                  className="p-7 rounded-3xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 shadow-sm flex flex-col justify-between group"
+                >
+                  <div className="space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300 group-hover:text-white transition-colors">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                        {card.category}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-semibold text-white group-hover:text-slate-100 transition-colors">
+                      {card.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                      {card.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-5 mt-5 border-t border-white/[0.06] flex items-center justify-between text-xs">
+                    <span className="text-slate-400 font-medium group-hover:text-white transition-colors flex items-center gap-1">
+                      <span>{card.actionText}</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                    <span className="text-slate-600 font-mono">SUPPORT</span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ========================================================= */}
+        {/* 03 THE 1-2-3 RESOLUTION PROCESS (Modern & Intuitive)      */}
         {/* ========================================================= */}
         <section className="space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -356,7 +529,7 @@ export const HelpPage: React.FC = () => {
         </section>
 
         {/* ========================================================= */}
-        {/* 03 FAST ESCALATION CHANNELS (Floating Glass Cards)        */}
+        {/* 04 DIRECT CHANNELS (Floating Glass Cards)                  */}
         {/* ========================================================= */}
         <section className="space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -488,7 +661,7 @@ export const HelpPage: React.FC = () => {
         </section>
 
         {/* ========================================================= */}
-        {/* 04 FAQS KNOWLEDGE BASE (Clean Accordion)                   */}
+        {/* 05 FAQS KNOWLEDGE BASE (Clean Accordion)                   */}
         {/* ========================================================= */}
         <section className="space-y-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.06]">
@@ -568,9 +741,9 @@ export const HelpPage: React.FC = () => {
         </section>
 
         {/* ========================================================= */}
-        {/* 05 DIRECT TICKET SUBMISSION TERMINAL                      */}
+        {/* 06 DIRECT TICKET SUBMISSION TERMINAL                      */}
         {/* ========================================================= */}
-        <section className="p-8 sm:p-14 rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/[0.08] shadow-2xl">
+        <section id="ticket-desk" className="p-8 sm:p-14 rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/[0.08] shadow-2xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             {/* Left Column: Resolution Commitments */}
             <div className="lg:col-span-5 space-y-6">
