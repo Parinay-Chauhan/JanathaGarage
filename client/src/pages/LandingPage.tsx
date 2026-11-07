@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Wrench,
@@ -30,6 +30,9 @@ import {
   ShieldAlert,
   Sliders,
   Check,
+  Disc,
+  Fuel,
+  Compass,
 } from "lucide-react";
 import { useGetCategoriesQuery, useGetServicesQuery } from "../features/services/api/servicesApi";
 import { useGetTechniciansQuery } from "../features/technicians/api/techniciansApi";
@@ -66,13 +69,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
   const howItWorksRef = useRef<HTMLDivElement>(null);
 
   const { language, t, tc, ts } = useLanguage();
+  const isHi = language === "hi";
   const { location, detectCurrentLocation, isLoadingGPS } = useLocation();
 
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSegment, setSelectedSegment] = useState<string>("auto");
-  const [activeTelemetryStage, setActiveTelemetryStage] = useState<number>(3);
+
+  // Interactive Quick Vehicle-Select & Booking Bar States
+  const [vehicleType, setVehicleType] = useState<"car" | "bike">("car");
+  const [selectedServiceSlug, setSelectedServiceSlug] = useState<string>("general");
+  const [activeTelemetryStage, setActiveTelemetryStage] = useState<number>(2);
 
   const { data: categoriesData, isLoading: categoriesLoading } = useGetCategoriesQuery();
   const { data: servicesData, isLoading: servicesLoading } = useGetServicesQuery();
@@ -105,6 +112,104 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
     } else {
       navigate("/services");
     }
+  };
+
+  // Pre-configured service options for the Hero Quick-Booking Bar
+  const vehicleServiceOptions = useMemo(() => {
+    if (vehicleType === "car") {
+      return [
+        {
+          id: "general",
+          name: isHi ? "जनरल सर्विस व इंस्पेक्शन" : "Periodic Service & Oil Flush",
+          price: "₹899",
+          duration: "60 mins",
+          desc: isHi ? "इंजन ऑयल, फिल्टर, ब्रेक इंस्पेक्शन व 30-पॉइंट चेक" : "Synthetic lube, oil filter, coolant top-up & 30-pt safety check",
+        },
+        {
+          id: "battery",
+          name: isHi ? "इमरजेंसी बैटरी जंपस्टार्ट" : "Emergency Battery Jumpstart",
+          price: "₹349",
+          duration: "25 mins",
+          desc: isHi ? "डोरस्टेप बूस्टर केबल, टर्मिनल क्लीनिंग व अल्टरनेटर डायग्नोसिस" : "Heavy-duty booster cables & alternator diode test",
+        },
+        {
+          id: "diagnostics",
+          name: isHi ? "OBD-II कंप्यूटर स्कैन व चेक इंजन" : "OBD-II Engine Diagnostics",
+          price: "₹499",
+          duration: "35 mins",
+          desc: isHi ? "सेंसर एरर कोड रीडिंग, ईसीयू लाइव टेलीमेट्री व फॉल्ट रिसेट" : "Live CAN-bus sensor telemetry & ECM fault clear",
+        },
+        {
+          id: "brakes",
+          name: isHi ? "ब्रेक पैड व डिस्क सर्विस" : "Brake Overhaul & Fluid Bleed",
+          price: "₹599",
+          duration: "45 mins",
+          desc: isHi ? "डिस्क पैड क्लीनिंग, कैलिपर ग्रीसिंग व हाइड्रोलिक एयर ब्लीड" : "Pad resurfacing, caliper slide pin lube & DOT4 bleed",
+        },
+        {
+          id: "ac",
+          name: isHi ? "कार एसी कूलिंग व गैस चार्ज" : "Car AC Foam Jet & Gas Refill",
+          price: "₹799",
+          duration: "50 mins",
+          desc: isHi ? "कंडेनसर डीप फोम वॉश, केबिन फिल्टर क्लीनिंग व R134a गैस" : "Condenser foam flush, cabin filter & R134a refrigerant",
+        },
+        {
+          id: "denting",
+          name: isHi ? "डेंटिंग, स्क्रैच व पैनल पेंटिंग" : "Paintless Dent & Scratch Buffing",
+          price: "₹699",
+          duration: "60 mins",
+          desc: isHi ? "पेंटलेस डेंट रिमूवल (PDR), रबिंग व हाई-ग्लॉस बफिंग" : "PDR vacuum extraction, 3M compound rubbing & gloss seal",
+        },
+      ];
+    } else {
+      return [
+        {
+          id: "bike-tuneup",
+          name: isHi ? "बाइक फुल सर्विस व ट्यून-अप" : "Full Bike Service & Tune-Up",
+          price: "₹349",
+          duration: "45 mins",
+          desc: isHi ? "इंजन ऑयल चेंज, स्पार्क प्लग क्लीन, कार्ब क्लीन व चेन ल्यूब" : "Engine lube, spark plug clean, carb flush & chain adjust",
+        },
+        {
+          id: "bike-chain",
+          name: isHi ? "चेन स्प्रोकेट व ड्राइव ल्यूब" : "Chain Sprocket Clean & Lube",
+          price: "₹199",
+          duration: "20 mins",
+          desc: isHi ? "हाई-प्रेशर चेन डिग्रेसिंग, टेंशन एडजस्टमेंट व ल्यूब" : "High-pressure kerosene degrease, slack calibrate & Motul lube",
+        },
+        {
+          id: "bike-breakdown",
+          name: isHi ? "ऑन-रोड स्टार्ट ट्रबल व पंचर" : "Roadside Breakdown Triage",
+          price: "₹249",
+          duration: "25 mins",
+          desc: isHi ? "ऑन-स्पॉट स्पार्क/फ्यूल लाइन डायग्नोसिस व इमरजेंसी स्टार्ट" : "On-spot electrical/fuel diagnostics & jumpstart",
+        },
+        {
+          id: "bike-brakes",
+          name: isHi ? "डिस्क/ड्रम ब्रेक सर्विस" : "Disc & Drum Brake Calibration",
+          price: "₹229",
+          duration: "30 mins",
+          desc: isHi ? "ब्रेक शू क्लीनिंग, वायर ल्यूब व डिस्क पैड रिप्लेसमेंट" : "Shoe cleaning, wire tensioning & master cylinder flush",
+        },
+        {
+          id: "bike-electrical",
+          name: isHi ? "बैटरी, वायरिंग व हॉर्न/लाइट्स" : "Battery & Electrical Diagnostic",
+          price: "₹199",
+          duration: "25 mins",
+          desc: isHi ? "बैटरी वोल्टेज टेस्ट, स्विच रिपेयर व वायरिंग फॉल्ट चेक" : "Terminal voltage test, regulator check & short-circuit fix",
+        },
+      ];
+    }
+  }, [vehicleType, isHi]);
+
+  const activeSelectedService =
+    vehicleServiceOptions.find((s) => s.id === selectedServiceSlug) || vehicleServiceOptions[0];
+
+  const handleHeroInstantEstimate = () => {
+    // Navigate to services page with preselected filters
+    navigate(
+      `/services?vehicle=${vehicleType}&service=${encodeURIComponent(activeSelectedService.name)}`
+    );
   };
 
   // 12 Structured Automotive & Home Engineering Service Categories
@@ -463,14 +568,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
   return (
     <div className="bg-[#0b0f17] text-white min-h-screen selection:bg-amber-500 selection:text-slate-950 pb-20 relative overflow-x-hidden font-sans">
       {/* ========================================================= */}
-      {/* NATURAL LIGHTING & ATMOSPHERIC SURFACES                   */}
+      {/* 00 ATMOSPHERIC LIGHTING & DEEP INDUSTRIAL CANVAS          */}
       {/* ========================================================= */}
       {/* Warm Garage Overhead Floodlight Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[640px] bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(245,158,11,0.08),transparent_70%)] pointer-events-none -z-0" />
-      {/* Subtle Precision Cyan Diagnostic Ambient Glow */}
-      <div className="absolute top-48 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle_at_100%_20%,rgba(6,182,212,0.04),transparent_60%)] pointer-events-none -z-0" />
-      {/* Organic Architectural Micro-Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f293718_1px,transparent_1px),linear-gradient(to_bottom,#1f293718_1px,transparent_1px)] bg-[size:32px_32px] opacity-25 pointer-events-none -z-0" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[680px] bg-[radial-gradient(ellipse_80%_45%_at_50%_-10%,rgba(245,158,11,0.08),transparent_70%)] pointer-events-none -z-0" />
+      {/* Precision Diagnostic Cyan Glow */}
+      <div className="absolute top-72 right-0 w-[520px] h-[520px] bg-[radial-gradient(circle_at_100%_25%,rgba(6,182,212,0.03),transparent_60%)] pointer-events-none -z-0" />
+      {/* Architectural Engineering Micro-Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:36px_36px] opacity-40 pointer-events-none -z-0" />
 
       {/* ========================================================= */}
       {/* 01 TOP OPERATIONAL DISPATCH STRIP                         */}
@@ -486,7 +591,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               <span>FLEET RADAR ACTIVE</span>
             </span>
             <span className="text-slate-400 hidden sm:inline text-xs font-mono tracking-wide">
-              500+ VERIFIED MASTER MECHANICS ACROSS NCR, PUNE &amp; BENGALURU
+              {isHi
+                ? "500+ पुलिस व केवाईसी सत्यापित मैकेनिक ऑन-ड्यूटी"
+                : "500+ POLICE & KYC VERIFIED MECHANICS READY FOR DISPATCH"}
             </span>
           </div>
 
@@ -495,191 +602,213 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
               <span>ZONE: {location.city || "NCR METRO"}</span>
             </div>
-            <span className="text-slate-700">|</span>
-            <div className="flex items-center gap-1.5 text-amber-400 font-medium font-mono">
-              <Clock className="w-3.5 h-3.5 shrink-0" />
-              <span>SLA: &lt; 28 MINS DISPATCH</span>
-            </div>
+            <span className="text-white/[0.15]">|</span>
+            <a
+              href="tel:+918439616833"
+              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-medium font-mono transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5 shrink-0" />
+              <span>SOS: +91 84396 16833</span>
+            </a>
           </div>
         </div>
       </div>
 
       {/* ========================================================= */}
-      {/* 02 HERO SECTION: HUMAN-DESIGNED AUTOMOTIVE WORKSHOP       */}
+      {/* 02 HERO SECTION: SPLIT VIEW WITH QUICK VEHICLE-BOOKING BAR */}
       {/* ========================================================= */}
       <section
         ref={heroRef}
-        className="relative z-10 pt-10 sm:pt-16 pb-16 sm:pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-white/[0.06]"
+        className="relative z-10 pt-10 sm:pt-16 pb-16 sm:pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-white/[0.06]"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          {/* Left Column: Fluid Content & Command Intake */}
+          {/* Left Column: Fluid Content & Vehicle Select Booking Bar */}
           <div className="lg:col-span-7 space-y-6 sm:space-y-7">
             {/* Garage Platform Tag */}
-            <div className="hero-anim inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#131b28] border border-amber-500/30 text-amber-300 text-xs font-medium backdrop-blur-sm shadow-sm">
+            <div className="hero-anim inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#131b28] border border-white/[0.08] text-slate-300 text-xs font-medium backdrop-blur-sm shadow-sm">
               <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-              <span className="tracking-wide">On-Demand Automotive &amp; Home Maintenance</span>
+              <span className="tracking-wide">
+                {isHi ? "ऑन-डिमांड ऑटोमोटिव व डोरस्टेप रिपेयर प्लेटफॉर्म" : "Next-Gen Automotive & Doorstep Engineering"}
+              </span>
             </div>
 
             {/* Fluid Display Heading with Warm Garage Gold Highlights */}
-            <h1 className="hero-anim text-3xl sm:text-5xl lg:text-[3.25rem] font-bold text-white tracking-tight leading-[1.16]">
-              {t("hero.titlePart1")}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">
-                {t("hero.titlePart2")}
-              </span>{" "}
-              {t("hero.titlePart3")}
+            <h1 className="hero-anim text-3xl sm:text-5xl lg:text-[3.35rem] font-bold text-white tracking-tight leading-[1.14]">
+              {isHi ? (
+                <>
+                  विश्वसनीय मैकेनिक, सीधे आपके दरवाजे पर{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-white">
+                    30 मिनट में
+                  </span>
+                </>
+              ) : (
+                <>
+                  Precision automotive care, dispatched to your door in{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-white">
+                    &lt; 28 minutes.
+                  </span>
+                </>
+              )}
             </h1>
 
-            {/* Natural Paragraph Breathing Room */}
-            <p className="hero-anim text-sm sm:text-base lg:text-lg text-slate-300/90 leading-relaxed max-w-2xl font-normal">
-              {t("hero.mainSubtitle")}
+            {/* Natural Paragraph with Breathing Room */}
+            <p className="hero-anim text-sm sm:text-base text-slate-300/90 leading-relaxed max-w-2xl font-normal">
+              {isHi
+                ? "कार व बाइक ब्रेकडाउन, बैटरी जंपस्टार्ट, इंजन डायग्नोस्टिक्स व एसी रिपेयर। तय मानक रेट कार्ड, 4-अंकीय ओटीपी सुरक्षा और 30 दिन की लिखित वारंटी।"
+                : "Certified mobile mechanics equipped with OBD-II diagnostic rigs, battery booster cables, and calibrated toolkits. Pre-published standard rates, zero hidden surcharges, and pay only after satisfaction."}
             </p>
 
-            {/* Interactive Equipment Intake Terminal */}
-            <div className="hero-anim p-4 sm:p-5 rounded-2xl bg-[#131b28]/90 border border-white/[0.08] shadow-2xl backdrop-blur-md space-y-3.5">
-              {/* Segment Selector Chips */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+            {/* ========================================================= */}
+            {/* INTERACTIVE QUICK VEHICLE-SELECT & INSTANT ESTIMATE BAR   */}
+            {/* ========================================================= */}
+            <div className="hero-anim p-5 sm:p-6 rounded-3xl bg-[#0e1420]/95 border border-white/[0.08] shadow-2xl backdrop-blur-md space-y-4">
+              {/* Step 1 Header: Select Vehicle Type */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{isHi ? "स्टेप 1: वाहन चुनें" : "Step 1: Select Vehicle"}</span>
+                </span>
+                <span className="text-[11px] text-slate-500 font-mono">
+                  {vehicleType === "car" ? "4-WHEELER FLEET" : "2-WHEELER FLEET"}
+                </span>
+              </div>
+
+              {/* Segment Selector Chips (Car vs Bike) */}
+              <div className="grid grid-cols-2 gap-2.5">
                 <button
                   type="button"
-                  onClick={() => setSelectedSegment("auto")}
-                  className={`px-3.5 py-2 rounded-xl border transition-all flex items-center gap-2 whitespace-nowrap font-medium text-xs ${
-                    selectedSegment === "auto"
+                  onClick={() => {
+                    setVehicleType("car");
+                    setSelectedServiceSlug("general");
+                  }}
+                  className={`p-3 rounded-2xl border transition-all flex items-center justify-center gap-2.5 text-xs font-semibold ${
+                    vehicleType === "car"
                       ? "bg-amber-500/15 border-amber-500/50 text-amber-300 shadow-sm"
-                      : "bg-[#0f1420] border-white/[0.06] text-slate-400 hover:text-white hover:border-white/[0.12]"
+                      : "bg-[#131b28]/60 border-white/[0.06] text-slate-400 hover:text-white hover:border-white/[0.12]"
                   }`}
                 >
-                  <Car className="w-3.5 h-3.5 text-amber-400" />
-                  <span>4-Wheeler Car</span>
+                  <Car className="w-4 h-4 text-amber-400" />
+                  <span>{isHi ? "4-व्हीलर कार" : "4-Wheeler Car"}</span>
                 </button>
+
                 <button
                   type="button"
-                  onClick={() => setSelectedSegment("bike")}
-                  className={`px-3.5 py-2 rounded-xl border transition-all flex items-center gap-2 whitespace-nowrap font-medium text-xs ${
-                    selectedSegment === "bike"
+                  onClick={() => {
+                    setVehicleType("bike");
+                    setSelectedServiceSlug("bike-tuneup");
+                  }}
+                  className={`p-3 rounded-2xl border transition-all flex items-center justify-center gap-2.5 text-xs font-semibold ${
+                    vehicleType === "bike"
                       ? "bg-amber-500/15 border-amber-500/50 text-amber-300 shadow-sm"
-                      : "bg-[#0f1420] border-white/[0.06] text-slate-400 hover:text-white hover:border-white/[0.12]"
+                      : "bg-[#131b28]/60 border-white/[0.06] text-slate-400 hover:text-white hover:border-white/[0.12]"
                   }`}
                 >
-                  <Bike className="w-3.5 h-3.5 text-amber-400" />
-                  <span>2-Wheeler</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedSegment("hvac")}
-                  className={`px-3.5 py-2 rounded-xl border transition-all flex items-center gap-2 whitespace-nowrap font-medium text-xs ${
-                    selectedSegment === "hvac"
-                      ? "bg-cyan-500/15 border-cyan-500/50 text-cyan-300 shadow-sm"
-                      : "bg-[#0f1420] border-white/[0.06] text-slate-400 hover:text-white hover:border-white/[0.12]"
-                  }`}
-                >
-                  <Wind className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>AC &amp; Cooling</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedSegment("electric")}
-                  className={`px-3.5 py-2 rounded-xl border transition-all flex items-center gap-2 whitespace-nowrap font-medium text-xs ${
-                    selectedSegment === "electric"
-                      ? "bg-amber-500/15 border-amber-500/50 text-amber-300 shadow-sm"
-                      : "bg-[#0f1420] border-white/[0.06] text-slate-400 hover:text-white hover:border-white/[0.12]"
-                  }`}
-                >
-                  <Zap className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Electrical</span>
+                  <Bike className="w-4 h-4 text-amber-400" />
+                  <span>{isHi ? "2-व्हीलर बाइक / स्कूटर" : "2-Wheeler Motorcycle / Scooter"}</span>
                 </button>
               </div>
 
-              {/* Command Search Form */}
-              <form
-                onSubmit={handleSearchSubmit}
-                className="p-1.5 rounded-xl bg-[#0d121c] border border-white/[0.08] flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
-              >
-                {/* Location detector pill */}
-                <div className="flex items-center gap-2 px-3 py-2 border-b sm:border-b-0 sm:border-r border-white/[0.08] text-xs font-semibold text-white min-w-[145px]">
-                  <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="truncate max-w-[95px]">{location.city || "NCR Metro"}</span>
-                  <button
-                    type="button"
-                    onClick={() => detectCurrentLocation()}
-                    className="text-[10px] text-amber-400 hover:text-amber-300 font-mono ml-auto font-medium"
-                    title="Auto detect location via GPS"
-                  >
-                    {isLoadingGPS ? "..." : t("nav.gpsDetect")}
-                  </button>
+              {/* Step 2: Choose Service Issue from Quick Chips */}
+              <div className="space-y-2 pt-1">
+                <div className="flex items-center justify-between text-xs text-slate-400">
+                  <span className="font-mono text-[11px] uppercase tracking-wider">
+                    {isHi ? "स्टेप 2: आवश्यक सर्विस चुनें" : "Step 2: Choose Service Need"}
+                  </span>
+                  <span className="text-[11px] text-amber-400/90 font-mono">
+                    {activeSelectedService.duration}
+                  </span>
                 </div>
 
-                {/* Input text */}
-                <div className="relative flex-1 flex items-center px-3">
-                  <Search className="w-4 h-4 text-slate-500 mr-2 shrink-0" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={
-                      selectedSegment === "auto"
-                        ? "Car battery jumpstart, brake shudder, engine diagnostics..."
-                        : selectedSegment === "bike"
-                        ? "Engine oil change, chain sprocket, spark plug..."
-                        : selectedSegment === "hvac"
-                        ? "AC foam jet cleaning, compressor gas recharge (R32)..."
-                        : "MCB tripping, neutral wire short circuit, inverter fix..."
-                    }
-                    className="w-full bg-transparent border-none text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none py-1.5"
-                  />
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {vehicleServiceOptions.map((opt) => {
+                    const isSelected = selectedServiceSlug === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setSelectedServiceSlug(opt.id)}
+                        className={`p-2.5 rounded-xl border text-left transition-all ${
+                          isSelected
+                            ? "bg-white/[0.08] border-amber-400/60 text-white shadow-sm"
+                            : "bg-[#131b28]/50 border-white/[0.05] text-slate-300 hover:border-white/[0.12] hover:bg-white/[0.04]"
+                        }`}
+                      >
+                        <p className="text-xs font-semibold truncate">{opt.name}</p>
+                        <p className="text-[11px] font-mono text-amber-400 font-bold mt-0.5">
+                          {opt.price}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Step 3: Dynamic Instant Estimate & Call to Action */}
+              <div className="p-3.5 rounded-2xl bg-[#131b28]/80 border border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400">{isHi ? "अनुमानित लागत:" : "Estimated Cost:"}</span>
+                    <span className="text-lg font-bold font-mono text-amber-400">
+                      {activeSelectedService.price}
+                    </span>
+                    <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">
+                      {isHi ? "विज़िट शुल्क 100% समायोजित" : "100% Fee Offset"}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    {activeSelectedService.desc}
+                  </p>
                 </div>
 
-                {/* Primary Search CTA */}
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg px-5 py-2.5 font-semibold text-xs uppercase tracking-wider shadow-[0_4px_16px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.35)] transition-all"
+                <button
+                  type="button"
+                  onClick={handleHeroInstantEstimate}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap shrink-0"
                 >
-                  {t("hero.searchBtn")}
-                </Button>
-              </form>
+                  <span>{isHi ? "तुरंत एस्टिमेट व बुक करें" : "Instant Estimate & Book"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Location quick check pill */}
+              <div className="flex items-center justify-between text-xs text-slate-400 pt-1 border-t border-white/[0.04]">
+                <div className="flex items-center gap-1.5 text-slate-300">
+                  <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <span>
+                    {isHi ? "सर्विस स्थान:" : "Location:"} <strong>{location.city || "NCR Metro"}</strong>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => detectCurrentLocation()}
+                  className="text-[11px] text-amber-400 hover:text-amber-300 font-medium underline underline-offset-4"
+                >
+                  {isLoadingGPS ? "Detecting..." : t("nav.gpsDetect")}
+                </button>
+              </div>
             </div>
 
             {/* Quick Action CTAs */}
-            <div className="hero-anim flex flex-wrap items-center gap-3">
+            <div className="hero-anim flex flex-wrap items-center gap-3 pt-1">
               <Link to="/services">
                 <Button
                   variant="primary"
                   size="lg"
                   rightIcon={<ArrowRight className="w-4 h-4" />}
-                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-6 py-3 rounded-xl flex items-center gap-2 shadow-[0_4px_16px_rgba(245,158,11,0.25)] transition-all hover:scale-[1.01]"
+                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-6 py-2.5 rounded-full flex items-center gap-2 shadow-[0_4px_20px_rgba(245,158,11,0.25)] transition-all hover:scale-[1.02]"
                 >
-                  {t("hero.bookBtn")}
+                  {isHi ? "सभी 100+ रेट कार्ड देखें" : "Explore All Rate Cards"}
                 </Button>
               </Link>
               <Link to="/technicians">
                 <Button
                   variant="outline"
                   size="lg"
-                  className="bg-[#131b28] hover:bg-[#1a2333] text-cyan-300 border border-cyan-500/30 hover:border-cyan-400/60 font-semibold px-5 py-3 rounded-xl transition-all"
+                  className="bg-[#131b28] hover:bg-[#1a2333] text-slate-200 hover:text-white border border-white/[0.1] font-semibold px-6 py-2.5 rounded-full transition-all"
                 >
-                  {t("hero.findTechBtn")}
+                  {isHi ? "सत्यापित मैकेनिक खोजें" : "Browse Verified Mechanics"}
                 </Button>
               </Link>
-            </div>
-
-            {/* Balanced Metrics Bar (Clean, Balanced Typography - Not Giant or Blocky) */}
-            <div className="hero-anim pt-1 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-              <div className="p-3.5 rounded-xl bg-[#131b28]/80 border border-white/[0.07] backdrop-blur-sm">
-                <p className="text-xl sm:text-2xl font-bold font-mono text-cyan-400">500+</p>
-                <p className="text-xs text-slate-400 mt-0.5">{t("hero.statPros")}</p>
-              </div>
-              <div className="p-3.5 rounded-xl bg-[#131b28]/80 border border-white/[0.07] backdrop-blur-sm">
-                <p className="text-xl sm:text-2xl font-bold font-mono text-amber-400">&lt; 28 min</p>
-                <p className="text-xs text-slate-400 mt-0.5">{t("hero.statArrival")}</p>
-              </div>
-              <div className="p-3.5 rounded-xl bg-[#131b28]/80 border border-white/[0.07] backdrop-blur-sm">
-                <p className="text-xl sm:text-2xl font-bold font-mono text-white">4.92★</p>
-                <p className="text-xs text-slate-400 mt-0.5">{t("hero.statRating")}</p>
-              </div>
-              <div className="p-3.5 rounded-xl bg-[#131b28]/80 border border-white/[0.07] backdrop-blur-sm">
-                <p className="text-xl sm:text-2xl font-bold font-mono text-amber-400">₹0</p>
-                <p className="text-xs text-slate-400 mt-0.5">{t("hero.statCharges")}</p>
-              </div>
             </div>
           </div>
 
@@ -687,11 +816,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           <div className="lg:col-span-5 relative">
             <div className="hero-anim relative mx-auto max-w-md lg:max-w-none">
               {/* Warm Ambient Glow Behind Card */}
-              <div className="absolute -inset-1.5 bg-gradient-to-tr from-amber-500/15 via-transparent to-cyan-500/15 rounded-3xl blur-xl -z-10" />
+              <div className="absolute -inset-1.5 bg-gradient-to-tr from-amber-500/15 via-transparent to-cyan-500/10 rounded-3xl blur-xl -z-10" />
 
-              <div className="rounded-2xl bg-[#101622] border border-white/[0.08] p-2.5 overflow-hidden shadow-2xl">
+              <div className="rounded-3xl bg-[#0e1420] border border-white/[0.08] p-3 overflow-hidden shadow-2xl">
                 {/* HUD Header Bar */}
-                <div className="flex items-center justify-between px-3.5 py-2 border-b border-white/[0.06] text-xs font-mono text-slate-400 bg-[#0d121c] rounded-t-xl">
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.06] text-xs font-mono text-slate-400 bg-[#0b0f17] rounded-t-2xl">
                   <span className="flex items-center gap-2 text-cyan-400 font-medium">
                     <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
                     <span>RIG #JG-FLEET-01</span>
@@ -700,7 +829,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 </div>
 
                 {/* Technician Portrait with Warm Studio Lighting */}
-                <div className="relative pt-4 flex justify-center bg-gradient-to-b from-[#101622] via-[#0d121c] to-[#0b0f17] rounded-b-xl overflow-hidden">
+                <div className="relative pt-4 flex justify-center bg-gradient-to-b from-[#0e1420] via-[#0b0f17] to-[#080b11] rounded-b-2xl overflow-hidden">
                   <picture>
                     <source srcSet="/images/hero_technician.webp" type="image/webp" />
                     <source srcSet="/images/hero_technician.png" type="image/png" />
@@ -712,22 +841,33 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                       loading="eager"
                       decoding="async"
                       fetchPriority="high"
-                      className="w-full max-h-[440px] object-contain object-bottom transition-transform duration-500 hover:scale-[1.02]"
+                      className="w-full max-h-[460px] object-contain object-bottom transition-transform duration-500 hover:scale-[1.02]"
                     />
                   </picture>
 
+                  {/* Top Floating Diagnostic Beacon */}
+                  <div className="absolute top-4 left-4 p-2.5 rounded-xl bg-[#0e1420]/90 border border-white/[0.1] backdrop-blur-md flex items-center gap-2 shadow-lg">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-300">
+                      GPS Proximity: <strong>1.8 km (14 min)</strong>
+                    </span>
+                  </div>
+
                   {/* Floating Diagnostic Verification Badge */}
-                  <div className="absolute bottom-3 left-3 right-3 p-3 rounded-xl bg-[#131b28]/95 border border-white/[0.1] backdrop-blur-md flex items-center justify-between shadow-xl">
+                  <div className="absolute bottom-3 left-3 right-3 p-3.5 rounded-2xl bg-[#131b28]/95 border border-white/[0.1] backdrop-blur-md flex items-center justify-between shadow-xl">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                      <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
                         <ShieldCheck className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-white">Verified Diagnostics Lead</p>
-                        <p className="text-[10px] text-slate-400 font-mono">100% Genuine OEM Spares</p>
+                        <p className="text-xs font-semibold text-white">Rameshwar Sharma</p>
+                        <p className="text-[10px] text-slate-400 font-mono">Master Lead · 9+ Yrs Exp</p>
                       </div>
                     </div>
-                    <span className="text-[11px] font-mono font-semibold text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2.5 py-1 rounded-md">
+                    <span className="text-[11px] font-mono font-semibold text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3 py-1 rounded-full">
                       30-DAY WARRANTY
                     </span>
                   </div>
@@ -739,136 +879,297 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 03 LIVE WORKSHOP DISPATCH TELEMETRY WIDGET                */}
+      {/* 03 TRUST & PROOF BAR: LIVE METRICS LAYOUT                 */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
-        <div className="p-6 sm:p-7 rounded-2xl bg-[#131b28] border border-white/[0.08] shadow-xl space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-white/[0.06] gap-3">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2.5">
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[11px] font-semibold uppercase tracking-wider">
-                  Live Dispatch Telemetry
-                </span>
-                <span className="text-xs text-slate-400 font-mono">
-                  JOB #JG-4081 • TATA HARRIER 2.0
-                </span>
-              </div>
-              <h3 className="text-base sm:text-lg font-semibold text-white tracking-tight">
-                Doorstep Battery Triage &amp; Alternator Diode Diagnostics
-              </h3>
-            </div>
-
-            <div className="flex items-center gap-2 self-start md:self-auto">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400" />
+      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="p-5 rounded-2xl bg-[#0e1420]/80 border border-white/[0.06] backdrop-blur-md hover:border-white/[0.15] hover:-translate-y-0.5 transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-2xl sm:text-3xl font-bold font-mono text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                500+
               </span>
-              <span className="text-xs font-mono font-semibold text-amber-400">
-                ACTIVE WORKSHOP RADAR
-              </span>
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             </div>
+            <p className="text-xs sm:text-sm font-semibold text-white">
+              {isHi ? "सत्यापित मैकेनिक फ्लीट" : "Verified Fleet Mechanics"}
+            </p>
+            <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+              {isHi ? "100% पुलिस व आधार पृष्ठभूमि जांच" : "100% Police & KYC background cleared"}
+            </p>
           </div>
 
-          {/* Interactive Connected Pipeline Stages */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button
-              type="button"
-              onClick={() => setActiveTelemetryStage(1)}
-              className={`text-left p-4 rounded-xl border transition-all ${
-                activeTelemetryStage >= 1
-                  ? "bg-cyan-950/25 border-cyan-500/40 text-cyan-300 shadow-sm"
-                  : "bg-[#0f1420] border-white/[0.06] text-slate-500"
-              }`}
-            >
-              <div className="flex items-center justify-between gap-1.5 text-xs font-mono font-semibold mb-1.5">
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
-                  <span>01. RADAR DISPATCHED</span>
-                </span>
-                <span className="text-[10px] text-cyan-400/80">DONE</span>
-              </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Mobile technician matched in 28 seconds within 3.2km radius
-              </p>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTelemetryStage(2)}
-              className={`text-left p-4 rounded-xl border transition-all ${
-                activeTelemetryStage >= 2
-                  ? "bg-cyan-950/25 border-cyan-500/40 text-cyan-300 shadow-sm"
-                  : "bg-[#0f1420] border-white/[0.06] text-slate-500"
-              }`}
-            >
-              <div className="flex items-center justify-between gap-1.5 text-xs font-mono font-semibold mb-1.5">
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
-                  <span>02. DOORSTEP OTP &amp; SCAN</span>
-                </span>
-                <span className="text-[10px] text-cyan-400/80">VERIFIED</span>
-              </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                OBD-II CAN-bus scan executed with customer OTP security gate
-              </p>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTelemetryStage(3)}
-              className={`text-left p-4 rounded-xl border transition-all ${
-                activeTelemetryStage >= 3
-                  ? "bg-amber-950/25 border-amber-500/50 text-amber-300 shadow-sm"
-                  : "bg-[#0f1420] border-white/[0.06] text-slate-500"
-              }`}
-            >
-              <div className="flex items-center justify-between gap-1.5 text-xs font-mono font-semibold mb-1.5 text-amber-400">
-                <span className="flex items-center gap-1.5">
-                  <Activity className="w-4 h-4 text-amber-400 shrink-0 animate-pulse" />
-                  <span>03. PRECISION CALIBRATION</span>
-                </span>
-                <span className="text-[10px] text-amber-400">IN PROGRESS</span>
-              </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                14.2V alternator charging verified &amp; 30-day warranty activated
-              </p>
-            </button>
+          <div className="p-5 rounded-2xl bg-[#0e1420]/80 border border-white/[0.06] backdrop-blur-md hover:border-white/[0.15] hover:-translate-y-0.5 transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-2xl sm:text-3xl font-bold font-mono text-amber-400 group-hover:text-amber-300 transition-colors">
+                &lt; 28 min
+              </span>
+              <Clock className="w-4 h-4 text-amber-400" />
+            </div>
+            <p className="text-xs sm:text-sm font-semibold text-white">
+              {isHi ? "औसत आगमन प्रतिक्रिया" : "Average Response SLA"}
+            </p>
+            <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+              {isHi ? "अल्गोरिद्मिक जीपीएस प्रॉक्सिमिटी डिस्पैच" : "Rapid algorithmic proximity dispatch"}
+            </p>
           </div>
 
-          {/* Active Technician Profile Card with Direct Contact CTA */}
-          <div className="p-4 rounded-xl bg-[#0f1420] border border-white/[0.07] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold font-mono text-sm shrink-0">
-                RS
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-semibold text-white">Rameshwar Sharma</h4>
-                  <span className="px-2 py-0.5 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-[10px] font-mono text-cyan-400 font-semibold">
-                    VERIFIED LEAD
-                  </span>
-                </div>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Master Diagnostics Engineer • 9+ Yrs Exp • 4.95 Rating (342 Jobs)
-                </p>
-              </div>
+          <div className="p-5 rounded-2xl bg-[#0e1420]/80 border border-white/[0.06] backdrop-blur-md hover:border-white/[0.15] hover:-translate-y-0.5 transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-2xl sm:text-3xl font-bold font-mono text-white group-hover:text-amber-400 transition-colors">
+                30-Day
+              </span>
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
             </div>
+            <p className="text-xs sm:text-sm font-semibold text-white">
+              {isHi ? "डोरस्टेप रिपेयर गारंटी" : "Workmanship Guarantee"}
+            </p>
+            <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+              {isHi ? "समान समस्या पर फ्री री-विज़िट लेबर वारंटी" : "Free re-visit labor rework assurance"}
+            </p>
+          </div>
 
-            <a
-              href="tel:+918439616833"
-              className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-semibold flex items-center justify-center gap-2 transition-all self-start sm:self-auto font-mono uppercase shadow-md hover:scale-[1.01]"
-            >
-              <Phone className="w-3.5 h-3.5" />
-              <span>Contact Mechanic</span>
-            </a>
+          <div className="p-5 rounded-2xl bg-[#0e1420]/80 border border-white/[0.06] backdrop-blur-md hover:border-white/[0.15] hover:-translate-y-0.5 transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-2xl sm:text-3xl font-bold font-mono text-amber-400 group-hover:text-amber-300 transition-colors">
+                4.92★
+              </span>
+              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+            </div>
+            <p className="text-xs sm:text-sm font-semibold text-white">
+              {isHi ? "ग्राहक संतुष्टि स्कोर" : "Customer Satisfaction"}
+            </p>
+            <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+              {isHi ? "14,000+ ऑडिटेड डोरस्टेप रिपेयर रेटिंग्स" : "14,200+ audited roadside reviews"}
+            </p>
           </div>
         </div>
       </section>
 
       {/* ========================================================= */}
-      {/* 04 POPULAR CATEGORIES: INTERACTIVE SERVICE CARDS          */}
+      {/* 04 INTERACTIVE HOW IT WORKS: 3-STEP TIMELINE              */}
       {/* ========================================================= */}
-      <section ref={categoriesRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
+      <section
+        id="how-it-works"
+        ref={howItWorksRef}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28 scroll-mt-24"
+      >
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-2.5">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span>{isHi ? "तीन चरणों में सहज सर्विस" : "Intuitive 3-Step Service Protocol"}</span>
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight">
+            {isHi ? "कैसे काम करता है JantaGaraj" : "From Breakdown to Solution in Minutes"}
+          </h2>
+          <p className="text-sm text-slate-400 leading-relaxed max-w-lg mx-auto">
+            {isHi
+              ? "पारदर्शी प्री-बुकिंग एस्टिमेट, लाइव जीपीएस मैकेनिक ट्रैकिंग और कार्य संतुष्टि के बाद ही भुगतान।"
+              : "Zero guesswork. Seamless telemetry dispatch, real-time technician GPS tracking, and payment strictly after satisfaction."}
+          </p>
+        </div>
+
+        {/* 3-Step Interactive Connected Cards with Animated Status Indicators */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 relative">
+          {/* Step 1 */}
+          <div
+            onClick={() => setActiveTelemetryStage(1)}
+            className={`p-6 sm:p-7 rounded-3xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
+              activeTelemetryStage === 1
+                ? "bg-[#131b28] border-amber-400/60 shadow-xl -translate-y-1"
+                : "bg-[#0e1420]/80 border-white/[0.06] hover:border-white/[0.15]"
+            }`}
+          >
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-3xl font-extrabold font-mono text-white/[0.15]">
+                  01
+                </span>
+                <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300">
+                  {isHi ? "तय दरें" : "60-SEC BOOKING"}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2 tracking-tight">
+                {isHi ? "1. वाहन व समस्या चुनें" : "1. Select Vehicle & Service"}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                {isHi
+                  ? "कार या बाइक चुनें, आवश्यक कार्य सेलेक्ट करें और तुरंत स्पष्ट रेट कार्ड देखें। कोई गुप्त चार्ज या मनमाना मोलभाव नहीं।"
+                  : "Choose your vehicle model, specify the diagnosed fault, and review upfront rate cards. Zero unquoted hidden fees."}
+              </p>
+            </div>
+
+            <div className="pt-4 mt-6 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-amber-400">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{isHi ? "पारदर्शी प्री-एस्टिमेट" : "Pre-Published Rates"}</span>
+              </span>
+              <span className="text-slate-500 font-semibold">STAGE 01</span>
+            </div>
+          </div>
+
+          {/* Step 2 */}
+          <div
+            onClick={() => setActiveTelemetryStage(2)}
+            className={`p-6 sm:p-7 rounded-3xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
+              activeTelemetryStage === 2
+                ? "bg-[#131b28] border-cyan-400/60 shadow-xl -translate-y-1"
+                : "bg-[#0e1420]/80 border-white/[0.06] hover:border-white/[0.15]"
+            }`}
+          >
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-3xl font-extrabold font-mono text-white/[0.15]">
+                  02
+                </span>
+                <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-400">
+                  {isHi ? "< 28 मिनट आगमन" : "< 28 MIN DISPATCH"}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2 tracking-tight">
+                {isHi ? "2. लाइव जीपीएस से मैकेनिक ट्रैक करें" : "2. Live GPS Radar Tracking"}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                {isHi
+                  ? "निकटतम सत्यापित तकनीशियन टूलकिट व स्पेयर पार्ट्स के साथ निकलता है। मैप पर लाइव लोकेशन देखें और 4-अंकीय ओटीपी से कार्य शुरू कराएं।"
+                  : "Nearest certified technician is assigned via proximity radar. Track real-time arrival on map and authorize start via secure 4-digit OTP."}
+              </p>
+            </div>
+
+            <div className="pt-4 mt-6 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-cyan-400">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{isHi ? "4-अंकीय सुरक्षित OTP" : "4-Digit OTP Gate"}</span>
+              </span>
+              <span className="text-slate-500 font-semibold">STAGE 02</span>
+            </div>
+          </div>
+
+          {/* Step 3 */}
+          <div
+            onClick={() => setActiveTelemetryStage(3)}
+            className={`p-6 sm:p-7 rounded-3xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
+              activeTelemetryStage === 3
+                ? "bg-[#131b28] border-amber-400/60 shadow-xl -translate-y-1"
+                : "bg-[#0e1420]/80 border-white/[0.06] hover:border-white/[0.15]"
+            }`}
+          >
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-3xl font-extrabold font-mono text-white/[0.15]">
+                  03
+                </span>
+                <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400">
+                  {isHi ? "30 दिन वारंटी" : "POST-SATISFACTION"}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2 tracking-tight">
+                {isHi ? "3. संतुष्टि के बाद ही भुगतान करें" : "3. Pay Post-Satisfaction & Testing"}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                {isHi
+                  ? "रिपेयर कार्य पूरा होने और टेस्ट ड्राइव से संतुष्ट होने के बाद ही यूपीआई, कार्ड या नकद से भुगतान करें। 30 दिन की लिखित डिजिटल वारंटी स्लिप प्राप्त करें।"
+                  : "Inspect and road-test completed work before payment. Settle via UPI, Card, or Cash and receive an instant 30-day warranty slip."}
+              </p>
+            </div>
+
+            <div className="pt-4 mt-6 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-amber-400">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{isHi ? "डिजिटल वारंटी स्लिप" : "30-Day SLA Slip"}</span>
+              </span>
+              <span className="text-slate-500 font-semibold">STAGE 03</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* 05 FEATURED SERVICES GRID: INTERACTIVE SERVICE CARDS      */}
+      {/* ========================================================= */}
+      <section id="services" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-3">
+          <div>
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
+              {t("services.topBookedTag")}
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">
+              {t("services.popularTitle")}
+            </h2>
+            <p className="text-sm text-slate-400 mt-1.5 max-w-xl leading-relaxed">
+              {isHi
+                ? "सबसे अधिक बुक की जाने वाली ऑन-डिमांड सेवाएं — तय मानक दरों और 30 दिन की वारंटी के साथ।"
+                : "Top booked automotive and home engineering services with fixed rate cards and warranty coverage."}
+            </p>
+          </div>
+          <Link
+            to="/services"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-400 hover:text-amber-300 group shrink-0 transition-colors"
+          >
+            <span>{isHi ? "सभी 100+ सेवाएं देखें" : "View All Services"}</span>
+            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        {servicesLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-52 w-full rounded-3xl bg-[#131b28]" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {displayedServices.map((service) => (
+              <div
+                key={service.id}
+                className="p-6 rounded-3xl bg-[#0e1420]/80 border border-white/[0.07] hover:border-white/[0.18] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group shadow-sm hover:shadow-[0_12px_36px_rgba(0,0,0,0.6)]"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="text-[11px] font-mono font-semibold text-cyan-300 bg-cyan-950/60 border border-cyan-500/25 px-2.5 py-0.5 rounded-full uppercase">
+                      {tc(service.category?.name || "Service")}
+                    </span>
+                    <span className="text-lg font-mono font-bold text-amber-400">
+                      ₹{service.defaultPrice}
+                    </span>
+                  </div>
+
+                  <h3 className="text-base font-semibold text-white group-hover:text-amber-400 transition-colors">
+                    {ts(service.title)}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
+                    {isHi
+                      ? "प्रमाणित तकनीशियन द्वारा डोरस्टेप निरीक्षण, मूल कंपोनेंट्स व डिजिटल जीएसटी बिल।"
+                      : "Doorstep inspection by certified specialist with genuine OEM spares and warranty slip."}
+                  </p>
+                </div>
+
+                <div className="pt-4 mt-6 border-t border-white/[0.06] flex items-center justify-between gap-3">
+                  <div className="text-xs text-slate-400 flex items-center gap-1.5 font-mono">
+                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>
+                      {service.durationMinutes || 45} {t("common.mins")}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleBookService(service)}
+                    className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-all shadow-[0_4px_16px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+                  >
+                    <span>{t("common.bookNow")}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* ========================================================= */}
+      {/* 06 POPULAR CATEGORIES: INTERACTIVE 12-TRADE SELECTION     */}
+      {/* ========================================================= */}
+      <section ref={categoriesRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-3">
           <div>
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
@@ -883,7 +1184,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           </div>
           <Link
             to="/services"
-            className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 group shrink-0 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-400 hover:text-amber-300 group shrink-0 transition-colors"
           >
             <span>{t("categories.allCategories")}</span>
             <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -900,11 +1201,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 to={`/services?category=${cat.id}`}
                 className="category-card-anim group"
               >
-                <div className={`h-full p-5 sm:p-6 rounded-2xl bg-[#131b28]/80 hover:bg-[#162030] border border-white/[0.07] ${cat.accentGlow} hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between shadow-sm hover:shadow-[0_10px_30px_rgba(245,158,11,0.07)]`}>
+                <div
+                  className={`h-full p-5 sm:p-6 rounded-3xl bg-[#0e1420]/80 hover:bg-[#131b28] border border-white/[0.07] ${cat.accentGlow} hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between shadow-sm hover:shadow-[0_12px_36px_rgba(0,0,0,0.5)]`}
+                >
                   <div>
                     {/* Card Top: Trade Icon + Precision Badges */}
                     <div className="flex items-center justify-between mb-4">
-                      <div className={`w-10 h-10 rounded-xl bg-[#0f1420] border border-white/[0.08] flex items-center justify-center ${cat.iconColor} shadow-inner`}>
+                      <div
+                        className={`w-11 h-11 rounded-2xl bg-[#080b11] border border-white/[0.08] flex items-center justify-center ${cat.iconColor} shadow-inner group-hover:border-amber-400/40 transition-colors`}
+                      >
                         <Icon className="w-6 h-6" />
                       </div>
 
@@ -927,11 +1232,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   </div>
 
                   {/* Card Footer: Pro Count & Book Trigger */}
-                  <div className="pt-4 mt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400">
+                  <div className="pt-4 mt-5 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400">
                     <span className="font-medium text-slate-300">
                       {language === "hi" && cat.expertsCountHi ? cat.expertsCountHi : cat.expertsCount}
                     </span>
-                    <span className="text-amber-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform font-mono text-xs font-medium">
+                    <span className="text-amber-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform font-medium">
                       {t("common.bookNow")} <ChevronRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
@@ -943,188 +1248,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 05 HOW IT WORKS: AUTHENTIC GARAGE SERVICE PROTOCOL        */}
-      {/* ========================================================= */}
-      <section
-        id="how-it-works"
-        ref={howItWorksRef}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 scroll-mt-24"
-      >
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-2">
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-400">
-            {t("howItWorks.tag")}
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-            {t("howItWorks.title")}
-          </h2>
-          <p className="text-sm text-slate-400 leading-relaxed">
-            {t("howItWorks.subtitle")}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* Step 1 */}
-          <div className="p-6 rounded-2xl bg-[#131b28]/80 border border-white/[0.07] hover:border-amber-500/40 transition-all flex flex-col justify-between shadow-sm">
-            <div>
-              <div className="flex items-center justify-between gap-3 mb-3">
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-xs font-semibold">
-                  STAGE 01
-                </span>
-                <span className="text-[11px] font-mono text-slate-400">FIXED ESTIMATE</span>
-              </div>
-              <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
-                {t("howItWorks.step1Title")}
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                {t("howItWorks.step1Desc")}
-              </p>
-            </div>
-
-            <div className="pt-4 mt-5 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-amber-400">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle className="w-3.5 h-3.5" />
-                <span>{language === "hi" ? "पारदर्शी तय दरें" : "Zero Hidden Surcharges"}</span>
-              </span>
-              <span className="text-slate-500">DIGITAL</span>
-            </div>
-          </div>
-
-          {/* Step 2 */}
-          <div className="p-6 rounded-2xl bg-[#131b28]/80 border border-white/[0.07] hover:border-cyan-500/40 transition-all flex flex-col justify-between shadow-sm">
-            <div>
-              <div className="flex items-center justify-between gap-3 mb-3">
-                <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-mono text-xs font-semibold">
-                  STAGE 02
-                </span>
-                <span className="text-[11px] font-mono text-slate-400">&lt; 30 MIN SLA</span>
-              </div>
-              <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
-                {t("howItWorks.step2Title")}
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                {t("howItWorks.step2Desc")}
-              </p>
-            </div>
-
-            <div className="pt-4 mt-5 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-cyan-400">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle className="w-3.5 h-3.5" />
-                <span>{language === "hi" ? "3 मिनट में नजदीकी मैकेनिक" : "Live GPS Proximity Rig"}</span>
-              </span>
-              <span className="text-slate-500">DISPATCHED</span>
-            </div>
-          </div>
-
-          {/* Step 3 */}
-          <div className="p-6 rounded-2xl bg-[#131b28]/80 border border-white/[0.07] hover:border-amber-500/40 transition-all flex flex-col justify-between shadow-sm">
-            <div>
-              <div className="flex items-center justify-between gap-3 mb-3">
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-xs font-semibold">
-                  STAGE 03
-                </span>
-                <span className="text-[11px] font-mono text-slate-400">OTP GATE</span>
-              </div>
-              <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
-                {t("howItWorks.step3Title")}
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                {t("howItWorks.step3Desc")}
-              </p>
-            </div>
-
-            <div className="pt-4 mt-5 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-amber-400">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle className="w-3.5 h-3.5" />
-                <span>{language === "hi" ? "काम से संतुष्ट होने पर पेमेंट" : "Dual-Check & 30D Warranty"}</span>
-              </span>
-              <span className="text-slate-500">SETTLED</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================= */}
-      {/* 06 POPULAR SERVICES                                       */}
-      {/* ========================================================= */}
-      <section id="services" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-3">
-          <div>
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
-              {t("services.topBookedTag")}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">
-              {t("services.popularTitle")}
-            </h2>
-            <p className="text-sm text-slate-400 mt-1.5 max-w-xl leading-relaxed">
-              {t("services.popularSubtitle")}
-            </p>
-          </div>
-          <Link
-            to="/services"
-            className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 group shrink-0 transition-colors"
-          >
-            <span>{t("services.viewAll")}</span>
-            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-
-        {servicesLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-48 w-full rounded-2xl bg-[#131b28]" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {displayedServices.map((service) => (
-              <div
-                key={service.id}
-                className="p-5 sm:p-6 rounded-2xl bg-[#131b28]/80 border border-white/[0.07] hover:border-amber-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group shadow-sm"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="text-[11px] font-mono font-medium text-cyan-300 bg-cyan-950/60 border border-cyan-500/25 px-2.5 py-0.5 rounded-full uppercase">
-                      {tc(service.category?.name || "Service")}
-                    </span>
-                    <span className="text-lg font-mono font-bold text-amber-400">
-                      ₹{service.defaultPrice}
-                    </span>
-                  </div>
-
-                  <h3 className="text-base font-semibold text-white group-hover:text-amber-400 transition-colors">
-                    {ts(service.title)}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-1.5 leading-relaxed">
-                    {t("services.desc")}
-                  </p>
-                </div>
-
-                <div className="pt-4 mt-5 border-t border-white/[0.06] flex items-center justify-between gap-3">
-                  <div className="text-xs text-slate-400 flex items-center gap-1.5 font-mono">
-                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>
-                      {service.durationMinutes || 45} {t("common.mins")}
-                    </span>
-                  </div>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => handleBookService(service)}
-                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-xs uppercase font-mono shadow-sm transition-all"
-                  >
-                    {t("common.bookNow")}
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* ========================================================= */}
       {/* 07 TRUSTED TECHNICIANS SHOWCASE                           */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-3">
           <div>
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-400">
@@ -1139,7 +1265,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           </div>
           <Link
             to="/technicians"
-            className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 group shrink-0 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-400 hover:text-amber-300 group shrink-0 transition-colors"
           >
             <span>{t("techs.allTechs")}</span>
             <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -1150,7 +1276,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           {displayedTechnicians.map((tech) => (
             <div
               key={tech.id}
-              className="p-5 sm:p-6 rounded-2xl bg-[#131b28]/80 border border-white/[0.07] hover:border-cyan-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group shadow-sm"
+              className="p-5 sm:p-6 rounded-3xl bg-[#0e1420]/80 border border-white/[0.07] hover:border-white/[0.18] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group shadow-sm"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3.5">
@@ -1165,11 +1291,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 </div>
 
                 <div className="flex items-start gap-3 mt-1 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 font-mono font-bold text-sm flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 font-mono font-bold text-sm flex items-center justify-center shrink-0">
                     {tech.user?.fullName?.charAt(0) || "T"}
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-semibold text-sm sm:text-base text-white group-hover:text-cyan-300 transition-colors truncate">
+                    <h3 className="font-semibold text-sm sm:text-base text-white group-hover:text-amber-300 transition-colors truncate">
                       {tech.user?.fullName || "Certified Technician"}
                     </h3>
                     <p className="text-xs text-amber-400 mt-0.5 truncate font-mono">
@@ -1209,13 +1335,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   </span>
                 </div>
                 <Link to={`/technicians/${tech.id}`}>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-3.5 py-1.5 rounded-lg text-xs font-mono transition-all"
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-all shadow-sm whitespace-nowrap"
                   >
                     {t("techs.viewProfile")}
-                  </Button>
+                  </button>
                 </Link>
               </div>
             </div>
@@ -1226,8 +1351,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       {/* ========================================================= */}
       {/* 08 WHY JANTAGARAJ (4 PILLARS)                             */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
-        <div className="p-6 sm:p-10 rounded-2xl bg-[#101622] border border-white/[0.08] shadow-xl">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28">
+        <div className="p-8 sm:p-12 rounded-3xl bg-[#0e1420] border border-white/[0.08] shadow-xl">
           <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
               {t("why.tag")}
@@ -1241,8 +1366,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div className="space-y-2.5 p-5 rounded-xl bg-[#131b28] border border-white/[0.06]">
-              <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold">
+            <div className="space-y-2.5 p-6 rounded-2xl bg-[#131b28]/70 border border-white/[0.06]">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <h3 className="text-sm sm:text-base font-semibold text-white tracking-tight">
@@ -1253,8 +1378,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </p>
             </div>
 
-            <div className="space-y-2.5 p-5 rounded-xl bg-[#131b28] border border-white/[0.06]">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center font-bold">
+            <div className="space-y-2.5 p-6 rounded-2xl bg-[#131b28]/70 border border-white/[0.06]">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center font-bold">
                 <Wrench className="w-5 h-5" />
               </div>
               <h3 className="text-sm sm:text-base font-semibold text-white tracking-tight">
@@ -1265,8 +1390,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </p>
             </div>
 
-            <div className="space-y-2.5 p-5 rounded-xl bg-[#131b28] border border-white/[0.06]">
-              <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold">
+            <div className="space-y-2.5 p-6 rounded-2xl bg-[#131b28]/70 border border-white/[0.06]">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold">
                 <CalendarCheck className="w-5 h-5" />
               </div>
               <h3 className="text-sm sm:text-base font-semibold text-white tracking-tight">
@@ -1277,8 +1402,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </p>
             </div>
 
-            <div className="space-y-2.5 p-5 rounded-xl bg-[#131b28] border border-white/[0.06]">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center font-bold">
+            <div className="space-y-2.5 p-6 rounded-2xl bg-[#131b28]/70 border border-white/[0.06]">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center font-bold">
                 <Phone className="w-5 h-5" />
               </div>
               <h3 className="text-sm sm:text-base font-semibold text-white tracking-tight">
@@ -1295,8 +1420,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       {/* ========================================================= */}
       {/* 09 REMOTE ASSISTANCE & VIDEO TRIAGE                       */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
-        <div className="p-6 sm:p-10 rounded-2xl bg-[#131b28] border border-white/[0.08] shadow-xl">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28">
+        <div className="p-8 sm:p-12 rounded-3xl bg-[#0e1420] border border-white/[0.08] shadow-xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-7 space-y-4">
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-semibold uppercase">
@@ -1311,7 +1436,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                <div className="p-3.5 rounded-xl bg-[#0e1420] border border-white/[0.06]">
+                <div className="p-4 rounded-2xl bg-[#131b28]/70 border border-white/[0.06]">
                   <p className="text-xs font-semibold text-white">
                     {t("remote.s1Title")}
                   </p>
@@ -1319,7 +1444,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                     {t("remote.s1Desc")}
                   </p>
                 </div>
-                <div className="p-3.5 rounded-xl bg-[#0e1420] border border-white/[0.06]">
+                <div className="p-4 rounded-2xl bg-[#131b28]/70 border border-white/[0.06]">
                   <p className="text-xs font-semibold text-white">
                     {t("remote.s2Title")}
                   </p>
@@ -1327,7 +1452,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                     {t("remote.s2Desc")}
                   </p>
                 </div>
-                <div className="p-3.5 rounded-xl bg-[#0e1420] border border-white/[0.06]">
+                <div className="p-4 rounded-2xl bg-[#131b28]/70 border border-white/[0.06]">
                   <p className="text-xs font-semibold text-white">
                     {t("remote.s3Title")}
                   </p>
@@ -1339,30 +1464,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
 
               <div className="pt-3 flex flex-wrap items-center gap-3">
                 <a href="tel:+918439616833">
-                  <Button
-                    variant="primary"
-                    size="md"
-                    leftIcon={<Phone className="w-4 h-4" />}
-                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-5 py-2.5 rounded-xl font-mono text-xs uppercase shadow-md transition-all"
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs uppercase tracking-wider shadow-md transition-all whitespace-nowrap"
                   >
-                    {t("remote.callBtn")}
-                  </Button>
+                    <Phone className="w-4 h-4" />
+                    <span>{t("remote.callBtn")}</span>
+                  </button>
                 </a>
                 <Link to="/services">
-                  <Button
-                    variant="outline"
-                    size="md"
-                    className="bg-[#0e1420] hover:bg-[#151c2a] text-cyan-300 border border-cyan-500/30 px-5 py-2.5 rounded-xl font-mono text-xs transition-colors"
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#131b28] hover:bg-[#1a2333] text-slate-200 hover:text-white border border-white/[0.1] text-xs font-medium transition-all whitespace-nowrap"
                   >
-                    {t("remote.scheduleBtn")}
-                  </Button>
+                    <span>{t("remote.scheduleBtn")}</span>
+                  </button>
                 </Link>
               </div>
             </div>
 
             {/* Video Preview Card */}
             <div className="lg:col-span-5">
-              <div className="p-4 rounded-xl bg-[#0e1420] border border-white/[0.08] space-y-3.5 shadow-2xl">
+              <div className="p-4 rounded-2xl bg-[#080b11] border border-white/[0.08] space-y-3.5 shadow-2xl">
                 <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.06] text-xs font-mono">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
@@ -1375,7 +1498,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                   </span>
                 </div>
 
-                <div className="relative rounded-xl overflow-hidden aspect-video bg-[#0b0f17] flex items-center justify-center border border-white/[0.06]">
+                <div className="relative rounded-2xl overflow-hidden aspect-video bg-[#0b0f17] flex items-center justify-center border border-white/[0.06]">
                   <img
                     src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80"
                     alt="Remote technician guidance"
@@ -1411,8 +1534,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       {/* ========================================================= */}
       {/* 10 AUTHENTIC CUSTOMER REVIEWS                             */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
-        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28">
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
             {t("reviews.tag")}
           </span>
@@ -1428,10 +1551,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
           {customerReviews.map((rev) => (
             <div
               key={rev.id}
-              className="p-6 rounded-2xl bg-[#131b28]/80 border border-white/[0.07] hover:border-white/[0.12] transition-colors flex flex-col justify-between shadow-sm"
+              className="p-6 rounded-3xl bg-[#0e1420]/80 border border-white/[0.07] hover:border-white/[0.15] transition-all flex flex-col justify-between shadow-sm"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-3.5">
                   <div className="flex items-center gap-1">
                     {[...Array(rev.rating)].map((_, i) => (
                       <Star
@@ -1450,7 +1573,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
                 </p>
               </div>
 
-              <div className="pt-4 mt-5 border-t border-white/[0.06] flex items-center justify-between">
+              <div className="pt-4 mt-6 border-t border-white/[0.06] flex items-center justify-between">
                 <div>
                   <h4 className="text-xs sm:text-sm font-semibold text-white">
                     {language === "hi" && rev.customerNameHi ? rev.customerNameHi : rev.customerName}
@@ -1470,53 +1593,57 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       </section>
 
       {/* ========================================================= */}
-      {/* 11 FINAL CALL TO ACTION: WARM WORKSHOP BANNER             */}
+      {/* 11 FINAL WORKSHOP CALL TO ACTION BANNER                   */}
       {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
-        <div className="p-8 sm:p-12 rounded-3xl bg-[#101622] text-white border border-white/[0.08] relative overflow-hidden shadow-2xl">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28">
+        <div className="p-8 sm:p-14 rounded-3xl bg-[#0e1420] text-white border border-white/[0.08] relative overflow-hidden shadow-2xl">
           {/* Warm Amber Accent Ribbon & Glow */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-amber-500/10 blur-3xl pointer-events-none -z-0" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-36 bg-amber-500/10 blur-3xl pointer-events-none -z-0" />
 
           <div className="relative z-10 text-center max-w-2xl mx-auto space-y-5">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs font-mono font-semibold uppercase tracking-wider border border-amber-500/30">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              {t("cta.tag")}
+              <span>{isHi ? "24/7 ऑन-डिमांड डिस्पैच" : "24/7 On-Demand Roadside & Home Care"}</span>
             </span>
 
             <h2 className="text-2xl sm:text-4xl font-bold leading-tight text-white tracking-tight">
-              {t("cta.title")}
+              {isHi
+                ? "क्या आपकी कार या बाइक में कोई खराबी है?"
+                : "Need roadside triage or periodic doorstep service?"}
             </h2>
 
-            <p className="text-xs sm:text-sm text-slate-300/90 leading-relaxed">
-              {t("cta.subtitle")}
+            <p className="text-xs sm:text-sm text-slate-300/90 leading-relaxed max-w-lg mx-auto">
+              {isHi
+                ? "हमारे 500+ सत्यापित मैकेनिक आधुनिक OBD-II डायग्नोस्टिक टूल्स के साथ 28 मिनट में आपके स्थान पर पहुंचने के लिए तैयार हैं।"
+                : "Our network of 500+ verified master technicians is standing by with certified diagnostic equipment, ready to arrive within 28 minutes."}
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
+            <div className="flex flex-wrap items-center justify-center gap-3.5 pt-3">
               <Link to="/services">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  rightIcon={<ArrowRight className="w-4 h-4" />}
-                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-7 py-3 rounded-xl flex items-center gap-2 shadow-[0_4px_18px_rgba(245,158,11,0.25)] transition-all hover:scale-[1.02] font-mono text-xs uppercase"
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
                 >
-                  {t("cta.bookNow")}
-                </Button>
+                  <span>{isHi ? "अभी सर्विस बुक करें" : "Book a Service Now"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </Link>
               <a href="tel:+918439616833">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  leftIcon={<Phone className="w-4 h-4 text-amber-400" />}
-                  className="bg-[#131b28] hover:bg-[#1a2333] text-white border border-white/[0.1] px-6 py-3 rounded-xl font-mono text-xs transition-colors"
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#131b28] hover:bg-[#1a2333] text-white border border-white/[0.1] text-xs font-medium transition-all whitespace-nowrap"
                 >
-                  {t("cta.callHelp")}
-                </Button>
+                  <Phone className="w-4 h-4 text-amber-400" />
+                  <span>{isHi ? "हेल्पलाइन: +91 84396 16833" : "Call Helpline: +91 84396 16833"}</span>
+                </button>
               </a>
             </div>
 
             <p className="text-[11px] font-mono text-slate-500 pt-2">
-              {t("cta.guarantee")}
+              {isHi
+                ? "100% संतोष गारंटी • 30-दिन वारंटी • कोई गुप्त शुल्क नहीं"
+                : "100% Satisfaction Guarantee • 30-Day Workmanship Warranty • Zero Hidden Fees"}
             </p>
           </div>
         </div>
