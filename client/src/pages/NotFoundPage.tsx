@@ -70,7 +70,7 @@ export const NotFoundPage: React.FC = () => {
         <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-3.5">
           <Link
             to="/"
-            className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-sm shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex flex-row items-center justify-center gap-2.5 px-6 sm:px-7 py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-sm shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
           >
             <Home className="w-4 h-4 shrink-0" />
             <span>{isHi ? "मुख्य पृष्ठ पर लौटें" : "Return to Home"}</span>
@@ -79,7 +79,7 @@ export const NotFoundPage: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3 rounded-full bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white border border-white/[0.1] hover:border-white/[0.2] font-medium text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex flex-row items-center justify-center gap-2.5 px-6 sm:px-7 py-3 rounded-full bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white border border-white/[0.1] hover:border-white/[0.2] font-medium text-sm transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
           >
             <ArrowLeft className="w-4 h-4 shrink-0 text-slate-400" />
             <span>{isHi ? "पिछले पेज पर जाएं" : "Go Back"}</span>
