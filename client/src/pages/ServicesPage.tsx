@@ -24,6 +24,10 @@ import {
   Shield,
   ArrowRight,
   Flame,
+  Gauge,
+  Disc,
+  Fuel,
+  Compass,
 } from "lucide-react";
 import {
   useGetCategoriesQuery,
@@ -31,15 +35,12 @@ import {
 } from "../features/services/api/servicesApi";
 import { useLanguage } from "../context/LanguageContext";
 import { Service } from "../types/api.types";
-import { Button } from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
 import { Skeleton } from "../components/ui/Skeleton";
 import { BookingModal } from "../features/bookings/components/BookingModal";
 import {
   getServiceImage,
   handleImageError,
   categoryFallbackImages,
-  compressImageUrl,
   DEFAULT_FALLBACK_IMAGE,
 } from "../lib/serviceImageMap";
 
@@ -47,16 +48,14 @@ interface ServicesPageProps {
   onOpenAuthModal?: () => void;
 }
 
-const categoryImages = categoryFallbackImages;
-
 // Dynamic icon resolver for each service category
 const getCategoryIcon = (slugOrId: string = "") => {
   const s = slugOrId.toLowerCase();
   if (s.includes("car") || s.includes("mechanic") || s.includes("periodic") || s.includes("denting")) return Car;
   if (s.includes("sos") || s.includes("emergency") || s.includes("battery") || s.includes("electrician")) return Zap;
   if (s.includes("two-wheeler") || s.includes("bike")) return Wrench;
-  if (s.includes("brake") || s.includes("suspension") || s.includes("clutch")) return ShieldCheck;
-  if (s.includes("tyre") || s.includes("wheel") || s.includes("puncture")) return ShieldCheck;
+  if (s.includes("brake") || s.includes("suspension") || s.includes("clutch")) return Disc;
+  if (s.includes("tyre") || s.includes("wheel") || s.includes("puncture")) return Gauge;
   if (s.includes("wash") || s.includes("detailing") || s.includes("spa")) return Sparkles;
   if (s.includes("paint") || s.includes("waterproof") || s.includes("plumbing") || s.includes("ro")) return Droplets;
   if (s.includes("carpentry") || s.includes("wood")) return Wrench;
@@ -67,28 +66,61 @@ const getCategoryIcon = (slugOrId: string = "") => {
   return Sparkles;
 };
 
+// Dynamic Included Checklist generator for automotive e-commerce cards
+const getServiceChecklist = (service: Service): string[] => {
+  const t = (service.title || "").toLowerCase();
+  const cat = (service.category?.slug || service.categoryId || "").toLowerCase();
+
+  if (t.includes("engine") || t.includes("diagnostic") || t.includes("obd")) {
+    return ["OBD-II CAN-bus ECU scan", "Live sensor telemetry log", "30-Day error warranty"];
+  }
+  if (t.includes("brake") || t.includes("pad") || cat.includes("brake")) {
+    return ["Ceramic pad inspection & fit", "Caliper slide pin lubrication", "Brake fluid level top-up"];
+  }
+  if (t.includes("battery") || t.includes("jumpstart")) {
+    return ["Heavy-duty booster cable hookup", "Alternator diode output test", "Terminal corrosion cleaning"];
+  }
+  if (t.includes("oil") || t.includes("periodic") || t.includes("maintenance")) {
+    return ["Synthetic engine oil drain & fill", "OEM grade oil filter swap", "40-point vehicle safety check"];
+  }
+  if (t.includes("ac") || cat.includes("ac")) {
+    return ["High-pressure foam jet wash", "Gas leak pressure inspection", "Antimicrobial duct sanitization"];
+  }
+  if (t.includes("dent") || t.includes("paint")) {
+    return ["Paintless dent extraction (PDR)", "3M compound scratch buffing", "Clear-coat UV seal finish"];
+  }
+  if (t.includes("tyre") || t.includes("wheel") || t.includes("puncture")) {
+    return ["Tubeless puncture seal & patch", "Wheel balancing & pressure check", "Tread wear safety audit"];
+  }
+  if (cat.includes("electrician")) {
+    return ["Phase & neutral load test", "MCB breaker short circuit triage", "Surge protection check"];
+  }
+  if (cat.includes("plumbing")) {
+    return ["Acoustic pipe leak diagnosis", "Pressure valve calibration", "High-flow CPVC sealant"];
+  }
+  return ["Doorstep technician visit", "OEM certified replacement parts", "30-Day workmanship warranty"];
+};
+
 // Quick 1-click filter chips for the hero bar
 const quickChips = [
   { id: "ALL", label: "All Services", icon: Flame },
   { id: "emergency-roadside-sos", label: "Roadside SOS", icon: Zap },
-  { id: "car-periodic-maintenance", label: "Car Service", icon: Car },
+  { id: "car-periodic-maintenance", label: "Periodic Service", icon: Car },
+  { id: "engine-diagnostics", label: "Engine Diagnostic", icon: Gauge },
+  { id: "brakes-clutch-suspension", label: "Brake Service", icon: Disc },
   { id: "two-wheeler-repair", label: "Bike Repair", icon: Wrench },
-  { id: "tyres-wheel-care", label: "Tyres & Puncture", icon: ShieldCheck },
-  { id: "detailing-wash-spa", label: "Wash & Spa", icon: Sparkles },
-  { id: "brakes-clutch-suspension", label: "Brakes & Clutch", icon: ShieldCheck },
-  { id: "ac-repair", label: "AC Repair", icon: Wind },
-  { id: "electrician", label: "Electrician", icon: Zap },
-  { id: "plumbing", label: "Plumbing", icon: Droplets },
+  { id: "ac-repair", label: "AC Foam Jet", icon: Wind },
+  { id: "car-denting-painting", label: "Denting & Painting", icon: Sparkles },
+  { id: "tyres-wheel-care", label: "Tyres & Wheels", icon: Gauge },
 ];
 
-// Realistic fallback catalog with 4-6 detailed services per category
+// Realistic fallback catalog with detailed automotive & home services
 const fallbackCatalog: Service[] = [
-  // 1. Auto & Garage Repair (mechanic)
   {
     id: "srv-mech-1",
     title: "General Car Inspection & Comprehensive Engine Diagnostics",
     categoryId: "mechanic",
-    category: { id: "mechanic", name: "Auto & Garage Repair", slug: "mechanic" },
+    category: { id: "mechanic", name: "Engine Diagnostic", slug: "engine-diagnostics" },
     defaultPrice: 899,
     description: "40-point vehicle diagnostic including engine health, coolant level, battery charge, brake pads, and tyre pressure.",
     durationMinutes: 60,
@@ -99,7 +131,7 @@ const fallbackCatalog: Service[] = [
     id: "srv-mech-2",
     title: "Emergency Battery Jumpstart & Alternator Charging Test",
     categoryId: "mechanic",
-    category: { id: "mechanic", name: "Auto & Garage Repair", slug: "mechanic" },
+    category: { id: "mechanic", name: "Roadside SOS", slug: "emergency-roadside-sos" },
     defaultPrice: 349,
     description: "Rapid on-demand doorstep jumpstart with high-capacity booster kit and comprehensive alternator output test.",
     durationMinutes: 25,
@@ -110,7 +142,7 @@ const fallbackCatalog: Service[] = [
     id: "srv-mech-3",
     title: "Standard Engine Oil & Oil Filter Replacement",
     categoryId: "mechanic",
-    category: { id: "mechanic", name: "Auto & Garage Repair", slug: "mechanic" },
+    category: { id: "mechanic", name: "Periodic Maintenance", slug: "car-periodic-maintenance" },
     defaultPrice: 1499,
     description: "Full synthetic or semi-synthetic engine oil drain and refill with genuine OEM oil filter swap.",
     durationMinutes: 50,
@@ -118,21 +150,10 @@ const fallbackCatalog: Service[] = [
     reviewsCount: 265,
   },
   {
-    id: "srv-mech-4",
-    title: "Emergency Highway Breakdown & Flatbed Towing Assist",
-    categoryId: "mechanic",
-    category: { id: "mechanic", name: "Auto & Garage Repair", slug: "mechanic" },
-    defaultPrice: 1899,
-    description: "24/7 rapid highway recovery with flatbed towing, mechanical triage, and secure transport to nearest certified garage.",
-    durationMinutes: 45,
-    rating: 4.98,
-    reviewsCount: 194,
-  },
-  {
     id: "srv-mech-5",
-    title: "Front & Rear Disc Brake Pad Replacement",
+    title: "Front & Rear Disc Brake Pad Replacement & Caliper Overhaul",
     categoryId: "mechanic",
-    category: { id: "mechanic", name: "Auto & Garage Repair", slug: "mechanic" },
+    category: { id: "mechanic", name: "Brake Service", slug: "brakes-clutch-suspension" },
     defaultPrice: 599,
     description: "Ceramic / semi-metallic brake pad installation, disc rotor inspection, caliper pin lubrication, and brake fluid top-up.",
     durationMinutes: 45,
@@ -141,158 +162,20 @@ const fallbackCatalog: Service[] = [
   },
   {
     id: "srv-mech-6",
-    title: "Computerized OBD-II Engine Scanner Diagnostics",
+    title: "Computerized OBD-II Engine Scanner Diagnostics & ECU Reset",
     categoryId: "mechanic",
-    category: { id: "mechanic", name: "Auto & Garage Repair", slug: "mechanic" },
+    category: { id: "mechanic", name: "Engine Diagnostic", slug: "engine-diagnostics" },
     defaultPrice: 499,
     description: "Digital ECU fault code scanning, check-engine light clearing, sensor live-data logging, and diagnostic report.",
     durationMinutes: 30,
     rating: 4.92,
     reviewsCount: 188,
   },
-
-  // 2. Electrician (electrician)
-  {
-    id: "srv-elec-1",
-    title: "Complete Home Electrical Short Circuit Triage & MCB Fix",
-    categoryId: "electrician",
-    category: { id: "electrician", name: "Electrician", slug: "electrician" },
-    defaultPrice: 249,
-    description: "Testing of phase, neutral, earthing, and tripped breakers using digital insulation testers.",
-    durationMinutes: 35,
-    rating: 4.93,
-    reviewsCount: 246,
-  },
-  {
-    id: "srv-elec-2",
-    title: "Ceiling Fan Installation & Regulator Switch Wiring",
-    categoryId: "electrician",
-    category: { id: "electrician", name: "Electrician", slug: "electrician" },
-    defaultPrice: 179,
-    description: "Safe ceiling anchor drilling, modular switchboard connection, capacitor test, and speed regulator tuning.",
-    durationMinutes: 30,
-    rating: 4.88,
-    reviewsCount: 198,
-  },
-  {
-    id: "srv-elec-3",
-    title: "Inverter & Battery Wiring, Socket Setup & Triage",
-    categoryId: "electrician",
-    category: { id: "electrician", name: "Electrician", slug: "electrician" },
-    defaultPrice: 399,
-    description: "Pure sine wave inverter connection, distilled water gravity check, terminal grease coating, and high-load bypass switch.",
-    durationMinutes: 45,
-    rating: 4.94,
-    reviewsCount: 182,
-  },
-  {
-    id: "srv-elec-4",
-    title: "Modular Switchboard Installation & Internal Rewiring",
-    categoryId: "electrician",
-    category: { id: "electrician", name: "Electrician", slug: "electrician" },
-    defaultPrice: 299,
-    description: "Replacement of burnt sockets, loose wiring tightening, and neat modular gang box fitting with safety earthing.",
-    durationMinutes: 40,
-    rating: 4.9,
-    reviewsCount: 144,
-  },
-  {
-    id: "srv-elec-5",
-    title: "Heavy Appliance 16A Power Plug & AC Isolator Wiring",
-    categoryId: "electrician",
-    category: { id: "electrician", name: "Electrician", slug: "electrician" },
-    defaultPrice: 219,
-    description: "High-amperage dedicated circuit wiring for AC, geyser, microwave, or refrigerator to prevent phase overloading.",
-    durationMinutes: 30,
-    rating: 4.87,
-    reviewsCount: 135,
-  },
-  {
-    id: "srv-elec-6",
-    title: "Smart Home Touch Switch & Wi-Fi Controller Setup",
-    categoryId: "electrician",
-    category: { id: "electrician", name: "Electrician", slug: "electrician" },
-    defaultPrice: 499,
-    description: "Smart relay integration behind switch plates with mobile app pairing and automated voice assistant routines.",
-    durationMinutes: 50,
-    rating: 4.96,
-    reviewsCount: 115,
-  },
-
-  // 3. Plumbing (plumbing)
-  {
-    id: "srv-plumb-1",
-    title: "Bathroom Tap, Mixer & Concealed Pipe Leakage Repair",
-    categoryId: "plumbing",
-    category: { id: "plumbing", name: "Plumbing", slug: "plumbing" },
-    defaultPrice: 199,
-    description: "Non-invasive moisture testing, ceramic disc cartridge replacement, and high-pressure leak sealing.",
-    durationMinutes: 40,
-    rating: 4.91,
-    reviewsCount: 278,
-  },
-  {
-    id: "srv-plumb-2",
-    title: "Overhead Water Tank Deep Cleaning & UV Disinfection",
-    categoryId: "plumbing",
-    category: { id: "plumbing", name: "Plumbing", slug: "plumbing" },
-    defaultPrice: 699,
-    description: "Sludge drainage, high-pressure rotary scrub, anti-bacterial UV chamber treatment, and floating ball-valve check.",
-    durationMinutes: 60,
-    rating: 4.95,
-    reviewsCount: 210,
-  },
-  {
-    id: "srv-plumb-3",
-    title: "Blocked Drain, Kitchen Sink & Waste Pipe Unclogging",
-    categoryId: "plumbing",
-    category: { id: "plumbing", name: "Plumbing", slug: "plumbing" },
-    defaultPrice: 299,
-    description: "Heavy-duty drain auger wire and pneumatic air snake clearing of grease traps, gully traps, and floor traps.",
-    durationMinutes: 35,
-    rating: 4.89,
-    reviewsCount: 186,
-  },
-  {
-    id: "srv-plumb-4",
-    title: "Western Toilet Jet Spray & Dual-Flush Valve Overhaul",
-    categoryId: "plumbing",
-    category: { id: "plumbing", name: "Plumbing", slug: "plumbing" },
-    defaultPrice: 249,
-    description: "Replacement of leaky hand health faucet, angle cock valve, internal cistern syphon, and flexible inlet hose.",
-    durationMinutes: 30,
-    rating: 4.86,
-    reviewsCount: 154,
-  },
-  {
-    id: "srv-plumb-5",
-    title: "Water Pressure Pump & Booster Motor Pipeline Installation",
-    categoryId: "plumbing",
-    category: { id: "plumbing", name: "Plumbing", slug: "plumbing" },
-    defaultPrice: 449,
-    description: "Automatic pressure switch wiring, non-return valve (NRV) mounting, and high-flow CPVC line connection.",
-    durationMinutes: 50,
-    rating: 4.93,
-    reviewsCount: 122,
-  },
-  {
-    id: "srv-plumb-6",
-    title: "Geyser Hot Water Inlet/Outlet Valve & Connection Pipe Fitting",
-    categoryId: "plumbing",
-    category: { id: "plumbing", name: "Plumbing", slug: "plumbing" },
-    defaultPrice: 229,
-    description: "High-grade braided stainless steel flexible hose fitting, multi-function safety valve (MFV), and leak test.",
-    durationMinutes: 30,
-    rating: 4.9,
-    reviewsCount: 140,
-  },
-
-  // 4. AC Repair & Service (ac-repair)
   {
     id: "srv-ac-1",
     title: "Split AC Deep Foam Jet Service & Antibacterial Wash",
     categoryId: "ac-repair",
-    category: { id: "ac-repair", name: "AC Repair & Service", slug: "ac-repair" },
+    category: { id: "ac-repair", name: "AC & Climate", slug: "ac-repair" },
     defaultPrice: 549,
     description: "High-pressure jet pump wash with indoor leakproof funnel jacket, coil degreasing, and filter sterilization.",
     durationMinutes: 45,
@@ -300,882 +183,66 @@ const fallbackCatalog: Service[] = [
     reviewsCount: 384,
   },
   {
-    id: "srv-ac-2",
-    title: "AC Eco-Gas Charging (R32 / R410A) with Leakage Triage",
-    categoryId: "ac-repair",
-    category: { id: "ac-repair", name: "AC Repair & Service", slug: "ac-repair" },
-    defaultPrice: 1499,
-    description: "Nitrogen pressure holding test, flare nut brazing, electronic vacuuming, and digital weight scale gas recharging.",
-    durationMinutes: 60,
-    rating: 4.92,
-    reviewsCount: 295,
-  },
-  {
-    id: "srv-ac-3",
-    title: "AC PCB Circuit Board Diagnosis & Capacitor Replacement",
-    categoryId: "ac-repair",
-    category: { id: "ac-repair", name: "AC Repair & Service", slug: "ac-repair" },
-    defaultPrice: 499,
-    description: "Microcontroller error code troubleshooting, outdoor fan run capacitor test, and thermostat sensor calibration.",
-    durationMinutes: 40,
-    rating: 4.88,
-    reviewsCount: 176,
-  },
-  {
-    id: "srv-ac-4",
-    title: "Window AC Complete Deep Servicing & Filter De-scale",
-    categoryId: "ac-repair",
-    category: { id: "ac-repair", name: "AC Repair & Service", slug: "ac-repair" },
-    defaultPrice: 449,
-    description: "Full chassis slide-out cleaning, condenser fin comb straightening, blower wheel degreasing, and drain unclogging.",
-    durationMinutes: 45,
-    rating: 4.89,
-    reviewsCount: 162,
-  },
-  {
-    id: "srv-ac-5",
-    title: "Split AC Safe Dismantling & New Bracket Re-Installation",
-    categoryId: "ac-repair",
-    category: { id: "ac-repair", name: "AC Repair & Service", slug: "ac-repair" },
-    defaultPrice: 799,
-    description: "Refrigerant pump down, heavy-duty iron angle outdoor bracket mounting, copper pipe flare connection, and level check.",
-    durationMinutes: 75,
-    rating: 4.94,
-    reviewsCount: 150,
-  },
-  {
-    id: "srv-ac-6",
-    title: "Indoor Unit Water Leakage Repair & Drain Tray Flushing",
-    categoryId: "ac-repair",
-    category: { id: "ac-repair", name: "AC Repair & Service", slug: "ac-repair" },
-    defaultPrice: 349,
-    description: "Algae biofilm removal from condensate drain pan, drain line pressurized flush, and indoor unit slope alignment.",
-    durationMinutes: 30,
-    rating: 4.87,
-    reviewsCount: 138,
-  },
-
-  // 5. Appliance Repair (appliance)
-  {
-    id: "srv-app-1",
-    title: "Fully Automatic Washing Machine Motor & Drum Repair",
-    categoryId: "appliance",
-    category: { id: "appliance", name: "Appliance Repair", slug: "appliance" },
-    defaultPrice: 399,
-    description: "Doorstep repair for spin drum vibration, drain valve blockage, error code diagnosis, and inlet solenoids.",
-    durationMinutes: 50,
-    rating: 4.91,
-    reviewsCount: 220,
-  },
-  {
-    id: "srv-app-2",
-    title: "Single & Double Door Refrigerator Cooling & Gas Triage",
-    categoryId: "appliance",
-    category: { id: "appliance", name: "Appliance Repair", slug: "appliance" },
-    defaultPrice: 449,
-    description: "Compressor relay test, thermostat cooling cycle tuning, defrost timer replacement, and door magnetic gasket seal.",
-    durationMinutes: 45,
-    rating: 4.89,
-    reviewsCount: 194,
-  },
-  {
-    id: "srv-app-3",
-    title: "Microwave Oven Magnetron, Fuse & Turntable Repair",
-    categoryId: "appliance",
-    category: { id: "appliance", name: "Appliance Repair", slug: "appliance" },
-    defaultPrice: 349,
-    description: "High-voltage capacitor discharge, micro-switch door latch alignment, mica sheet replacement, and heat testing.",
-    durationMinutes: 40,
-    rating: 4.86,
-    reviewsCount: 148,
-  },
-  {
-    id: "srv-app-4",
-    title: "Kitchen Chimney Deep Degreasing & Duct Pipe Cleaning",
-    categoryId: "appliance",
-    category: { id: "appliance", name: "Appliance Repair", slug: "appliance" },
-    defaultPrice: 599,
-    description: "Baffle/mesh filter chemical soak, blower impeller carbon scrape, oil collector cup emptying, and aluminum duct check.",
-    durationMinutes: 60,
-    rating: 4.94,
-    reviewsCount: 165,
-  },
-  {
-    id: "srv-app-5",
-    title: "Instant & Storage Geyser Heating Element & Thermostat Fix",
-    categoryId: "appliance",
-    category: { id: "appliance", name: "Appliance Repair", slug: "appliance" },
-    defaultPrice: 299,
-    description: "Copper heating coil descaling, dual thermostat safety trip reset, anode rod replacement, and earthing test.",
-    durationMinutes: 40,
-    rating: 4.9,
-    reviewsCount: 152,
-  },
-  {
-    id: "srv-app-6",
-    title: "Semi-Automatic Washing Machine Spin/Wash Motor Wiring",
-    categoryId: "appliance",
-    category: { id: "appliance", name: "Appliance Repair", slug: "appliance" },
-    defaultPrice: 349,
-    description: "Spin brake liner adjustment, drive belt tensioning, wash timer mechanical repair, and waterproof motor boot seal.",
-    durationMinutes: 45,
-    rating: 4.85,
-    reviewsCount: 126,
-  },
-
-  // 6. Deep Cleaning (cleaning)
-  {
-    id: "srv-clean-1",
-    title: "Complete Home Deep Cleaning & Floor Machine Buffing Package",
-    categoryId: "cleaning",
-    category: { id: "cleaning", name: "Deep Cleaning", slug: "cleaning" },
-    defaultPrice: 1499,
-    description: "Single-disc scrubbing of tiles, chimney degreasing, stainless steel buffing, and high-grade sanitizer wipe down.",
-    durationMinutes: 120,
-    rating: 4.96,
-    reviewsCount: 310,
-  },
-  {
-    id: "srv-clean-2",
-    title: "Intensive Kitchen Degreasing, Tiles & Slab Scrubbing",
-    categoryId: "cleaning",
-    category: { id: "cleaning", name: "Deep Cleaning", slug: "cleaning" },
-    defaultPrice: 699,
-    description: "Heavy-duty oil cutting alkali treatment on wall tiles, stove burners, sink area, and modular cabinet exteriors.",
-    durationMinutes: 60,
-    rating: 4.91,
-    reviewsCount: 242,
-  },
-  {
-    id: "srv-clean-3",
-    title: "Bathroom Acid-Free Deep Descaling & Sanitization",
-    categoryId: "cleaning",
-    category: { id: "cleaning", name: "Deep Cleaning", slug: "cleaning" },
-    defaultPrice: 499,
-    description: "Hard water scale removal from shower partition glass, chrome tap polishing, tile grout whitening, and WC descaling.",
-    durationMinutes: 45,
-    rating: 4.89,
-    reviewsCount: 218,
-  },
-  {
-    id: "srv-clean-4",
-    title: "Fabric Sofa & Upholstery Deep Shampoo Vacuum Wash",
-    categoryId: "cleaning",
-    category: { id: "cleaning", name: "Deep Cleaning", slug: "cleaning" },
-    defaultPrice: 599,
-    description: "High-foam foam agitation, stain extraction with dual-motor wet vacuum, and fast-drying fabric deodorizer.",
-    durationMinutes: 50,
-    rating: 4.93,
-    reviewsCount: 184,
-  },
-  {
-    id: "srv-clean-5",
-    title: "Mattress Deep Dry Vacuuming & Anti-Allergen Sanitization",
-    categoryId: "cleaning",
-    category: { id: "cleaning", name: "Deep Cleaning", slug: "cleaning" },
-    defaultPrice: 449,
-    description: "High-suction HEPA filtration extraction for dust mites, dead skin cells, and microscopic allergens with UV-C wand.",
-    durationMinutes: 35,
-    rating: 4.88,
-    reviewsCount: 136,
-  },
-  {
-    id: "srv-clean-6",
-    title: "Balcony, Window Grill & Sliding Glass Railing Scrubbing",
-    categoryId: "cleaning",
-    category: { id: "cleaning", name: "Deep Cleaning", slug: "cleaning" },
-    defaultPrice: 399,
-    description: "Pigeon droppings removal, high-pressure jet wash on exterior tiles, window track vacuuming, and glass wiping.",
-    durationMinutes: 40,
-    rating: 4.87,
-    reviewsCount: 125,
-  },
-
-  // 7. Painting & Waterproofing (painting)
-  {
-    id: "srv-paint-1",
-    title: "Wall Dampness Treatment & Anti-Fungal Waterproofing",
-    categoryId: "painting",
-    category: { id: "painting", name: "Painting & Waterproofing", slug: "painting" },
-    defaultPrice: 1799,
-    description: "Deep moisture reading, wall efflorescence scraping, multi-layer polymer base coat, and waterproof barrier paint.",
-    durationMinutes: 90,
-    rating: 4.95,
-    reviewsCount: 260,
-  },
-  {
-    id: "srv-paint-2",
-    title: "Interior Wall Fresh Coat & Touch-up Painting",
-    categoryId: "painting",
-    category: { id: "painting", name: "Painting & Waterproofing", slug: "painting" },
-    defaultPrice: 2499,
-    description: "Smooth acrylic emulsion application with micro-fiber rollers, sharp tape masking on skirting, and zero splatter.",
-    durationMinutes: 120,
-    rating: 4.92,
-    reviewsCount: 198,
-  },
-  {
-    id: "srv-paint-3",
-    title: "Exterior Texture & Weather-Shield Protection Coat",
-    categoryId: "painting",
-    category: { id: "painting", name: "Painting & Waterproofing", slug: "painting" },
-    defaultPrice: 3299,
-    description: "Elastomeric heavy weather coat with UV resistance, rain barrier protection, and crack-bridging technology.",
-    durationMinutes: 180,
-    rating: 4.94,
-    reviewsCount: 142,
-  },
-  {
-    id: "srv-paint-4",
-    title: "Ceiling Seepage Repair & Water Barrier Membrane",
-    categoryId: "painting",
-    category: { id: "painting", name: "Painting & Waterproofing", slug: "painting" },
-    defaultPrice: 1299,
-    description: "Hydraulic crystalline mortar injection, peeling paint removal, and non-toxic moisture curing sealant application.",
-    durationMinutes: 75,
-    rating: 4.88,
-    reviewsCount: 130,
-  },
-  {
-    id: "srv-paint-5",
-    title: "Wood & Metal Enamel Painting for Doors & Window Grills",
-    categoryId: "painting",
-    category: { id: "painting", name: "Painting & Waterproofing", slug: "painting" },
-    defaultPrice: 899,
-    description: "Rust converter primer on iron grills, high-gloss polyurethane enamel finish, and anti-corrosive protective film.",
-    durationMinutes: 60,
-    rating: 4.89,
-    reviewsCount: 115,
-  },
-  {
-    id: "srv-paint-6",
-    title: "Wall Putty, Primer & Crack Filling Surface Preparation",
-    categoryId: "painting",
-    category: { id: "painting", name: "Painting & Waterproofing", slug: "painting" },
-    defaultPrice: 999,
-    description: "Flexible polymer fiber crack filler paste, dual-coat white cement putty, and orbital machine sanding for mirror finish.",
-    durationMinutes: 80,
-    rating: 4.9,
-    reviewsCount: 128,
-  },
-
-  // 8. Carpentry & Woodwork (carpentry)
-  {
-    id: "srv-carp-1",
-    title: "Door Lock, Handle & Concealed Hydraulic Hinge Repair",
-    categoryId: "carpentry",
-    category: { id: "carpentry", name: "Carpentry & Woodwork", slug: "carpentry" },
-    defaultPrice: 249,
-    description: "Heavy-duty mortise lock fixing, soft-close hydraulic cabinet hinge alignment, and striker plate repositioning.",
-    durationMinutes: 40,
-    rating: 4.93,
-    reviewsCount: 254,
-  },
-  {
-    id: "srv-carp-2",
-    title: "Modular Kitchen Cabinet & Drawer Channel Tuning",
-    categoryId: "carpentry",
-    category: { id: "carpentry", name: "Carpentry & Woodwork", slug: "carpentry" },
-    defaultPrice: 399,
-    description: "Telescopic ball-bearing drawer slide replacement, sagging shutter leveling, and soft-close piston tuning.",
-    durationMinutes: 45,
-    rating: 4.9,
-    reviewsCount: 188,
-  },
-  {
-    id: "srv-carp-3",
-    title: "Custom Furniture Assembly (Bed, Wardrobe, Work Desk)",
-    categoryId: "carpentry",
-    category: { id: "carpentry", name: "Carpentry & Woodwork", slug: "carpentry" },
-    defaultPrice: 599,
-    description: "Precision engineered assembly with torque drills, dowel alignment, structural bracket reinforcement, and leveling.",
-    durationMinutes: 60,
-    rating: 4.95,
-    reviewsCount: 172,
-  },
-  {
-    id: "srv-carp-4",
-    title: "Wooden Door Trimming, Latch Fixing & Peep-Hole Fitting",
-    categoryId: "carpentry",
-    category: { id: "carpentry", name: "Carpentry & Woodwork", slug: "carpentry" },
-    defaultPrice: 299,
-    description: "Electric planer trimming for floor scraping doors, high-security tower bolt fixing, and wide-angle optical eye viewer.",
-    durationMinutes: 35,
-    rating: 4.87,
-    reviewsCount: 145,
-  },
-  {
-    id: "srv-carp-5",
-    title: "Sliding Wardrobe Track & Nylon Roller Wheel Replacement",
-    categoryId: "carpentry",
-    category: { id: "carpentry", name: "Carpentry & Woodwork", slug: "carpentry" },
-    defaultPrice: 349,
-    description: "Smooth heavy-gauge aluminum bottom track fitting, ball-bearing roller adjustment, and anti-jump stopper mounting.",
-    durationMinutes: 40,
-    rating: 4.88,
-    reviewsCount: 130,
-  },
-  {
-    id: "srv-carp-6",
-    title: "Curtain Rod, Wooden Wall Shelf & TV Mount Drilling",
-    categoryId: "carpentry",
-    category: { id: "carpentry", name: "Carpentry & Woodwork", slug: "carpentry" },
-    defaultPrice: 199,
-    description: "Laser level wall marking, heavy-load anchor fastener insertion, and sturdy bracket mounting for TVs, frames, and shelves.",
-    durationMinutes: 30,
-    rating: 4.91,
-    reviewsCount: 164,
-  },
-
-  // 9. CCTV & Smart Security (cctv-security)
-  {
-    id: "srv-cctv-1",
-    title: "Doorstep HD CCTV Camera Installation & Mobile App Streaming",
-    categoryId: "cctv-security",
-    category: { id: "cctv-security", name: "CCTV & Smart Security", slug: "cctv-security" },
-    defaultPrice: 499,
-    description: "Neat coaxial/Cat6 cable casing, night-vision infrared camera mounting, DVR network routing, and phone app streaming.",
-    durationMinutes: 60,
-    rating: 4.96,
-    reviewsCount: 220,
-  },
-  {
-    id: "srv-cctv-2",
-    title: "Smart Video Doorbell & Digital Biometric Lock Fitting",
-    categoryId: "cctv-security",
-    category: { id: "cctv-security", name: "CCTV & Smart Security", slug: "cctv-security" },
-    defaultPrice: 699,
-    description: "Chime transformer wiring, optical fingerprint sensor calibration, RFID card encoding, and home Wi-Fi gateway pairing.",
-    durationMinutes: 50,
-    rating: 4.94,
-    reviewsCount: 178,
-  },
-  {
-    id: "srv-cctv-3",
-    title: "Security DVR/NVR Wiring & Surveillance Hard Disk Setup",
-    categoryId: "cctv-security",
-    category: { id: "cctv-security", name: "CCTV & Smart Security", slug: "cctv-security" },
-    defaultPrice: 549,
-    description: "Surveillance-grade SATA HDD formatting, motion detection zone masking, cloud backup schedule, and HDMI display output.",
-    durationMinutes: 45,
-    rating: 4.91,
-    reviewsCount: 146,
-  },
-  {
-    id: "srv-cctv-4",
-    title: "360° Wi-Fi PTZ Security Camera Setup & Motion Alert Config",
-    categoryId: "cctv-security",
-    category: { id: "cctv-security", name: "CCTV & Smart Security", slug: "cctv-security" },
-    defaultPrice: 349,
-    description: "Ceiling mounting plate installation, microSD memory card configuration, human AI tracking setup, and two-way talk test.",
-    durationMinutes: 35,
-    rating: 4.89,
-    reviewsCount: 162,
-  },
-  {
-    id: "srv-cctv-5",
-    title: "Intercom & EPABX Video Door Phone Cable Diagnosis",
-    categoryId: "cctv-security",
-    category: { id: "cctv-security", name: "CCTV & Smart Security", slug: "cctv-security" },
-    defaultPrice: 449,
-    description: "Tone generator cable fault tracing, outdoor camera sub-unit repair, power supply unit check, and crisp indoor audio test.",
-    durationMinutes: 40,
-    rating: 4.87,
-    reviewsCount: 118,
-  },
-  {
-    id: "srv-cctv-6",
-    title: "PIR Motion Sensor Security Floodlight & Alarm Siren Fitting",
-    categoryId: "cctv-security",
-    category: { id: "cctv-security", name: "CCTV & Smart Security", slug: "cctv-security" },
-    defaultPrice: 399,
-    description: "Infrared thermal detection sensitivity calibration, dusk-to-dawn lux setting, loud 110dB siren relay, and weather casing.",
-    durationMinutes: 40,
-    rating: 4.92,
-    reviewsCount: 104,
-  },
-
-  // 10. RO Water Purifier Care (ro-water-purifier)
-  {
-    id: "srv-ro-1",
-    title: "Comprehensive RO Service & Multi-Stage Filter Replacement",
-    categoryId: "ro-water-purifier",
-    category: { id: "ro-water-purifier", name: "RO Water Purifier Care", slug: "ro-water-purifier" },
-    defaultPrice: 349,
-    description: "Sediment filter backwash, activated carbon cartridge swap, membrane pressure check, and digital TDS calibration.",
-    durationMinutes: 45,
-    rating: 4.95,
-    reviewsCount: 340,
-  },
-  {
-    id: "srv-ro-2",
-    title: "Water TDS Calibration & High-Pressure Booster Pump Check",
-    categoryId: "ro-water-purifier",
-    category: { id: "ro-water-purifier", name: "RO Water Purifier Care", slug: "ro-water-purifier" },
-    defaultPrice: 299,
-    description: "Digital TDS meter before/after sampling, booster pump head pressure test, low-pressure cut-off switch (LPS) verification.",
-    durationMinutes: 30,
-    rating: 4.9,
-    reviewsCount: 215,
-  },
-  {
-    id: "srv-ro-3",
-    title: "RO Membrane Replacement & Alkaline Mineralizer Cartridge Add-on",
-    categoryId: "ro-water-purifier",
-    category: { id: "ro-water-purifier", name: "RO Water Purifier Care", slug: "ro-water-purifier" },
-    defaultPrice: 899,
-    description: "High-rejection 80 GPD thin-film composite membrane installation with bio-mineral pH balancer cartridge for sweet taste.",
-    durationMinutes: 45,
-    rating: 4.94,
-    reviewsCount: 198,
-  },
-  {
-    id: "srv-ro-4",
-    title: "RO UV Lamp & 24V SMPS Electronic Power Adapter Repair",
-    categoryId: "ro-water-purifier",
-    category: { id: "ro-water-purifier", name: "RO Water Purifier Care", slug: "ro-water-purifier" },
-    defaultPrice: 449,
-    description: "Stainless steel UV barrel cleaning, 11W germicidal UV tube swap, and heavy-duty regulated power supply unit replacement.",
-    durationMinutes: 35,
-    rating: 4.88,
-    reviewsCount: 142,
-  },
-  {
-    id: "srv-ro-5",
-    title: "Tap Connector Leakage Sealing & Food-Grade Pipe Replacement",
-    categoryId: "ro-water-purifier",
-    category: { id: "ro-water-purifier", name: "RO Water Purifier Care", slug: "ro-water-purifier" },
-    defaultPrice: 199,
-    description: "Push-fit quick connect elbow fitting, 1/4 inch NSF food-grade tubing re-route, and divergence diverter valve sealing.",
-    durationMinutes: 25,
-    rating: 4.87,
-    reviewsCount: 135,
-  },
-  {
-    id: "srv-ro-6",
-    title: "Complete RO Uninstallation & New Kitchen Wall Mounting",
-    categoryId: "ro-water-purifier",
-    category: { id: "ro-water-purifier", name: "RO Water Purifier Care", slug: "ro-water-purifier" },
-    defaultPrice: 399,
-    description: "Safe water drainage, wall bracket drill and anchor, reject water line plumbing, and leak-free commissioning.",
-    durationMinutes: 45,
-    rating: 4.91,
-    reviewsCount: 154,
-  },
-
-  // 11. Car Denting & Painting (car-denting-painting)
-  {
     id: "srv-dent-1",
-    title: "Paintless Dent Removal (PDR) & Minor Scratch Buffing",
+    title: "Paintless Dent Removal (PDR) & Minor Body Scratch Buffing",
     categoryId: "car-denting-painting",
-    category: { id: "car-denting-painting", name: "Car Denting & Painting", slug: "car-denting-painting" },
+    category: { id: "car-denting-painting", name: "Denting & Painting", slug: "car-denting-painting" },
     defaultPrice: 799,
-    description: "High-precision metal rod PDR technique for door and fender dings without harming original factory paint finish.",
-    durationMinutes: 60,
-    rating: 4.95,
-    reviewsCount: 280,
-  },
-  {
-    id: "srv-dent-2",
-    title: "Full Bumper Realignment, Scratch Removal & Spot Touch-Up",
-    categoryId: "car-denting-painting",
-    category: { id: "car-denting-painting", name: "Car Denting & Painting", slug: "car-denting-painting" },
-    defaultPrice: 999,
-    description: "Plastic bumper clip replacement, heat reshaping of fender arch, multi-stage compound buffing, and clearcoat touch-up.",
-    durationMinutes: 75,
-    rating: 4.92,
-    reviewsCount: 224,
-  },
-  {
-    id: "srv-dent-3",
-    title: "Single Panel (Door/Fender) Primer, Basecoat & Clearcoat Paint",
-    categoryId: "car-denting-painting",
-    category: { id: "car-denting-painting", name: "Car Denting & Painting", slug: "car-denting-painting" },
-    defaultPrice: 1899,
-    description: "Computerized spectrophotometer color matching, anti-rust zinc primer, OEM acrylic basecoat, and high-gloss 2K clearcoat.",
-    durationMinutes: 120,
-    rating: 4.96,
-    reviewsCount: 195,
-  },
-  {
-    id: "srv-dent-4",
-    title: "Running Board & Door Sill Plate Dent Pulling",
-    categoryId: "car-denting-painting",
-    category: { id: "car-denting-painting", name: "Car Denting & Painting", slug: "car-denting-painting" },
-    defaultPrice: 899,
-    description: "Spot stud welder pulling for lower sill damage, underbody anti-stone chip coating, and smooth filler contouring.",
-    durationMinutes: 60,
-    rating: 4.88,
-    reviewsCount: 140,
-  },
-  {
-    id: "srv-dent-5",
-    title: "Full Car Exterior Dual-Action Machine Polish & Glaze",
-    categoryId: "car-denting-painting",
-    category: { id: "car-denting-painting", name: "Car Denting & Painting", slug: "car-denting-painting" },
-    defaultPrice: 1499,
-    description: "Swirl mark elimination with micro-abrasive foam pad, carnauba wax sealing, and deep mirror gloss paint enhancement.",
-    durationMinutes: 90,
-    rating: 4.94,
-    reviewsCount: 182,
-  },
-  {
-    id: "srv-dent-6",
-    title: "Bonnet / Engine Hood Stone Chip Repair & Color Blend",
-    categoryId: "car-denting-painting",
-    category: { id: "car-denting-painting", name: "Car Denting & Painting", slug: "car-denting-painting" },
-    defaultPrice: 1199,
-    description: "Micro-pipette paint chip fill, 2000-grit wet leveling, optical clearcoat spot burn-in, and high-friction buff.",
+    description: "Vacuum extraction of minor body dings without paint damage, followed by 3M compound rubbing and high-gloss buffing.",
     durationMinutes: 60,
     rating: 4.91,
-    reviewsCount: 128,
+    reviewsCount: 142,
   },
-
-  // 12. Windshield & Glass Care (windshield-lights-care)
-  {
-    id: "srv-glass-1",
-    title: "Windshield Crack Resin Repair & Stone-Chip Stop Drilling",
-    categoryId: "windshield-lights-care",
-    category: { id: "windshield-lights-care", name: "Windshield & Glass Care", slug: "windshield-lights-care" },
-    defaultPrice: 399,
-    description: "Vacuum UV optical resin injection for stone-chip star cracks, bullseyes, and stopping crack lines from spreading.",
-    durationMinutes: 40,
-    rating: 4.94,
-    reviewsCount: 230,
-  },
-  {
-    id: "srv-glass-2",
-    title: "Headlight Lens De-Oxidizing, Yellowing Removal & Ceramic Seal",
-    categoryId: "windshield-lights-care",
-    category: { id: "windshield-lights-care", name: "Windshield & Glass Care", slug: "windshield-lights-care" },
-    defaultPrice: 499,
-    description: "Multi-grit wet sanding to strip cloudy oxidation, diamond compound buffing, and UV ceramic headlight sealant.",
-    durationMinutes: 45,
-    rating: 4.96,
-    reviewsCount: 285,
-  },
-  {
-    id: "srv-glass-3",
-    title: "Car Power Window Motor & Regulator Cable Triage",
-    categoryId: "windshield-lights-care",
-    category: { id: "windshield-lights-care", name: "Windshield & Glass Care", slug: "windshield-lights-care" },
-    defaultPrice: 449,
-    description: "Door panel dismantling, tangled cable pulley realign, electric motor gear lubricate, and smooth glass channel guide.",
-    durationMinutes: 50,
-    rating: 4.89,
-    reviewsCount: 174,
-  },
-  {
-    id: "srv-glass-4",
-    title: "Frameless Wiper Blade Replacement & Washer Jet De-clog",
-    categoryId: "windshield-lights-care",
-    category: { id: "windshield-lights-care", name: "Windshield & Glass Care", slug: "windshield-lights-care" },
-    defaultPrice: 249,
-    description: "Aerodynamic silicone wiper blade fitting, washer fluid reservoir flush, and spray nozzle angle calibration.",
-    durationMinutes: 20,
-    rating: 4.91,
-    reviewsCount: 155,
-  },
-  {
-    id: "srv-glass-5",
-    title: "Rear Defogger Grid Line Continuity Test & Conductive Repair",
-    categoryId: "windshield-lights-care",
-    category: { id: "windshield-lights-care", name: "Windshield & Glass Care", slug: "windshield-lights-care" },
-    defaultPrice: 349,
-    description: "Digital multimeter continuity check, silver conductive trace paste bridge for broken lines, and fast mist clearing test.",
-    durationMinutes: 35,
-    rating: 4.87,
-    reviewsCount: 112,
-  },
-  {
-    id: "srv-glass-6",
-    title: "Side Window Glass Channel Rubber Alignment & Anti-Rattle Fix",
-    categoryId: "windshield-lights-care",
-    category: { id: "windshield-lights-care", name: "Windshield & Glass Care", slug: "windshield-lights-care" },
-    defaultPrice: 299,
-    description: "Velvet felt channel cleaning, dry silicone spray lubricant, and window glass vibration stopper adjustment.",
-    durationMinutes: 30,
-    rating: 4.9,
-    reviewsCount: 126,
-  },
-
-  // 13. Two-Wheeler Repair & Care (two-wheeler-repair)
   {
     id: "srv-bike-1",
-    title: "Full Bike General Tune-Up, Oil Refill & Brake Cleaning",
+    title: "Motorcycle Full General Service & Chain Sprocket Lube",
     categoryId: "two-wheeler-repair",
-    category: { id: "two-wheeler-repair", name: "Two-Wheeler Repair & Care", slug: "two-wheeler-repair" },
-    defaultPrice: 499,
-    description: "Engine oil change, spark plug clean, carburetor tune, brake drum scrub, chain lube, and full 25-point bike check.",
+    category: { id: "two-wheeler-repair", name: "Two-Wheeler Care", slug: "two-wheeler-repair" },
+    defaultPrice: 349,
+    description: "Engine oil change, spark plug cleanup, carburetor tuning, high-pressure chain degreasing, and brake adjustment.",
     durationMinutes: 45,
-    rating: 4.96,
-    reviewsCount: 380,
-  },
-  {
-    id: "srv-bike-2",
-    title: "Drive Chain Deep Cleaning & High-Tack O-Ring Lubrication",
-    categoryId: "two-wheeler-repair",
-    category: { id: "two-wheeler-repair", name: "Two-Wheeler Repair & Care", slug: "two-wheeler-repair" },
-    defaultPrice: 199,
-    description: "Kerosene / chain cleaner agitation, grime brush scrub, slack tensioning, and high-temp synthetic chain lube spray.",
-    durationMinutes: 25,
     rating: 4.93,
-    reviewsCount: 290,
+    reviewsCount: 228,
   },
-  {
-    id: "srv-bike-3",
-    title: "Carburetor Clean & Spark Plug Replacement",
-    categoryId: "two-wheeler-repair",
-    category: { id: "two-wheeler-repair", name: "Two-Wheeler Repair & Care", slug: "two-wheeler-repair" },
-    defaultPrice: 299,
-    description: "Fuel jet needle de-clogging, float chamber drain, air-fuel screw tuning for mileage, and laser iridium spark plug.",
-    durationMinutes: 35,
-    rating: 4.91,
-    reviewsCount: 215,
-  },
-  {
-    id: "srv-bike-4",
-    title: "Scooter Automatic CVT Belt & Variator Roller Inspection",
-    categoryId: "two-wheeler-repair",
-    category: { id: "two-wheeler-repair", name: "Two-Wheeler Repair & Care", slug: "two-wheeler-repair" },
-    defaultPrice: 399,
-    description: "CVT clutch cover removal, clutch shoe dust blow, drive belt wear check, and variator roller grease service.",
-    durationMinutes: 40,
-    rating: 4.89,
-    reviewsCount: 175,
-  },
-  {
-    id: "srv-bike-5",
-    title: "Front Fork Hydraulic Suspension Oil & Bushing Overhaul",
-    categoryId: "two-wheeler-repair",
-    category: { id: "two-wheeler-repair", name: "Two-Wheeler Repair & Care", slug: "two-wheeler-repair" },
-    defaultPrice: 549,
-    description: "Fork oil seal replacement, hydraulic fork oil top-up, stanchion scratch buffing, and smooth rebound damping.",
-    durationMinutes: 50,
-    rating: 4.92,
-    reviewsCount: 144,
-  },
-  {
-    id: "srv-bike-6",
-    title: "Bike Clutch Cable & Accelerator Wire Replacement",
-    categoryId: "two-wheeler-repair",
-    category: { id: "two-wheeler-repair", name: "Two-Wheeler Repair & Care", slug: "two-wheeler-repair" },
-    defaultPrice: 179,
-    description: "Smooth friction-free inner wire routing, clutch lever play adjustment, and silicone throttle tube lubrication.",
-    durationMinutes: 20,
-    rating: 4.88,
-    reviewsCount: 132,
-  },
-
-  // 14. Tyres, Wheels & Puncture Care (tyres-wheel-care)
   {
     id: "srv-tyre-1",
-    title: "Doorstep Tubeless Tyre Puncture Repair & Mushroom Plug",
+    title: "Doorstep Tubeless Tyre Puncture Repair & Wheel Balancing",
     categoryId: "tyres-wheel-care",
-    category: { id: "tyres-wheel-care", name: "Tyres, Wheels & Puncture Care", slug: "tyres-wheel-care" },
-    defaultPrice: 199,
-    description: "Permanent internal vulcanizing mushroom plug, rim bead seal inspection, nail removal, and digital PSI inflation.",
-    durationMinutes: 20,
-    rating: 4.97,
-    reviewsCount: 410,
-  },
-  {
-    id: "srv-tyre-2",
-    title: "Computerized Dynamic Wheel Balancing (Set of 4)",
-    categoryId: "tyres-wheel-care",
-    category: { id: "tyres-wheel-care", name: "Tyres, Wheels & Puncture Care", slug: "tyres-wheel-care" },
-    defaultPrice: 449,
-    description: "High-speed wheel spinner calibration, adhesive zinc weight clip mounting, and high-speed steering wobble fix.",
-    durationMinutes: 40,
-    rating: 4.93,
-    reviewsCount: 260,
-  },
-  {
-    id: "srv-tyre-3",
-    title: "Tyre Valve Stem Replacement & Nitrogen Air Inflation",
-    categoryId: "tyres-wheel-care",
-    category: { id: "tyres-wheel-care", name: "Tyres, Wheels & Puncture Care", slug: "tyres-wheel-care" },
-    defaultPrice: 149,
-    description: "Brass valve pin swap, rubber stem core change to stop slow rim leakage, and 99.5% dry nitrogen gas inflation.",
-    durationMinutes: 15,
-    rating: 4.89,
-    reviewsCount: 180,
-  },
-  {
-    id: "srv-tyre-4",
-    title: "Emergency Roadside Spare Stepney Wheel Swapping",
-    categoryId: "tyres-wheel-care",
-    category: { id: "tyres-wheel-care", name: "Tyres, Wheels & Puncture Care", slug: "tyres-wheel-care" },
+    category: { id: "tyres-wheel-care", name: "Tyres & Wheels", slug: "tyres-wheel-care" },
     defaultPrice: 249,
-    description: "Hydraulic jack lifting, wheel lug nut cross-pattern torque tightening, and flat tyre boot stowage.",
-    durationMinutes: 20,
-    rating: 4.95,
-    reviewsCount: 298,
-  },
-  {
-    id: "srv-tyre-5",
-    title: "4-Wheel Cross Rotation & Tread Depth Wear Assessment",
-    categoryId: "tyres-wheel-care",
-    category: { id: "tyres-wheel-care", name: "Tyres, Wheels & Puncture Care", slug: "tyres-wheel-care" },
-    defaultPrice: 299,
-    description: "Even tyre wear extension, digital tread depth gauge reading, and asymmetric tyre direction alignment.",
-    durationMinutes: 30,
-    rating: 4.9,
-    reviewsCount: 165,
-  },
-
-  // 15. Detailing, Foam Wash & Spa (detailing-wash-spa)
-  {
-    id: "srv-spa-1",
-    title: "Doorstep High-Pressure Snow Foam Wash & Vacuuming",
-    categoryId: "detailing-wash-spa",
-    category: { id: "detailing-wash-spa", name: "Detailing, Foam Wash & Spa", slug: "detailing-wash-spa" },
-    defaultPrice: 699,
-    description: "pH-neutral foam lance pre-soak, microfiber two-bucket mitt wash, high-flow rinse, and high-suction interior vacuum.",
-    durationMinutes: 45,
-    rating: 4.96,
-    reviewsCount: 350,
-  },
-  {
-    id: "srv-spa-2",
-    title: "Deep Interior Upholstery Dry-Cleaning & Dashboard Dressing",
-    categoryId: "detailing-wash-spa",
-    category: { id: "detailing-wash-spa", name: "Detailing, Foam Wash & Spa", slug: "detailing-wash-spa" },
-    defaultPrice: 1199,
-    description: "Fabric seat stain extraction, roof liner steam wipe, AC vent brush de-dust, and matte UV dashboard protectant.",
-    durationMinutes: 75,
-    rating: 4.94,
-    reviewsCount: 245,
-  },
-  {
-    id: "srv-spa-3",
-    title: "9H Ceramic Coating Polish & Hydrophobic Paint Protection",
-    categoryId: "detailing-wash-spa",
-    category: { id: "detailing-wash-spa", name: "Detailing, Foam Wash & Spa", slug: "detailing-wash-spa" },
-    defaultPrice: 2499,
-    description: "Clay bar decontamination, single-step machine polish, and SiO2 nano-ceramic coating with extreme water beading.",
-    durationMinutes: 120,
-    rating: 4.97,
-    reviewsCount: 185,
-  },
-  {
-    id: "srv-spa-4",
-    title: "Engine Bay Deep Degreasing & Anti-Rust Silicone Shield",
-    categoryId: "detailing-wash-spa",
-    category: { id: "detailing-wash-spa", name: "Detailing, Foam Wash & Spa", slug: "detailing-wash-spa" },
-    defaultPrice: 499,
-    description: "Sensor safe electrical cover, non-caustic grease solvent spray, brush agitation, and heat-resistant silicone dressing.",
-    durationMinutes: 35,
+    description: "Mushroom patch / cold plug puncture fix, digital pressure check, valve replacement, and tread depth audit.",
+    durationMinutes: 25,
     rating: 4.88,
-    reviewsCount: 140,
-  },
-  {
-    id: "srv-spa-5",
-    title: "Leather Seat Conditioning & Interior Ozone Odor Elimination",
-    categoryId: "detailing-wash-spa",
-    category: { id: "detailing-wash-spa", name: "Detailing, Foam Wash & Spa", slug: "detailing-wash-spa" },
-    defaultPrice: 649,
-    description: "pH balanced leather balm deep conditioning to prevent cracking, followed by 15-minute ozone antibacterial cabin deodorization.",
-    durationMinutes: 40,
-    rating: 4.92,
-    reviewsCount: 160,
-  },
-
-  // 16. Brakes, Clutch & Suspension (brakes-clutch-suspension)
-  {
-    id: "srv-brakes-1",
-    title: "Front & Rear Ceramic Brake Pad Replacement & Caliper Pin Grease",
-    categoryId: "brakes-clutch-suspension",
-    category: { id: "brakes-clutch-suspension", name: "Brakes, Clutch & Suspension", slug: "brakes-clutch-suspension" },
-    defaultPrice: 599,
-    description: "Low-dust ceramic brake pads, anti-squeal shims, caliper pin synthetic grease, and DOT-4 brake fluid level check.",
-    durationMinutes: 45,
-    rating: 4.95,
-    reviewsCount: 275,
-  },
-  {
-    id: "srv-brakes-2",
-    title: "Clutch Cable, Friction Plate & Release Bearing Overhaul",
-    categoryId: "brakes-clutch-suspension",
-    category: { id: "brakes-clutch-suspension", name: "Brakes, Clutch & Suspension", slug: "brakes-clutch-suspension" },
-    defaultPrice: 899,
-    description: "Hard clutch pedal troubleshooting, flywheel face check, pressure plate alignment, and free-play calibration.",
-    durationMinutes: 60,
-    rating: 4.91,
-    reviewsCount: 198,
-  },
-  {
-    id: "srv-brakes-3",
-    title: "Suspension Strut, Link Rod & Bushing Inspection",
-    categoryId: "brakes-clutch-suspension",
-    category: { id: "brakes-clutch-suspension", name: "Brakes, Clutch & Suspension", slug: "brakes-clutch-suspension" },
-    defaultPrice: 699,
-    description: "Hydraulic strut leak test, stabilizer bar bushing check, tie-rod end ball joint play assessment, and thud noise diagnostic.",
-    durationMinutes: 50,
-    rating: 4.9,
-    reviewsCount: 165,
-  },
-  {
-    id: "srv-brakes-4",
-    title: "Handbrake Cable Tensioning & Rear Drum Shoe Adjustment",
-    categoryId: "brakes-clutch-suspension",
-    category: { id: "brakes-clutch-suspension", name: "Brakes, Clutch & Suspension", slug: "brakes-clutch-suspension" },
-    defaultPrice: 349,
-    description: "Parking brake ratchet lever click adjustment, brake drum dust cleaning, and firm slope holding test.",
-    durationMinutes: 30,
-    rating: 4.88,
-    reviewsCount: 145,
-  },
-  {
-    id: "srv-brakes-5",
-    title: "Brake Fluid Flush & Air Bleeding Service",
-    categoryId: "brakes-clutch-suspension",
-    category: { id: "brakes-clutch-suspension", name: "Brakes, Clutch & Suspension", slug: "brakes-clutch-suspension" },
-    defaultPrice: 449,
-    description: "Moisture-contaminated hydraulic brake oil vacuum extraction, fresh DOT-4 fluid flush, and zero spongy pedal air bleed.",
-    durationMinutes: 35,
-    rating: 4.93,
-    reviewsCount: 158,
+    reviewsCount: 196,
   },
 ];
 
 export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // URL state synchronization
-  const initialCategory = searchParams.get("category") || "ALL";
-  const initialSearch = searchParams.get("search") || "";
-
   const { t, tc, ts, language } = useLanguage();
+  const isHi = language === "hi";
 
-  // Local filter states
-  const [searchQuery, setSearchQuery] = useState(initialSearch);
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get("category");
+  const searchFromUrl = searchParams.get("search");
+
+  // State Management
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryFromUrl || "ALL");
   const [selectedPriceRange, setSelectedPriceRange] = useState<string>("ALL");
-  const [instantDispatchOnly, setInstantDispatchOnly] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>("featured");
+  const [searchQuery, setSearchQuery] = useState<string>(searchFromUrl || "");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [instantDispatchOnly, setInstantDispatchOnly] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 15;
-
-  // Selected service for booking modal
+  // Booking Modal State
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
-  // Sync state if URL changes externally
-  useEffect(() => {
-    const cat = searchParams.get("category") || "ALL";
-    const srch = searchParams.get("search") || "";
-    setSelectedCategory(cat);
-    setSearchQuery(srch);
-  }, [searchParams]);
-
-  // Backend API query
+  // RTK Query Hooks
   const {
     data: categoriesData,
-    isLoading: catLoading,
+    isLoading: categoriesLoading,
   } = useGetCategoriesQuery();
 
   const {
@@ -1183,252 +250,248 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
     isLoading: servicesLoading,
     isError: servicesError,
     refetch,
-  } = useGetServicesQuery({
-    categoryId: selectedCategory !== "ALL" ? selectedCategory : undefined,
-  });
+  } = useGetServicesQuery();
 
-  // Base services pool (API data or rich fallback catalog)
-  const allServices: Service[] = useMemo(() => {
-    if (servicesData?.data && servicesData.data.length > 0) {
-      return servicesData.data.map((srv, idx) => ({
-        ...srv,
-        description:
-          srv.description ||
-          "Professional doorstep execution by verified local technicians with genuine parts and standardized post-service inspection.",
-        durationMinutes: srv.durationMinutes || 45,
-        rating: srv.rating || 4.9,
-        reviewsCount: srv.reviewsCount || 100 + idx * 15,
-        image: getServiceImage(srv.title, srv.category?.slug, srv.image),
-      }));
-    }
-    return fallbackCatalog.map((srv) => ({
-      ...srv,
-      image: getServiceImage(srv.title, srv.category?.slug, srv.image),
-    }));
-  }, [servicesData]);
-
-  // Categories list
-  const categoriesList = useMemo(() => {
-    if (categoriesData?.data && categoriesData.data.length > 0) {
-      return [
-        { id: "ALL", name: "All Categories", count: allServices.length },
-        ...categoriesData.data.map((c) => ({
-          id: c.id,
-          name: c.name,
-          count: allServices.filter(
-            (s) => s.categoryId === c.id || s.category?.id === c.id
-          ).length,
-        })),
-      ];
-    }
-    return [
-      { id: "ALL", name: "All Categories", count: fallbackCatalog.length },
-      { id: "mechanic", name: "Auto & Garage Repair", count: 6 },
-      { id: "electrician", name: "Electrician", count: 6 },
-      { id: "plumbing", name: "Plumbing", count: 6 },
-      { id: "ac-repair", name: "AC Repair & Service", count: 6 },
-      { id: "appliance", name: "Appliance Repair", count: 6 },
-      { id: "cleaning", name: "Deep Cleaning", count: 6 },
-      { id: "painting", name: "Painting & Waterproofing", count: 6 },
-      { id: "carpentry", name: "Carpentry & Woodwork", count: 6 },
-      { id: "cctv-security", name: "CCTV & Smart Security", count: 6 },
-      { id: "ro-water-purifier", name: "RO Water Purifier Care", count: 6 },
-      { id: "car-denting-painting", name: "Car Denting & Painting", count: 6 },
-      { id: "windshield-lights-care", name: "Windshield & Glass Care", count: 6 },
-      { id: "two-wheeler-repair", name: "Two-Wheeler Repair & Care", count: 6 },
-      { id: "tyres-wheel-care", name: "Tyres & Wheel Care", count: 5 },
-      { id: "detailing-wash-spa", name: "Detailing & Spa", count: 5 },
-      { id: "brakes-clutch-suspension", name: "Brakes & Suspension", count: 5 },
-    ];
-  }, [categoriesData, allServices]);
-
-  // Handler for category selection
-  const handleCategoryChange = (catId: string) => {
-    setSelectedCategory(catId);
-    setCurrentPage(1);
-    const nextParams = new URLSearchParams(searchParams);
-    if (catId === "ALL") {
-      nextParams.delete("category");
-    } else {
-      nextParams.set("category", catId);
-    }
-    setSearchParams(nextParams);
-  };
-
-  // Immediate input update for ultra-smooth typing responsiveness
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-  };
-
-  // Debounced URL search param synchronization (avoids thrashing router on every key)
+  // Sync state if URL changes externally
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const currentSearchInUrl = searchParams.get("search") || "";
-      const trimmed = searchQuery.trim();
-      if (currentSearchInUrl !== trimmed) {
-        const nextParams = new URLSearchParams(searchParams);
-        if (trimmed) {
-          nextParams.set("search", trimmed);
-        } else {
-          nextParams.delete("search");
-        }
-        setSearchParams(nextParams, { replace: true });
-      }
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery, searchParams, setSearchParams]);
+    if (categoryFromUrl && categoryFromUrl !== selectedCategory) {
+      setSelectedCategory(categoryFromUrl);
+      setCurrentPage(1);
+    }
+  }, [categoryFromUrl]);
 
-  // Reset all filters
-  const resetFilters = () => {
-    setSelectedCategory("ALL");
-    setSearchQuery("");
-    setSelectedPriceRange("ALL");
-    setInstantDispatchOnly(false);
-    setSortBy("featured");
-    setCurrentPage(1);
-    setSearchParams({});
-  };
+  useEffect(() => {
+    if (searchFromUrl !== null && searchFromUrl !== searchQuery) {
+      setSearchQuery(searchFromUrl);
+      setCurrentPage(1);
+    }
+  }, [searchFromUrl]);
 
-  // Filtered and sorted services
+  // Combine DB services with rich fallbacks so catalog is never empty
+  const allServices: Service[] = useMemo(() => {
+    const rawServices: Service[] =
+      servicesData?.data && servicesData.data.length > 0
+        ? servicesData.data
+        : fallbackCatalog;
+
+    return rawServices.map((service) => {
+      const categorySlug =
+        service.category?.slug ||
+        categoriesData?.data?.find((c) => c.id === service.categoryId)?.slug ||
+        service.categoryId;
+
+      return {
+        ...service,
+        image: getServiceImage(service.title, categorySlug, service.image),
+        rating: service.rating || 4.9,
+        reviewsCount: service.reviewsCount || 120,
+      };
+    });
+  }, [servicesData, categoriesData]);
+
+  // Categories list with live counts
+  const categoriesList = useMemo(() => {
+    const countsMap: Record<string, number> = {};
+    allServices.forEach((s) => {
+      const key = s.categoryId || "other";
+      countsMap[key] = (countsMap[key] || 0) + 1;
+    });
+
+    const dbCategories =
+      categoriesData?.data && categoriesData.data.length > 0
+        ? categoriesData.data.map((c) => ({
+            id: c.id,
+            name: c.name,
+            slug: c.slug || c.id,
+            count: countsMap[c.id] || 0,
+          }))
+        : [
+            { id: "mechanic", name: "Engine Diagnostic & Overhaul", slug: "engine-diagnostics", count: 18 },
+            { id: "brakes-clutch-suspension", name: "Brake Service & Suspension", slug: "brakes-clutch-suspension", count: 12 },
+            { id: "car-periodic-maintenance", name: "Periodic Maintenance", slug: "car-periodic-maintenance", count: 16 },
+            { id: "emergency-roadside-sos", name: "Roadside SOS & Battery", slug: "emergency-roadside-sos", count: 14 },
+            { id: "ac-repair", name: "AC Foam Jet & Climate", slug: "ac-repair", count: 10 },
+            { id: "two-wheeler-repair", name: "Two-Wheeler & Bike Care", slug: "two-wheeler-repair", count: 15 },
+            { id: "car-denting-painting", name: "Denting & Panel Painting", slug: "car-denting-painting", count: 9 },
+            { id: "tyres-wheel-care", name: "Tyres & Wheel Care", slug: "tyres-wheel-care", count: 8 },
+            { id: "electrician", name: "Electrical & Inverter", slug: "electrician", count: 11 },
+            { id: "plumbing", name: "Plumbing & Hydraulics", slug: "plumbing", count: 9 },
+          ];
+
+    return [
+      { id: "ALL", name: isHi ? "सभी श्रेणियां" : "All Categories", slug: "all", count: allServices.length },
+      ...dbCategories,
+    ];
+  }, [categoriesData, allServices, isHi]);
+
+  // Filter & Search Logic
   const filteredServices = useMemo(() => {
     return allServices
-      .filter((srv) => {
-        // Category filter
+      .filter((service) => {
+        // Category Filter
         if (selectedCategory !== "ALL") {
-          const matchCatId = srv.categoryId === selectedCategory;
-          const matchSlug =
-            srv.category?.slug?.toLowerCase() === selectedCategory.toLowerCase();
-          const matchName =
-            srv.category?.name?.toLowerCase() === selectedCategory.toLowerCase();
-          if (!matchCatId && !matchSlug && !matchName) return false;
+          const serviceCatId = service.categoryId || "";
+          const serviceCatSlug = service.category?.slug || "";
+          const target = selectedCategory.toLowerCase();
+
+          const matchesCat =
+            serviceCatId.toLowerCase() === target ||
+            serviceCatSlug.toLowerCase() === target ||
+            serviceCatSlug.includes(target) ||
+            target.includes(serviceCatSlug);
+
+          if (!matchesCat) return false;
         }
 
-        // Search filter
+        // Instant Dispatch Filter
+        if (instantDispatchOnly) {
+          const duration = service.durationMinutes || 60;
+          if (duration > 45) return false;
+        }
+
+        // Price Filter
+        if (selectedPriceRange !== "ALL") {
+          const price = service.defaultPrice;
+          if (selectedPriceRange === "UNDER_250" && price >= 250) return false;
+          if (selectedPriceRange === "250_TO_500" && (price < 250 || price > 500)) return false;
+          if (selectedPriceRange === "500_TO_1000" && (price < 500 || price > 1000)) return false;
+          if (selectedPriceRange === "ABOVE_1000" && price <= 1000) return false;
+        }
+
+        // Search Query
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase().trim();
-          const titleMatch = srv.title.toLowerCase().includes(q);
-          const descMatch = (srv.description || "").toLowerCase().includes(q);
-          const catMatch = (srv.category?.name || "").toLowerCase().includes(q);
-          if (!titleMatch && !descMatch && !catMatch) return false;
+          const title = (service.title || "").toLowerCase();
+          const desc = (service.description || "").toLowerCase();
+          const cat = (service.category?.name || "").toLowerCase();
+          if (!title.includes(q) && !desc.includes(q) && !cat.includes(q)) {
+            return false;
+          }
         }
-
-        // Price range filter
-        const price = Number(srv.defaultPrice);
-        if (selectedPriceRange === "UNDER_250" && price >= 250) return false;
-        if (
-          selectedPriceRange === "250_TO_500" &&
-          (price < 250 || price > 500)
-        )
-          return false;
-        if (
-          selectedPriceRange === "500_TO_1000" &&
-          (price < 500 || price > 1000)
-        )
-          return false;
-        if (selectedPriceRange === "ABOVE_1000" && price <= 1000) return false;
-
-        // Instant dispatch filter
-        if (instantDispatchOnly && (srv.durationMinutes || 0) > 40) return false;
 
         return true;
       })
       .sort((a, b) => {
-        const priceA = Number(a.defaultPrice);
-        const priceB = Number(b.defaultPrice);
-        if (sortBy === "price_asc") return priceA - priceB;
-        if (sortBy === "price_desc") return priceB - priceA;
+        if (sortBy === "price_asc") return a.defaultPrice - b.defaultPrice;
+        if (sortBy === "price_desc") return b.defaultPrice - a.defaultPrice;
         if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
-        if (sortBy === "duration")
-          return (a.durationMinutes || 0) - (b.durationMinutes || 0);
-        return 0; // featured default
+        if (sortBy === "duration") return (a.durationMinutes || 45) - (b.durationMinutes || 45);
+        return 0; // Default featured
       });
-  }, [
-    allServices,
-    selectedCategory,
-    searchQuery,
-    selectedPriceRange,
-    instantDispatchOnly,
-    sortBy,
-  ]);
+  }, [allServices, selectedCategory, selectedPriceRange, searchQuery, sortBy, instantDispatchOnly]);
 
-  // Paginated items
-  const totalPages = Math.ceil(filteredServices.length / pageSize) || 1;
+  // Pagination Calculation
+  const totalPages = Math.ceil(filteredServices.length / itemsPerPage) || 1;
   const paginatedServices = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    return filteredServices.slice(startIndex, startIndex + pageSize);
-  }, [filteredServices, currentPage, pageSize]);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredServices.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredServices, currentPage, itemsPerPage]);
+
+  const handleCategoryChange = (catId: string) => {
+    setSelectedCategory(catId);
+    setCurrentPage(1);
+    if (catId === "ALL") {
+      searchParams.delete("category");
+    } else {
+      searchParams.set("category", catId);
+    }
+    setSearchParams(searchParams, { replace: true });
+  };
+
+  const handleBookNow = (service: Service) => {
+    setSelectedService(service);
+    setBookingModalOpen(true);
+  };
+
+  const resetFilters = () => {
+    setSelectedCategory("ALL");
+    setSelectedPriceRange("ALL");
+    setSearchQuery("");
+    setSortBy("featured");
+    setInstantDispatchOnly(false);
+    setCurrentPage(1);
+    setSearchParams({}, { replace: true });
+  };
 
   return (
-    <div className="relative bg-[#080b11] text-slate-100 min-h-screen selection:bg-amber-500 selection:text-slate-950 font-sans relative overflow-x-hidden pb-24">
+    <div className="bg-[#080b11] text-slate-100 min-h-screen selection:bg-amber-500 selection:text-slate-950 font-sans relative overflow-x-hidden pb-24">
       {/* ========================================================= */}
       {/* 00 QUIET, PREMIUM LIGHTING & ATMOSPHERE                   */}
       {/* ========================================================= */}
       {/* Soft, diffuse overhead ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[560px] bg-[radial-gradient(ellipse_70%_50%_at_50%_-15%,rgba(255,255,255,0.04),transparent_70%)] pointer-events-none -z-0" />
-      {/* Micro-warm amber accent whisper */}
-      <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[600px] h-[360px] bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(245,158,11,0.035),transparent_65%)] pointer-events-none -z-0" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[460px] bg-[radial-gradient(ellipse_70%_40%_at_50%_-10%,rgba(245,158,11,0.06),transparent_70%)] pointer-events-none -z-0" />
       {/* Subtle organic grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:40px_40px] opacity-40 pointer-events-none -z-0" />
 
       {/* ========================================================= */}
-      {/* 01 BREADCRUMB & HERO HEADER SECTION                       */}
+      {/* 01 HERO CATALOG HEADER                                    */}
       {/* ========================================================= */}
-      <div className="border-b border-white/[0.06] bg-[#080b11]/70 backdrop-blur-md relative z-10">
-        <div className="max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6">
-          {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs font-normal text-slate-400">
-            <Link to="/" className="hover:text-white transition-colors">
-              {t("common.home")}
-            </Link>
-            <span className="text-slate-600">/</span>
-            <span className="text-slate-200 font-medium">
-              {t("servicesPage.allServices")}
-            </span>
-          </nav>
-
-          {/* Title Badge & Heading Row */}
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            <div className="space-y-4 max-w-2xl">
-              {/* Trust Tag */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300 text-xs font-medium backdrop-blur-md">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+      <section className="relative z-10 pt-10 sm:pt-14 pb-8 sm:pb-10 border-b border-white/[0.06]">
+        <div className="max-w-[1560px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-medium text-slate-300 backdrop-blur-md">
+                <Wrench className="w-3.5 h-3.5 text-amber-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                 <span>
-                  {language === "hi"
-                    ? "सत्यापित मैकेनिक व पेशेवर तकनीशियन फ्लीट"
-                    : "Standardized Doorstep & Emergency Fleet"}
+                  {isHi
+                    ? "ई-कॉमर्स ऑटोमोटिव सर्विस कैटलॉग"
+                    : "Automotive Service Marketplace · Standard Rate Cards"}
                 </span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.12]">
-                {language === "hi" ? "सटीक ऑटोमोटिव व " : "Precision automotive & "}
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-white">
-                  {language === "hi" ? "होम इंजीनियरिंग सेवाएं।" : "home engineering services."}
-                </span>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
+                {isHi ? (
+                  <>
+                    पारदर्शी तय दरों पर{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-white">
+                      सत्यापित सेवाएं
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    Verified automotive services with{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-white">
+                      upfront rates.
+                    </span>
+                  </>
+                )}
               </h1>
 
-              <p className="text-sm sm:text-base text-slate-400 leading-relaxed font-normal">
-                {t("servicesPage.headerSubtitle")}
+              <p className="text-sm sm:text-base text-slate-400 font-normal leading-relaxed">
+                {isHi
+                  ? "इंजन डायग्नोस्टिक्स, ब्रेक ओवरहाल और नियमित रखरखाव। प्रत्येक सर्विस में शामिल कार्य, समय और तय दरें पारदर्शी रूप से देखें।"
+                  : "Compare transparent checklist inclusions, estimated durations, and pre-published pricing. 100% inspection fee credited upon repair."}
               </p>
             </div>
 
-            {/* Glowing Top Search Input */}
-            <div className="w-full lg:w-96">
-              <div className="relative group">
-                <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-amber-400 transition-colors pointer-events-none" />
+            {/* Quick Search Bar */}
+            <div className="w-full md:w-80 lg:w-96">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
-                  placeholder={t("servicesPage.searchPlaceholder")}
                   value={searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className="w-full pl-11 pr-10 py-3.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400/50 shadow-sm transition-all"
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  placeholder={
+                    isHi
+                      ? "सेवा, लक्षण या समस्या खोजें..."
+                      : "Search by service, issue, or keyword..."
+                  }
+                  className="w-full pl-10 pr-9 py-2.5 bg-white/[0.03] border border-white/[0.08] rounded-full text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-400/60 transition-colors"
                 />
                 {searchQuery && (
                   <button
-                    onClick={() => handleSearchChange("")}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-slate-400 hover:text-white transition-colors"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setCurrentPage(1);
+                    }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
@@ -1436,89 +499,91 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
           </div>
 
           {/* Quick Category Chips Strip */}
-          <div className="pt-3 border-t border-white/[0.06] flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none pt-2">
             {quickChips.map((chip) => {
-              const Icon = chip.icon;
-              const isActive = selectedCategory === chip.id;
+              const isSelected =
+                (chip.id === "ALL" && selectedCategory === "ALL") ||
+                selectedCategory.toLowerCase() === chip.id.toLowerCase();
+              const IconComp = chip.icon;
               return (
                 <button
                   key={chip.id}
                   onClick={() => handleCategoryChange(chip.id)}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 ${
-                    isActive
-                      ? "bg-amber-500 text-slate-950 font-semibold shadow-[0_4px_16px_rgba(245,158,11,0.25)] scale-[1.02]"
-                      : "bg-white/[0.03] hover:bg-white/[0.06] text-slate-300 hover:text-white border border-white/[0.08] hover:border-white/[0.16]"
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 ${
+                    isSelected
+                      ? "bg-amber-500 text-slate-950 font-semibold shadow-sm"
+                      : "bg-white/[0.03] text-slate-300 hover:text-white hover:bg-white/[0.06] border border-white/[0.04]"
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-slate-950" : "text-amber-400"}`} />
+                  <IconComp className="w-3.5 h-3.5" />
                   <span>{chip.label}</span>
                 </button>
               );
             })}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ========================================================= */}
       {/* 02 NATURAL METRICS STRIP                                  */}
       {/* ========================================================= */}
-      <div className="max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.02] border border-white/[0.06] grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="space-y-1">
-            <p className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
+      <div className="max-w-[1560px] mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 p-4 rounded-2xl bg-[#0d121c]/50 border border-white/[0.06]">
+          <div className="space-y-0.5">
+            <span className="text-lg sm:text-xl font-bold font-mono text-cyan-400">
               100+ Rates
+            </span>
+            <p className="text-xs text-slate-300 font-medium">
+              {isHi ? "पूर्व-प्रकाशित मानक दरें" : "Pre-Published Rate Cards"}
             </p>
-            <p className="text-xs sm:text-sm text-slate-300 font-medium">
-              {language === "hi" ? "तय डिजिटल रेट कार्ड" : "Pre-Published Rate Cards"}
-            </p>
-            <p className="text-[11px] text-slate-500 font-normal">
-              {language === "hi" ? "कोई छिपा शुल्क नहीं" : "Zero surge markups"}
+            <p className="text-[11px] text-slate-500">
+              {isHi ? "शून्य अप्रत्याशित ओवरचार्जिंग" : "Zero arbitrary hidden fees"}
             </p>
           </div>
 
-          <div className="space-y-1">
-            <p className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
+          <div className="space-y-0.5">
+            <span className="text-lg sm:text-xl font-bold font-mono text-amber-400">
               &lt; 28 min
+            </span>
+            <p className="text-xs text-slate-300 font-medium">
+              {isHi ? "औसत डोरस्टेप डिस्पैच SLA" : "Average Doorstep Dispatch"}
             </p>
-            <p className="text-xs sm:text-sm text-slate-300 font-medium">
-              {language === "hi" ? "औसत रोडसाइड डिस्पैच" : "Roadside Dispatch SLA"}
-            </p>
-            <p className="text-[11px] text-slate-500 font-normal">
-              {language === "hi" ? "लाइव जीपीएस ट्रैकिंग" : "Active GPS telemetry"}
+            <p className="text-[11px] text-slate-500">
+              {isHi ? "निकटतम जीपीएस मैकेनिक मैच" : "Proximity radar routing"}
             </p>
           </div>
 
-          <div className="space-y-1">
-            <p className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
+          <div className="space-y-0.5">
+            <span className="text-lg sm:text-xl font-bold font-mono text-white">
               30-Day SLA
+            </span>
+            <p className="text-xs text-slate-300 font-medium">
+              {isHi ? "लिखित कारीगरी वारंटी" : "Workmanship Guarantee"}
             </p>
-            <p className="text-xs sm:text-sm text-slate-300 font-medium">
-              {language === "hi" ? "लिखित डोरस्टेप वारंटी" : "Doorstep Written Warranty"}
-            </p>
-            <p className="text-[11px] text-slate-500 font-normal">
-              {language === "hi" ? "मुफ्त पुनः समाधान" : "Free senior re-inspection"}
+            <p className="text-[11px] text-slate-500">
+              {isHi ? "पुनरावृत्ति पर फ्री री-विज़िट" : "Free re-inspection on faults"}
             </p>
           </div>
 
-          <div className="space-y-1">
-            <p className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
+          <div className="space-y-0.5">
+            <span className="text-lg sm:text-xl font-bold font-mono text-emerald-400">
               100% KYC
+            </span>
+            <p className="text-xs text-slate-300 font-medium">
+              {isHi ? "पुलिस व आधार सत्यापित फ्लीट" : "Audited Certified Fleet"}
             </p>
-            <p className="text-xs sm:text-sm text-slate-300 font-medium">
-              {language === "hi" ? "पुलिस व आधार सत्यापित" : "Background Audited Fleet"}
-            </p>
-            <p className="text-[11px] text-slate-500 font-normal">
-              {language === "hi" ? "4.85+ स्टार औसत रेटिंग" : "4.85+ average rating"}
+            <p className="text-[11px] text-slate-500">
+              {isHi ? "4.92 औसत रेटिंग" : "4.92 average pro rating"}
             </p>
           </div>
         </div>
       </div>
 
       {/* ========================================================= */}
-      {/* 03 MAIN LAYOUT: FILTERS SIDEBAR + SERVICES GRID           */}
+      {/* 03 TWO-COLUMN DESKTOP MARKETPLACE LAYOUT                  */}
       {/* ========================================================= */}
       <div className="max-w-[1560px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        {/* Mobile Filter Toggle & Sort Header */}
+        {/* Mobile Filter Toggle Button */}
         <div className="lg:hidden flex items-center justify-between pb-4 mb-4 border-b border-white/[0.06]">
           <button
             type="button"
@@ -1539,23 +604,23 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-2.5 py-1 text-xs font-medium text-slate-200 focus:outline-none"
+              className="bg-[#0d121c] border border-white/[0.08] rounded-xl px-2.5 py-1 text-xs font-medium text-slate-200 focus:outline-none"
             >
-              <option value="featured" className="bg-[#080b11]">{t("servicesPage.featured")}</option>
-              <option value="price_asc" className="bg-[#080b11]">{t("servicesPage.priceLowHigh")}</option>
-              <option value="price_desc" className="bg-[#080b11]">{t("servicesPage.priceHighLow")}</option>
-              <option value="rating" className="bg-[#080b11]">{t("servicesPage.rating")}</option>
+              <option value="featured">{t("servicesPage.featured")}</option>
+              <option value="price_asc">{t("servicesPage.priceLowHigh")}</option>
+              <option value="price_desc">{t("servicesPage.priceHighLow")}</option>
+              <option value="rating">{t("servicesPage.rating")}</option>
             </select>
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
           {/* ========================================================= */}
-          {/* LEFT FILTERS SIDEBAR (Desktop) - STICKY                   */}
+          {/* LEFT SIDEBAR: STICKY CATEGORY & BUDGET FILTER BAR        */}
           {/* ========================================================= */}
           <aside className="hidden lg:block w-64 xl:w-72 shrink-0 sticky top-24 self-start z-20">
-            <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-6 max-h-[calc(100vh-7rem)] overflow-y-auto scrollbar-thin">
-              {/* Header & Reset */}
+            <div className="p-6 rounded-3xl bg-[#0d121c]/70 border border-white/[0.06] backdrop-blur-md shadow-xl space-y-6 max-h-[calc(100vh-7.5rem)] overflow-y-auto scrollbar-thin">
+              {/* Filter Header & Reset */}
               <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300">
@@ -1563,13 +628,14 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                   </div>
                   <div>
                     <h3 className="font-semibold text-sm text-white">
-                      {t("common.filters")}
+                      {isHi ? "फिल्टर व श्रेणियां" : "Service Categories"}
                     </h3>
                     <p className="text-[11px] text-slate-400">
-                      {filteredServices.length} {t("servicesPage.servicesCount")}
+                      {filteredServices.length} {isHi ? "सेवाएं उपलब्ध" : "active rates"}
                     </p>
                   </div>
                 </div>
+
                 {(selectedCategory !== "ALL" ||
                   selectedPriceRange !== "ALL" ||
                   instantDispatchOnly ||
@@ -1584,57 +650,59 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 )}
               </div>
 
-              {/* Instant Dispatch Toggle Card */}
+              {/* Instant Proximity Dispatch Toggle Card */}
               <div
                 onClick={() => setInstantDispatchOnly(!instantDispatchOnly)}
-                className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer select-none ${
+                className={`p-3.5 rounded-2xl border transition-all duration-300 cursor-pointer select-none ${
                   instantDispatchOnly
                     ? "bg-emerald-500/10 border-emerald-500/30 shadow-[0_4px_16px_rgba(16,185,129,0.15)]"
-                    : "bg-white/[0.015] border-white/[0.06] hover:border-white/[0.12]"
+                    : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.12]"
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5">
                     <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
                     </span>
                     <div>
                       <p className="text-xs font-semibold text-white">
-                        {t("servicesPage.instantDispatch")}
+                        {isHi ? "< 28 मिनट त्वरित डिस्पैच" : "Rapid < 28 Min Dispatch"}
                       </p>
-                      <p className="text-[11px] text-slate-400">
-                        {t("servicesPage.instantDispatchSub")}
+                      <p className="text-[10px] text-slate-400">
+                        {isHi ? "केवल तत्काल उपलब्ध सेवाएं" : "Immediate triage ready"}
                       </p>
                     </div>
                   </div>
+
                   {/* Switch Pill */}
                   <div
-                    className={`w-9 h-5 rounded-full transition-colors relative flex items-center p-0.5 ${
+                    className={`w-8 h-4.5 rounded-full transition-colors relative flex items-center p-0.5 ${
                       instantDispatchOnly
                         ? "bg-emerald-500 justify-end"
                         : "bg-white/[0.1] justify-start"
                     }`}
                   >
-                    <div className="w-4 h-4 rounded-full bg-white shadow-sm transition-all" />
+                    <div className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" />
                   </div>
                 </div>
               </div>
 
-              {/* All Categories Filter */}
-              <div className="space-y-3 pt-2">
+              {/* Sticky Categories List */}
+              <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
                   <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                    {t("categories.allCategories")}
+                    {isHi ? "ऑटोमोटिव श्रेणियां" : "Automotive Specialties"}
                   </h4>
-                  <span className="text-[10px] font-medium text-slate-500">
+                  <span className="text-[10px] text-slate-500">
                     {categoriesList.length}
                   </span>
                 </div>
-                <div className="space-y-1 max-h-[260px] overflow-y-auto pr-1 scrollbar-thin">
+
+                <div className="space-y-1">
                   {categoriesList.map((cat) => {
-                    const isSelected = selectedCategory === cat.id;
-                    const IconComp = getCategoryIcon(cat.id);
+                    const isSelected = selectedCategory.toLowerCase() === cat.id.toLowerCase();
+                    const IconComp = getCategoryIcon(cat.slug || cat.id);
                     return (
                       <button
                         key={cat.id}
@@ -1668,18 +736,18 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 </div>
               </div>
 
-              {/* Price Filter */}
-              <div className="space-y-3 pt-3 border-t border-white/[0.06]">
+              {/* Price Range Filter */}
+              <div className="space-y-2.5 pt-3 border-t border-white/[0.06]">
                 <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                  {t("servicesPage.priceRange")}
+                  {isHi ? "मूल्य दायरा" : "Price Range"}
                 </h4>
                 <div className="grid grid-cols-1 gap-1.5 text-xs">
                   {[
-                    { id: "ALL", label: t("servicesPage.allPrices") },
-                    { id: "UNDER_250", label: t("servicesPage.under250") },
-                    { id: "250_TO_500", label: t("servicesPage.p250to500") },
-                    { id: "500_TO_1000", label: t("servicesPage.p500to1000") },
-                    { id: "ABOVE_1000", label: t("servicesPage.above1000") },
+                    { id: "ALL", label: isHi ? "सभी दरें" : "All Budgets" },
+                    { id: "UNDER_250", label: isHi ? "₹250 से कम" : "Under ₹250" },
+                    { id: "250_TO_500", label: "₹250 - ₹500" },
+                    { id: "500_TO_1000", label: "₹500 - ₹1,000" },
+                    { id: "ABOVE_1000", label: isHi ? "₹1,000 से अधिक" : "Above ₹1,000" },
                   ].map((range) => {
                     const isSelected = selectedPriceRange === range.id;
                     return (
@@ -1693,7 +761,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-medium transition-all ${
                           isSelected
                             ? "bg-white/[0.06] text-white border border-amber-500/40"
-                            : "bg-white/[0.015] border border-transparent text-slate-400 hover:text-white hover:bg-white/[0.03]"
+                            : "bg-white/[0.02] border border-transparent text-slate-400 hover:text-white hover:bg-white/[0.04]"
                         }`}
                       >
                         <span>{range.label}</span>
@@ -1706,44 +774,43 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 </div>
               </div>
 
-              {/* Guarantee Highlight Card */}
-              <div className="p-4 rounded-2xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] border border-white/[0.06] space-y-2 relative overflow-hidden">
+              {/* Quality Guarantee Box */}
+              <div className="p-4 rounded-2xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] border border-white/[0.06] space-y-2">
                 <div className="flex items-center gap-2 text-xs font-semibold text-white">
                   <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{t("servicesPage.doorstepWarranty")}</span>
+                  <span>{isHi ? "100% विज़िट शुल्क समायोजन" : "Fee Credited On Repair"}</span>
                 </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed font-normal">
-                  {t("servicesPage.warrantyDesc")}
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  {isHi
+                    ? "यदि आप रिपेयर कराते हैं, तो ₹149 का इंस्पेक्शन शुल्क अंतिम बिल में पूरा काट लिया जाता है।"
+                    : "The standard ₹149 doorstep inspection fee is 100% deducted from your final repair invoice."}
                 </p>
-                <div className="pt-2 border-t border-white/[0.04] flex items-center justify-between text-[10px] text-slate-400 font-medium">
-                  <span>✓ 100% Genuine Spares</span>
-                  <span>✓ Verified Pros</span>
+                <div className="pt-2 border-t border-white/[0.04] flex items-center justify-between text-[10px] text-slate-400">
+                  <span>✓ 30-Day SLA</span>
+                  <span>✓ Genuine OEM Parts</span>
                 </div>
               </div>
             </div>
           </aside>
 
           {/* ========================================================= */}
-          {/* RIGHT CONTENT: SERVICE CARDS GRID                        */}
+          {/* RIGHT SIDE: RICH AUTOMOTIVE SERVICE CARDS GRID            */}
           {/* ========================================================= */}
           <main className="flex-1 min-w-0 space-y-6">
-            {/* Top Toolbar: Active Filters & Sort */}
-            <div className="p-4 sm:p-5 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm flex flex-wrap items-center justify-between gap-4">
-              {/* Active Filter Chips */}
+            {/* Toolbar: Result Counts & Sorting */}
+            <div className="p-4 rounded-2xl bg-[#0d121c]/70 border border-white/[0.06] backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-2 flex-wrap text-xs">
                 <span className="text-slate-400 font-medium">
-                  {t("servicesPage.showing")}{" "}
+                  {isHi ? "प्रदर्शित सेवाएं:" : "Showing"}{" "}
                   <strong className="text-white font-semibold">
                     {filteredServices.length}
                   </strong>{" "}
-                  {t("servicesPage.servicesCount")}
+                  {isHi ? "सेवाएं" : "services"}
                 </span>
 
                 {selectedCategory !== "ALL" && (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] text-slate-200 border border-white/[0.08] text-[11px] font-medium">
-                    {t("servicesPage.category")}:{" "}
-                    {tc(categoriesList.find((c) => c.id === selectedCategory)?.name ||
-                      selectedCategory)}
+                    {tc(categoriesList.find((c) => c.id === selectedCategory)?.name || selectedCategory)}
                     <button
                       onClick={() => handleCategoryChange("ALL")}
                       className="hover:text-red-400 ml-0.5"
@@ -1755,7 +822,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
 
                 {selectedPriceRange !== "ALL" && (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] text-slate-200 border border-white/[0.08] text-[11px] font-medium">
-                    {t("servicesPage.priceRange")}: {selectedPriceRange.replace(/_/g, " ")}
+                    {selectedPriceRange.replace(/_/g, " ")}
                     <button
                       onClick={() => setSelectedPriceRange("ALL")}
                       className="hover:text-red-400 ml-0.5"
@@ -1768,7 +835,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 {instantDispatchOnly && (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-medium">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    {t("servicesPage.instantDispatch")}
+                    &lt; 28 Min Rapid
                     <button
                       onClick={() => setInstantDispatchOnly(false)}
                       className="hover:text-red-400 ml-0.5"
@@ -1779,31 +846,30 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 )}
               </div>
 
-              {/* Desktop Sort Dropdown */}
+              {/* Desktop Sort Options */}
               <div className="hidden lg:flex items-center gap-2 text-xs">
-                <span className="text-slate-400 font-medium">
-                  {t("common.sort")}:
-                </span>
+                <span className="text-slate-400 font-medium">{t("common.sort")}:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-1.5 text-xs font-medium text-slate-200 focus:outline-none focus:border-amber-400/50 transition-colors"
+                  className="bg-[#080b11] border border-white/[0.08] rounded-xl px-3 py-1.5 text-xs font-medium text-slate-200 focus:outline-none focus:border-amber-400/50 transition-colors"
                 >
-                  <option value="featured" className="bg-[#080b11]">{t("servicesPage.featured")}</option>
-                  <option value="price_asc" className="bg-[#080b11]">{t("servicesPage.priceLowHigh")}</option>
-                  <option value="price_desc" className="bg-[#080b11]">{t("servicesPage.priceHighLow")}</option>
-                  <option value="rating" className="bg-[#080b11]">{t("servicesPage.rating")}</option>
+                  <option value="featured">{t("servicesPage.featured")}</option>
+                  <option value="price_asc">{t("servicesPage.priceLowHigh")}</option>
+                  <option value="price_desc">{t("servicesPage.priceHighLow")}</option>
+                  <option value="rating">{t("servicesPage.rating")}</option>
+                  <option value="duration">Fastest Duration</option>
                 </select>
               </div>
             </div>
 
-            {/* Service Cards Grid (or Loading / Error / Empty States) */}
+            {/* Services Grid States */}
             {servicesLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div
                     key={i}
-                    className="p-5 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-4"
+                    className="p-5 rounded-3xl bg-[#0d121c]/50 border border-white/[0.06] space-y-4"
                   >
                     <Skeleton className="h-44 w-full rounded-2xl bg-white/[0.03]" />
                     <Skeleton className="h-5 w-3/4 bg-white/[0.03]" />
@@ -1815,17 +881,16 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                   </div>
                 ))}
               </div>
-            ) : (servicesError && allServices.length === 0) ? (
-              /* Error State */
-              <div className="p-12 text-center rounded-3xl bg-white/[0.02] border border-rose-500/20 shadow-sm space-y-4">
+            ) : servicesError && allServices.length === 0 ? (
+              <div className="p-12 text-center rounded-3xl bg-[#0d121c]/50 border border-rose-500/20 space-y-4">
                 <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto">
                   <AlertCircle className="w-7 h-7" />
                 </div>
                 <h3 className="text-lg font-semibold text-white">
-                  Unable to load services right now
+                  Unable to connect to service catalog
                 </h3>
                 <p className="text-xs text-slate-400 max-w-sm mx-auto font-normal">
-                  There was an issue connecting to the service catalog. Please verify your connection or try again.
+                  Check network connection or click retry to reload standardized rate cards.
                 </p>
                 <button
                   type="button"
@@ -1836,347 +901,250 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onOpenAuthModal }) =
                 </button>
               </div>
             ) : paginatedServices.length > 0 ? (
-              /* Active Services Grid - Proportional 3-Column Grid */
+              /* Rich Automotive Service Cards (E-Commerce Style with Checklist & Fast Book) */
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {paginatedServices.map((service) => (
-                  <div
-                    key={service.id}
-                    className="p-4 sm:p-5 rounded-3xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 shadow-sm flex flex-col justify-between group relative overflow-hidden"
-                  >
-                    <div>
-                      {/* Card Thumbnail Image with Floating Badges */}
-                      <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-[#0d121c] mb-4">
-                        <img
-                          src={service.image || DEFAULT_FALLBACK_IMAGE}
-                          alt={service.title}
-                          onError={handleImageError}
-                          loading="lazy"
-                          decoding="async"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                        />
-                        {/* Dark Vignette Overlay for Crisp Contrast */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#080b11]/90 via-[#080b11]/20 to-transparent pointer-events-none" />
+                {paginatedServices.map((service) => {
+                  const checklist = getServiceChecklist(service);
+                  return (
+                    <div
+                      key={service.id}
+                      className="p-5 rounded-3xl bg-[#0d121c]/70 border border-white/[0.06] hover:border-white/[0.16] hover:-translate-y-1.5 transition-all duration-300 shadow-sm hover:shadow-[0_12px_36px_rgba(0,0,0,0.6)] flex flex-col justify-between group relative overflow-hidden"
+                    >
+                      <div>
+                        {/* Service Card Thumbnail */}
+                        <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-[#080b11] mb-4">
+                          <img
+                            src={service.image || DEFAULT_FALLBACK_IMAGE}
+                            alt={service.title}
+                            onError={handleImageError}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#080b11]/90 via-[#080b11]/25 to-transparent pointer-events-none" />
 
-                        {/* Top-Left Verified Badge */}
-                        <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-medium text-white flex items-center gap-1.5 shadow-sm">
-                          <Shield className="w-3 h-3 text-amber-400" />
-                          <span>Verified Pro</span>
-                        </div>
+                          {/* Top-Left Verified Pro Badge */}
+                          <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-medium text-white flex items-center gap-1.5 shadow-sm">
+                            <ShieldCheck className="w-3 h-3 text-amber-400" />
+                            <span>100% KYC</span>
+                          </div>
 
-                        {/* Top-Right Glass Rating Pill */}
-                        <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-semibold text-white flex items-center gap-1 shadow-sm">
-                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                          <span>{service.rating || 4.9}</span>
-                          <span className="text-slate-400 font-normal text-[10px]">
-                            ({service.reviewsCount || 120})
-                          </span>
-                        </div>
+                          {/* Top-Right Rating Pill */}
+                          <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-semibold text-white flex items-center gap-1 shadow-sm">
+                            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                            <span>{service.rating || 4.9}</span>
+                            <span className="text-slate-400 font-normal text-[10px]">
+                              ({service.reviewsCount || 120})
+                            </span>
+                          </div>
 
-                        {/* Bottom Floating Info Over Image */}
-                        <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5">
-                          <span className="text-[10px] font-medium uppercase tracking-wide text-white bg-black/60 backdrop-blur-md border border-white/10 px-2.5 py-0.5 rounded-full shadow-sm truncate max-w-[70%]">
-                            {tc(service.category?.name || "Service")}
-                          </span>
-                          <div className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] text-slate-300 font-medium flex items-center gap-1 border border-white/10 shrink-0">
-                            <Clock className="w-3 h-3 text-slate-400" />
-                            <span>{service.durationMinutes || 45} {t("common.mins")}</span>
+                          {/* Bottom Duration Badge Over Image */}
+                          <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5">
+                            <span className="text-[10px] font-medium uppercase tracking-wide text-white bg-black/60 backdrop-blur-md border border-white/10 px-2.5 py-0.5 rounded-full shadow-sm truncate max-w-[65%]">
+                              {tc(service.category?.name || "Automotive")}
+                            </span>
+                            <div className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] text-slate-300 font-medium flex items-center gap-1 border border-white/10 shrink-0">
+                              <Clock className="w-3 h-3 text-cyan-400" />
+                              <span>{service.durationMinutes || 45} mins</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Title */}
-                      <Link
-                        to={`/services/${service.id}`}
-                        className="block text-base font-semibold text-white group-hover:text-amber-400 transition-colors leading-snug tracking-tight line-clamp-1"
-                      >
-                        {ts(service.title)}
-                      </Link>
+                        {/* Service Title */}
+                        <Link
+                          to={`/services/${service.id}`}
+                          className="block text-base font-semibold text-white group-hover:text-amber-400 transition-colors leading-snug tracking-tight line-clamp-1"
+                        >
+                          {ts(service.title)}
+                        </Link>
 
-                      {/* Description */}
-                      <p className="text-xs sm:text-sm text-slate-400 mt-1.5 line-clamp-2 leading-relaxed font-normal">
-                        {service.description}
-                      </p>
+                        {/* Description */}
+                        <p className="text-xs text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                          {service.description}
+                        </p>
 
-                      {/* Perks Check Row */}
-                      <div className="flex items-center justify-between gap-2 mt-4 pt-3 border-t border-white/[0.04] text-[11px] text-slate-400">
-                        <span className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                          Doorstep
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                          30D Warranty
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                          OEM Spares
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Card Footer: Price & Book CTA */}
-                    <div className="pt-4 mt-4 border-t border-white/[0.06] flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <span className="text-[10px] uppercase font-medium tracking-wider text-slate-500 block">
-                          {t("categories.starts")}
-                        </span>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-xl sm:text-2xl font-black tracking-tight text-white font-mono">
-                            ₹{service.defaultPrice}
+                        {/* Rich E-Commerce Included Checklist */}
+                        <div className="mt-3.5 pt-3 border-t border-white/[0.04] space-y-1.5 bg-white/[0.015] p-3 rounded-2xl border border-white/[0.03]">
+                          <span className="text-[10px] uppercase font-mono font-semibold tracking-wider text-slate-400 block">
+                            {isHi ? "शामिल कार्य (What's Included):" : "Included in this Service:"}
                           </span>
+                          <ul className="space-y-1">
+                            {checklist.map((item, idx) => (
+                              <li key={idx} className="flex items-center gap-2 text-[11px] text-slate-300 truncate">
+                                <Check className="w-3 h-3 text-emerald-400 shrink-0" />
+                                <span className="truncate">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedService(service);
-                          setBookingModalOpen(true);
-                        }}
-                        className="inline-flex flex-row items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs sm:text-sm shadow-[0_4px_16px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_24px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap shrink-0"
-                      >
-                        <span>{t("common.bookNow")}</span>
-                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                      </button>
+
+                      {/* Card Footer: Transparent Price & 'Book Now' Button */}
+                      <div className="pt-4 mt-4 border-t border-white/[0.06] flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <span className="text-[10px] uppercase font-medium tracking-wider text-slate-500 block">
+                            {isHi ? "तय रेट (जीएसटी सहित)" : "Upfront Rate"}
+                          </span>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-xl font-bold font-mono text-white">
+                              ₹{service.defaultPrice}
+                            </span>
+                            <span className="text-[10px] text-emerald-400 font-medium hidden sm:inline">
+                              · 100% offset
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <Link
+                            to={`/services/${service.id}`}
+                            className="hidden xl:inline-flex text-xs text-slate-400 hover:text-white px-2.5 py-1.5 rounded-full hover:bg-white/[0.04] transition-colors"
+                          >
+                            Details
+                          </Link>
+
+                          {/* Generous Padding on Pill Button to Prevent Text Clipping */}
+                          <button
+                            type="button"
+                            onClick={() => handleBookNow(service)}
+                            className="inline-flex items-center justify-center gap-1.5 px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs tracking-wide shadow-[0_4px_16px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap shrink-0"
+                          >
+                            <span>{t("common.bookNow")}</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
-              /* Empty State */
-              <div className="p-12 text-center rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/[0.04] text-slate-400 flex items-center justify-center mx-auto border border-white/[0.08]">
-                  <Search className="w-6 h-6 text-amber-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-white">
-                  {t("servicesPage.noServicesMatch")}
+              /* Empty Search / Filter State */
+              <div className="p-12 text-center rounded-3xl bg-[#0d121c]/50 border border-white/[0.06] space-y-4">
+                <Search className="w-10 h-10 text-slate-500 mx-auto" />
+                <h3 className="text-base sm:text-lg font-semibold text-white">
+                  {t("servicesPage.noResults")}
                 </h3>
-                <p className="text-xs text-slate-400 max-w-sm mx-auto font-normal">
-                  {t("servicesPage.adjustSearch")}
+                <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+                  {t("servicesPage.noResultsDesc")}
                 </p>
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white border border-white/[0.1] text-xs font-medium transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-all shadow-[0_4px_16px_rgba(245,158,11,0.25)]"
                 >
-                  <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
-                  <span>{t("common.clear")}</span>
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>{t("servicesPage.clearFilters")}</span>
                 </button>
               </div>
             )}
 
-            {/* ========================================================= */}
-            {/* 04 PAGINATION CONTROLS                                    */}
-            {/* ========================================================= */}
-            {filteredServices.length > pageSize && (
-              <div className="p-4 sm:p-5 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-normal text-slate-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                  {language === "hi" ? (
-                    <span>
-                      कुल <span className="font-semibold text-white">{filteredServices.length}</span> सेवाओं में से{" "}
-                      <span className="font-semibold text-amber-400">
-                        {(currentPage - 1) * pageSize + 1} से {Math.min(currentPage * pageSize, filteredServices.length)}
-                      </span>
-                    </span>
-                  ) : (
-                    <span>
-                      Showing{" "}
-                      <span className="font-semibold text-amber-400">
-                        {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, filteredServices.length)}
-                      </span>{" "}
-                      of{" "}
-                      <span className="font-semibold text-white">
-                        {filteredServices.length}
-                      </span>{" "}
-                      services
-                    </span>
-                  )}
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="pt-6 flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className="p-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                <div className="flex items-center gap-1.5 text-xs font-mono">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                        currentPage === page
+                          ? "bg-amber-500 text-slate-950 font-bold shadow-sm"
+                          : "bg-white/[0.03] text-slate-300 hover:bg-white/[0.06] border border-white/[0.04]"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    className="p-2 rounded-xl border border-white/[0.08] bg-white/[0.02] text-slate-300 disabled:opacity-30 hover:bg-white/[0.06] transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-
-                  {[...Array(totalPages)].map((_, i) => {
-                    const pageNum = i + 1;
-                    const isActive = pageNum === currentPage;
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`w-8 h-8 rounded-xl text-xs font-semibold transition-all ${
-                          isActive
-                            ? "bg-amber-500 text-slate-950 shadow-[0_4px_16px_rgba(245,158,11,0.25)]"
-                            : "border border-white/[0.08] bg-white/[0.02] text-slate-400 hover:bg-white/[0.06] hover:text-white"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    disabled={currentPage === totalPages}
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
-                    }
-                    className="p-2 rounded-xl border border-white/[0.08] bg-white/[0.02] text-slate-300 disabled:opacity-30 hover:bg-white/[0.06] transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  className="p-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
             )}
           </main>
         </div>
       </div>
 
-      {/* Mobile Filters Drawer */}
+      {/* ========================================================= */}
+      {/* MOBILE FILTER MODAL DRAWER                                */}
+      {/* ========================================================= */}
       {mobileFilterOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm lg:hidden">
-          <div className="w-full max-w-xs h-full bg-[#080b11] p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-white/[0.08]">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4 text-amber-400" />
-                  <h3 className="font-semibold text-base text-white">
-                    Filters
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setMobileFilterOpen(false)}
-                  className="p-1.5 rounded-full hover:bg-white/[0.06] text-slate-400 transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Instant Dispatch Toggle */}
-              <div
-                onClick={() => setInstantDispatchOnly(!instantDispatchOnly)}
-                className={`p-3 rounded-2xl border transition-all cursor-pointer ${
-                  instantDispatchOnly
-                    ? "bg-emerald-500/10 border-emerald-500/30"
-                    : "bg-white/[0.02] border-white/[0.06]"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-xs font-semibold text-white">
-                      {t("servicesPage.instantDispatch")}
-                    </span>
-                  </div>
-                  <div
-                    className={`w-8 h-4 rounded-full relative flex items-center p-0.5 ${
-                      instantDispatchOnly ? "bg-emerald-500 justify-end" : "bg-white/[0.1] justify-start"
-                    }`}
-                  >
-                    <div className="w-3 h-3 rounded-full bg-white shadow-xs" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile Categories */}
-              <div className="space-y-2">
-                <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                  Category
-                </h4>
-                <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
-                  {categoriesList.map((cat) => {
-                    const isSelected = selectedCategory === cat.id;
-                    const IconComp = getCategoryIcon(cat.id);
-                    return (
-                      <button
-                        key={cat.id}
-                        onClick={() => {
-                          handleCategoryChange(cat.id);
-                          setMobileFilterOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                          isSelected
-                            ? "bg-amber-500 text-slate-950 font-semibold shadow-md"
-                            : "text-slate-300 bg-white/[0.02] border border-white/[0.06]"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
-                          <IconComp className={`w-3.5 h-3.5 ${isSelected ? "text-slate-950" : "text-amber-400"}`} />
-                          <span className="truncate">{tc(cat.name)}</span>
-                        </div>
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${isSelected ? "bg-black/20 text-slate-950" : "text-slate-500"}`}>
-                          {cat.count}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Mobile Price Filter */}
-              <div className="space-y-2 pt-3 border-t border-white/[0.08]">
-                <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                  Price
-                </h4>
-                <div className="grid grid-cols-1 gap-1 text-xs">
-                  {[
-                    { id: "ALL", label: "All Prices" },
-                    { id: "UNDER_250", label: "Under ₹250" },
-                    { id: "250_TO_500", label: "₹250 to ₹500" },
-                    { id: "500_TO_1000", label: "₹500 to ₹1,000" },
-                    { id: "ABOVE_1000", label: "₹1,000 and above" },
-                  ].map((range) => {
-                    const isSelected = selectedPriceRange === range.id;
-                    return (
-                      <button
-                        key={range.id}
-                        onClick={() => {
-                          setSelectedPriceRange(range.id);
-                          setCurrentPage(1);
-                        }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-left transition-all ${
-                          isSelected
-                            ? "bg-white/[0.08] text-white border border-amber-500/40"
-                            : "bg-white/[0.02] border border-white/[0.06] text-slate-400"
-                        }`}
-                      >
-                        <span>{range.label}</span>
-                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-white/[0.08] space-y-2">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-end lg:hidden">
+          <div className="w-full max-w-xs bg-[#080b11] h-full p-6 border-l border-white/[0.08] overflow-y-auto space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
+              <h3 className="font-semibold text-sm text-white">
+                {t("common.filters")}
+              </h3>
               <button
                 type="button"
                 onClick={() => setMobileFilterOpen(false)}
-                className="w-full py-3 rounded-full font-semibold text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-[0_4px_16px_rgba(245,158,11,0.25)] transition-all"
+                className="p-1 rounded-full text-slate-400 hover:text-white"
               >
-                Apply Filters
+                <X className="w-5 h-5" />
               </button>
+            </div>
+
+            {/* Mobile Categories */}
+            <div className="space-y-2">
+              <h4 className="text-xs uppercase font-mono font-semibold text-slate-400">
+                Categories
+              </h4>
+              <div className="space-y-1">
+                {categoriesList.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      handleCategoryChange(cat.id);
+                      setMobileFilterOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between ${
+                      selectedCategory === cat.id
+                        ? "bg-amber-500 text-slate-950 font-semibold"
+                        : "text-slate-300 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <span>{tc(cat.name)}</span>
+                    <span className="text-[10px] opacity-75">{cat.count}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile Reset Action */}
+            <div className="pt-4 border-t border-white/[0.06]">
               <button
                 type="button"
                 onClick={() => {
                   resetFilters();
                   setMobileFilterOpen(false);
                 }}
-                className="w-full py-2.5 rounded-full text-xs font-medium bg-white/[0.04] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
+                className="w-full py-2.5 rounded-full bg-white/[0.06] border border-white/[0.1] text-xs font-semibold text-slate-200"
               >
-                Reset All
+                Reset All Filters
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Booking Modal */}
+      {/* Booking Dialog Modal */}
       <BookingModal
         isOpen={bookingModalOpen}
         onClose={() => setBookingModalOpen(false)}

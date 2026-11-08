@@ -23,6 +23,12 @@ import {
   Shield,
   Layers,
   ArrowUpRight,
+  Calendar,
+  PackageCheck,
+  Cpu,
+  Gauge,
+  Sliders,
+  DollarSign,
 } from "lucide-react";
 import {
   useGetServiceByIdQuery,
@@ -30,6 +36,7 @@ import {
 } from "../features/services/api/servicesApi";
 import { useGetTechniciansQuery } from "../features/technicians/api/techniciansApi";
 import { useLanguage } from "../context/LanguageContext";
+import { useLocation } from "../context/LocationContext";
 import { Service } from "../types/api.types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { BookingModal } from "../features/bookings/components/BookingModal";
@@ -46,9 +53,14 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
   const navigate = useNavigate();
   const { t, tc, ts, language } = useLanguage();
   const isHi = language === "hi";
+  const { location, detectCurrentLocation, isLoadingGPS } = useLocation();
 
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+  // Scheduling states for the sticky summary box
+  const [selectedDate, setSelectedDate] = useState<"today" | "tomorrow" | "dayAfter">("today");
+  const [selectedSlot, setSelectedSlot] = useState<string>("urgent");
 
   // Queries
   const { data: serviceByIdData, isLoading: srvLoading } = useGetServiceByIdQuery(
@@ -87,90 +99,173 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
     // Default rich fallback matching slug
     return {
       id: slug || "srv-featured",
-      title: "Split AC Deep Foam Jet Service & Gas Check",
-      categoryId: "ac-repair",
-      category: { id: "ac-repair", name: "AC Repair & Service", slug: "ac-repair" },
-      defaultPrice: 549,
+      title: "Comprehensive Car Inspection & OBD-II Diagnostics",
+      categoryId: "mechanic",
+      category: { id: "mechanic", name: "Auto & Garage Repair", slug: "mechanic" },
+      defaultPrice: 899,
       description:
-        "Comprehensive deep foam jet wash designed to remove accumulated indoor dirt, restore cooling airflow, and sterilize coils using eco-friendly antibacterial agents.",
-      durationMinutes: 45,
-      rating: 4.9,
-      reviewsCount: 184,
-      image: getServiceImage("Split AC Deep Foam Jet Service & Gas Check", "ac-repair"),
+        "40-point vehicle diagnostic including live OBD-II CAN-bus scanner error triage, battery voltage health, brake pad wear inspection, coolant density, and comprehensive digital roadworthiness report.",
+      durationMinutes: 60,
+      rating: 4.95,
+      reviewsCount: 236,
+      image: getServiceImage("Comprehensive Car Inspection & OBD-II Diagnostics", "mechanic"),
     };
   }, [serviceByIdData, allServicesData, slug]);
 
-  // Included work items
-  const includedWork = [
-    isHi
-      ? "इनडोर इवेपोरेटर कॉइल और ब्लोअर के लिए हाई-प्रेशर जेट वॉश"
-      : "High-pressure jet pump wash for indoor evaporator coil and blower",
-    isHi
-      ? "आउटडोर कंडेनसर फिन्स की डीप क्लीनिंग व डस्ट ब्लो-आउट"
-      : "Outdoor unit condenser fin cleaning and dust blow-out",
-    isHi
-      ? "लीकप्रूफ ड्रेनेज ट्रे इंस्पेक्शन और एंटीबैक्टीरियल फ्लश"
-      : "Leakproof drainage tray inspection and antibacterial flush",
-    isHi
-      ? "ऑपरेटिंग गैस प्रेशर व कंप्रेसर लोड एम्पिएरेज डायग्नोस्टिक्स"
-      : "Operating refrigerant pressure & compressor load amperage testing",
-    isHi
-      ? "एंटीमाइक्रोबियल प्रोटेक्टिव स्प्रे व एयर फिल्टर सैनिटाइजेशन"
-      : "Air filter wash and antimicrobial protective spray coating",
-    isHi
-      ? "सर्विस के बाद डिजिटल थर्मामीटर से कूलिंग परफॉरमेंस टेस्ट"
-      : "Post-service cooling performance temperature check with client signoff",
-  ];
+  // Contextual Scope of Work: What's Included
+  const includedWork = useMemo(() => {
+    const title = (service.title || "").toLowerCase();
+    if (title.includes("ac") || title.includes("foam")) {
+      return [
+        isHi ? "इनडोर इवेपोरेटर कॉइल और ब्लोअर के लिए हाई-प्रेशर जेट वॉश" : "High-pressure jet pump wash for indoor evaporator coil and blower",
+        isHi ? "आउटडोर कंडेनसर फिन्स की डीप क्लीनिंग व डस्ट ब्लो-आउट" : "Outdoor condenser fin deep foam wash & dust blow-out",
+        isHi ? "लीकप्रूफ ड्रेनेज ट्रे इंस्पेक्शन और एंटीबैक्टीरियल फ्लश" : "Drainage tray overflow check & antibacterial sanitizer flush",
+        isHi ? "ऑपरेटिंग गैस प्रेशर व कंप्रेसर लोड एम्पिएरेज डायग्नोस्टिक्स" : "Operating refrigerant pressure & compressor load amperage testing",
+        isHi ? "एंटीमाइक्रोबियल प्रोटेक्टिव स्प्रे व एयर फिल्टर सैनिटाइजेशन" : "Air filter cleaning & antimicrobial protective spray coating",
+        isHi ? "सर्विस के बाद डिजिटल थर्मामीटर से कूलिंग परफॉरमेंस टेस्ट" : "Post-service cooling temperature drop test with client signoff",
+      ];
+    }
+    if (title.includes("brake") || title.includes("pad")) {
+      return [
+        isHi ? "फ्रंट व रियर दोनों पहियों के ब्रेक पैड की मोटाई जांच" : "Brake pad thickness inspection on front and rear wheels",
+        isHi ? "डिस्क रोटर रन-आउट व ग्रूव स्कोरिंग डायग्नोस्टिक टेस्ट" : "Disc rotor run-out and surface scoring dial gauge test",
+        isHi ? "कैलिपर स्लाइड पिन की क्लीनिंग व हाई-टेम्परेचर सिलिकॉन ग्रीसिंग" : "Caliper slide pin degreasing and high-temp silicone lubrication",
+        isHi ? "ब्रेक फ्लुइड (DOT 4) की नमी जांच व टॉप-अप" : "DOT 4 brake fluid moisture percentage test and reservoir top-up",
+        isHi ? "हाइड्रोलिक लाइन से हवा निकालना (Brake Bleeding)" : "Hydraulic brake bleeding to eliminate pedal sponginess",
+        isHi ? "हाईवे स्पीड पर ब्रेकिंग स्टॉपिंग डिस्टेंस टेस्ट" : "Post-installation road test & emergency stopping calibration",
+      ];
+    }
+    if (title.includes("battery") || title.includes("jumpstart")) {
+      return [
+        isHi ? "हाई-कैपेसिटी हेवी गेज बूस्टर केबल्स से त्वरित जंपस्टार्ट" : "Heavy-duty 1000A booster cable hookup & emergency start",
+        isHi ? "डिजिटल मल्टीमीटर से अल्टरनेटर डायोड आउटपुट चार्जिंग टेस्ट" : "Digital multimeter test of alternator charging voltage (13.8V - 14.4V)",
+        isHi ? "बैटरी टर्मिनल से सल्फेट व जंग की केमिकल क्लीनिंग" : "Lead terminal corrosion cleanup and anti-oxidant grease coat",
+        isHi ? "बैटरी क्रैंकिंग एम्प्स (CCA) और हेल्थ प्रतिशत रिपोर्ट" : "Cold Cranking Amps (CCA) electronic load test & battery state-of-health",
+        isHi ? "पैरासिटिक करंट ड्रेन (Dark Current) का रिसाव परीक्षण" : "Parasitic current drain detection to identify overnight battery drain",
+      ];
+    }
+    return [
+      isHi ? "40-पॉइंट कम्प्यूटरीकृत OBD-II डायग्नोस्टिक स्कैन" : "40-point computerized OBD-II CAN-bus ECU health scan",
+      isHi ? "इंजन ऑयल लेवल, विस्कोसिटी व बर्न कंडीशन एनालिसिस" : "Engine oil level, viscosity breakdown & burnt residue analysis",
+      isHi ? "कूलेंट डेंसिटी, ब्रेक फ्लुइड व बैटरी चार्ज टेस्टिंग" : "Coolant density, brake fluid moisture & battery cranking test",
+      isHi ? "टायर प्रेशर, ट्रेड डेप्थ व सस्पेंशन बुश इंस्पेक्शन" : "Tyre tread depth audit, pressure check & suspension bushing check",
+      isHi ? "लाइव सेंसर टेलीमेट्री लॉग व चेक-इंजन एरर कोड रिसेट" : "Live sensor telemetry log & check-engine light DTC code clearing",
+      isHi ? "डिजिटल रोडवर्थीनेस इंस्पेक्शन रिपोर्ट ग्राहक डैशबोर्ड पर" : "Comprehensive digital health report delivered directly to your portal",
+    ];
+  }, [service.title, isHi]);
 
-  const excludedWork = [
-    isHi
-      ? "कॉपर पाइपिंग एक्सटेंशन (आवश्यकता पड़ने पर अलग कोटेशन)"
-      : "Major copper piping extension (quoted separately if required)",
-    isHi
-      ? "कंप्रेसर रिप्लेसमेंट या आउटडोर यूनिट वॉल ब्रैकेट रीमाउंटिंग"
-      : "Compressor replacement or outdoor unit wall bracket remounting",
-    isHi
-      ? "स्पेयर पार्ट्स (कैपेसिटर, पीसीबी) तय रेट कार्ड के अनुसार देय होंगे"
-      : "Spare part replacements (capacitors, PCBs) billed as per published rate card",
-  ];
+  // Contextual Scope of Work: What's Excluded
+  const excludedWork = useMemo(() => {
+    return [
+      isHi ? "अनधिकृत या बिना कोटेशन वाले अतिरिक्त स्पेयर पार्ट्स" : "Unquoted replacement parts (quoted and approved upfront)",
+      isHi ? "मेजर इंजन ओवरहाल या ट्रांसमिशन ड्रॉपिंग (गैराज में आवश्यक)" : "Major engine rebuild or transmission removal (requires hoist at garage)",
+      isHi ? "अनधिकृत ऑफ-प्लेटफॉर्म नकद मांग (सख्त रूप से प्रतिबंधित)" : "Off-platform unitemized cash charges (strictly prohibited)",
+      isHi ? "थर्ड-पार्टी एक्सीडेंट क्लेम लीगल डॉक्यूमेंटेशन" : "Third-party motor insurance claim legal liaison work",
+    ];
+  }, [isHi]);
 
-  // Specific FAQs for service
+  // Contextual Parts & Consumables Used (Transparency Highlight)
+  const partsUsed = useMemo(() => {
+    const title = (service.title || "").toLowerCase();
+    if (title.includes("ac") || title.includes("foam")) {
+      return [
+        {
+          name: "R134a / R32 Refrigerant",
+          spec: "99.9% High Purity Gas",
+          brand: "Chemours / Floron OEM",
+          warranty: "12 Months Cooling SLA",
+        },
+        {
+          name: "Antibacterial Coil Foam",
+          spec: "Bio-Enzymatic Degreaser",
+          brand: "3M Professional Automotive",
+          warranty: "Non-Corrosive Fin Seal",
+        },
+        {
+          name: "Microfiber Cabin Filter",
+          spec: "PM 2.5 Active Carbon Layer",
+          brand: "Bosch / Mahle",
+          warranty: "10,000 km Airflow Guarantee",
+        },
+      ];
+    }
+    if (title.includes("brake") || title.includes("pad")) {
+      return [
+        {
+          name: "Ceramic Disc Brake Pads",
+          spec: "Low-Dust High-Friction Matrix",
+          brand: "Bosch / Brembo / TVS OEM",
+          warranty: "15,000 km Wear Warranty",
+        },
+        {
+          name: "Synthetic Caliper Pin Grease",
+          spec: "High-Temp Silicone Lubricant",
+          brand: "Liqui Moly / Würth",
+          warranty: "Prevents Caliper Seizing",
+        },
+        {
+          name: "DOT 4 Hydraulic Brake Fluid",
+          spec: "Dry Boiling Point > 260°C",
+          brand: "Castrol / Bosch DOT4",
+          warranty: "Sealed Factory Container",
+        },
+      ];
+    }
+    return [
+      {
+        name: "OBD-II CAN-Bus Telemetry Scanner",
+        spec: "ISO 15765-4 Diagnostic Rig",
+        brand: "Launch / Autel Diagnostic",
+        warranty: "Calibrated Hardware",
+      },
+      {
+        name: "Synthetic Engine Lube (if chosen)",
+        spec: "API SN Plus / ACEA A3/B4",
+        brand: "Mobil 1 / Castrol Magnatec",
+        warranty: "10,000 km Engine Protection",
+      },
+      {
+        name: "Spin-on Oil Filter Element",
+        spec: "Synthetic Blend Pleated Media",
+        brand: "Bosch / Purolator OEM",
+        warranty: "100% Anti-Drainback Valve",
+      },
+    ];
+  }, [service.title]);
+
+  // FAQs
   const faqs = [
     {
       q: isHi
-        ? "बुकिंग के कितनी देर में मैकेनिक मेरे पते पर पहुंचेगा?"
-        : "How soon can a technician arrive at my location?",
+        ? "बुकिंग के कितनी देर में मैकेनिक मेरे स्थान पर पहुंचेगा?"
+        : "How soon does the technician arrive after booking?",
       a: isHi
         ? "हमारा ऑटो-डिस्पैच सिस्टम आपके नजदीकी प्रमाणित तकनीशियन को असाइन करता है। औसत आगमन समय 25 से 35 मिनट के बीच रहता है।"
-        : "Our smart telemetry dispatch system automatically routes your booking to the nearest verified technician in your sector. The average arrival time is 25 to 35 minutes.",
+        : "Our smart telemetry dispatch radar routes your booking to the nearest verified technician in your sector with an average doorstep arrival SLA under 28 minutes.",
     },
     {
       q: isHi
         ? "क्या कोई छुपा हुआ विजिटिंग या इंस्पेक्शन चार्ज है?"
         : "Is there any hidden visiting or inspection charge?",
       a: isHi
-        ? "बिल्कुल नहीं। प्रदर्शित मूल्य (₹" +
-          service.defaultPrice +
-          ") में सभी मानक श्रम व डोरस्टेप विजिट शामिल हैं। पार्ट्स बदलने से पहले मैकेनिक आपकी लिखित सहमति लेगा।"
-        : "No. The price shown (₹" +
-          service.defaultPrice +
-          ") includes standard service labor and doorstep visit. If additional replacement spare parts are necessary, the technician will present the standard price list for your written approval before proceeding.",
+        ? `बिल्कुल नहीं। प्रदर्शित मूल्य (₹${service.defaultPrice}) में सभी मानक श्रम व डोरस्टेप विजिट शामिल हैं। ₹149 का इंस्पेक्शन शुल्क अंतिम बिल में 100% समायोजित कर दिया जाता है।`
+        : `No. The standard ₹149 inspection fee is 100% credited against your service invoice. You only pay the transparent published rate of ₹${service.defaultPrice}.`,
     },
     {
       q: isHi
         ? "इस सर्विस के साथ मुझे क्या वारंटी मिलती है?"
         : "What guarantee or warranty do I get with this service?",
       a: isHi
-        ? "JantaGaraj की प्रत्येक सर्विस पर 30 दिन की लिखित डोरस्टेप वारंटी मिलती है। 30 दिनों में कोई भी समस्या होने पर सीनियर इंस्पेक्टर निःशुल्क समाधान करता है।"
-        : "Every service booked through JantaGaraj includes an instant 30-day doorstep workmanship warranty. If you encounter any issue within 30 days, we dispatch a senior inspector free of charge.",
+        ? "JantaGaraj की प्रत्येक सर्विस पर 30 दिन की लिखित डोरस्टेप वारंटी मिलती है। 30 दिनों में वही समस्या होने पर वरिष्ठ मैकेनिक निःशुल्क समाधान करता है।"
+        : "Every qualifying repair includes a 30-day doorstep workmanship warranty. If the diagnosed issue recurs within 30 days, we dispatch a senior inspector free of charge.",
     },
     {
       q: isHi
         ? "भुगतान कैसे और कब करना होता है?"
         : "How and when do I make the payment?",
       a: isHi
-        ? "भुगतान केवल कार्य पूर्ण होने और आपके सत्यापन के बाद ही लिया जाता है। आप UPI (GPay, PhonePe, Paytm), कार्ड या कैश से सुरक्षित भुगतान कर सकते हैं।"
-        : "Payment is strictly collected after the work is fully completed and tested by you. You can pay via UPI (GPay, PhonePe, Paytm), Card, or Cash.",
+        ? "भुगतान केवल कार्य पूर्ण होने, टेस्ट ड्राइव और आपके संतुष्ट होने के बाद ही लिया जाता है। आप UPI, कार्ड या कैश से सुरक्षित भुगतान कर सकते हैं।"
+        : "Payment is strictly collected after work completion and your personal road-test verification. Pay securely via UPI, Card, or Cash.",
     },
   ];
 
@@ -195,11 +290,11 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
       title: isHi ? "सत्यापित टेस्टिंग व 30 दिन वारंटी" : "Post-Service Test & 30-Day Warranty",
       desc: isHi
         ? "कार्य पूरा होने पर परफॉरमेंस टेस्ट, डिजिटल जीएसटी इनवॉइस और 30 दिन की निःशुल्क वारंटी स्लिप प्राप्त करें।"
-        : "Cooling and electrical loads are verified against OEM specs, generating a digital GST invoice with 30-day protection.",
+        : "Cooling and mechanical loads are verified against OEM specs, generating a digital GST invoice with 30-day protection.",
     },
   ];
 
-  // Related technicians offering this work
+  // Related certified technicians
   const relatedTechnicians = useMemo(() => {
     if (techniciansData?.data && techniciansData.data.length > 0) {
       return techniciansData.data.slice(0, 3);
@@ -207,30 +302,30 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
     return [
       {
         id: "tech-1",
-        user: { fullName: "Sunil Verma", phone: "+91 84396 16833" },
-        experienceYears: 8,
-        bio: "Specialist in residential HVAC, inverter systems, and deep cleaning.",
-        avgRating: 4.92,
+        user: { fullName: "Rameshwar Sharma", phone: "+91 84396 16833" },
+        experienceYears: 9,
+        bio: "Master diagnostic engineer specializing in OBD-II live telemetry, EFI, and engine overhauls.",
+        avgRating: 4.95,
         baseVisitingCharge: 199,
-        jobsDone: 310,
+        jobsDone: 342,
       },
       {
         id: "tech-2",
-        user: { fullName: "Amit Sharma", phone: "+91 84396 16833" },
-        experienceYears: 6,
-        bio: "Certified technician with 6+ years of commercial and domestic experience.",
-        avgRating: 4.88,
+        user: { fullName: "Vikramjit Singh", phone: "+91 84396 16833" },
+        experienceYears: 7,
+        bio: "Specialist in automotive electricals, alternator diagnostics, and circuit load testing.",
+        avgRating: 4.91,
         baseVisitingCharge: 149,
-        jobsDone: 195,
+        jobsDone: 280,
       },
       {
         id: "tech-3",
-        user: { fullName: "Mohammad Imran", phone: "+91 84396 16833" },
-        experienceYears: 9,
-        bio: "Senior HVAC engineer skilled in split/cassette systems and rapid diagnostics.",
-        avgRating: 4.95,
-        baseVisitingCharge: 199,
-        jobsDone: 420,
+        user: { fullName: "Sunil Verma", phone: "+91 84396 16833" },
+        experienceYears: 8,
+        bio: "HVAC cooling precision specialist with expertise in R134a/R32 charging and deep foam jet cleaning.",
+        avgRating: 4.88,
+        baseVisitingCharge: 249,
+        jobsDone: 410,
       },
     ];
   }, [techniciansData]);
@@ -239,23 +334,23 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
   const serviceReviews = [
     {
       id: "sr-1",
-      name: "Gaurav Sen",
-      location: "Noida Sector 76",
+      name: "Rohit Agarwal",
+      location: "Indirapuram, Ghaziabad",
       rating: 5,
-      date: isHi ? "4 दिन पूर्व" : "4 days ago",
+      date: isHi ? "3 दिन पहले" : "3 days ago",
       comment: isHi
-        ? "जेट वॉश बहुत ही सफाई से किया गया। दीवार या वॉलपेपर पर एक बूंद भी नहीं गिरी। कूलिंग में जबरदस्त सुधार हुआ है!"
-        : "The jet wash was executed flawlessly with a dedicated collection jacket. Not a drop touched my wall paint. Cooling airflow is night-and-day better.",
+        ? "हाईवे पर कार की समस्या को 24 मिनट में मौके पर पहुंचकर ठीक किया। अल्टरनेटर का आउटपुट भी चेक किया। पारदर्शी तय रेट, कोई मोलभाव नहीं।"
+        : "Technician arrived in 24 minutes, hooked up diagnostics, and verified the alternator output before letting me leave. Transparent rate card, zero roadside bargaining.",
     },
     {
       id: "sr-2",
-      name: "Meenakshi K.",
-      location: "Dwarka, New Delhi",
+      name: "Pooja Deshmukh",
+      location: "Kothrud, Pune",
       rating: 5,
-      date: isHi ? "1 सप्ताह पूर्व" : "1 week ago",
+      date: isHi ? "1 सप्ताह पहले" : "1 week ago",
       comment: isHi
-        ? "समय के पाबंद और बहुत शालीन। 22 मिनट में पहुंचे, कम गैस प्रेशर की सटीक जांच की और सब कुछ पारदर्शी रखा।"
-        : "Punctual and courteous. Arrived in 22 minutes, diagnosed the pressure leak immediately, and charged exactly as per the rate card.",
+        ? "कार्य बहुत ही सफाई से किया गया। डिजिटल इनवॉइस और 30 दिन की वारंटी स्लिप तुरंत मिली। अनवेरिफाइड मैकेनिकों से कहीं बेहतर अनुभव।"
+        : "Very polite, clean work, and zero mess left behind. Digital GST bill and 30-day warranty slip were issued on the spot.",
     },
   ];
 
@@ -279,11 +374,7 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
       {/* ========================================================= */}
       {/* 00 QUIET, PREMIUM LIGHTING & ATMOSPHERE                   */}
       {/* ========================================================= */}
-      {/* Soft, diffuse overhead ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[560px] bg-[radial-gradient(ellipse_70%_50%_at_50%_-15%,rgba(255,255,255,0.04),transparent_70%)] pointer-events-none -z-0" />
-      {/* Micro-warm amber accent whisper */}
-      <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[600px] h-[360px] bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(245,158,11,0.035),transparent_65%)] pointer-events-none -z-0" />
-      {/* Subtle organic grid */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[560px] bg-[radial-gradient(ellipse_70%_50%_at_50%_-15%,rgba(245,158,11,0.06),transparent_70%)] pointer-events-none -z-0" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:40px_40px] opacity-40 pointer-events-none -z-0" />
 
       {/* ========================================================= */}
@@ -307,58 +398,67 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
 
           <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.06] text-[11px] text-slate-300">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>{isHi ? "सक्रिय डिस्पैच उपलब्ध" : "Live Dispatch Active"}</span>
+            <span>
+              {isHi ? "सक्रिय डिस्पैच उपलब्ध" : "Live Dispatch Active"} (
+              {location.city || "NCR Metro"})
+            </span>
           </div>
         </div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 space-y-12 sm:space-y-16">
-        {/* Main Grid: Left Details + Right Sticky Booking Card */}
+        {/* ========================================================= */}
+        {/* MAIN SPLIT VIEW: LEFT DETAILS + RIGHT STICKY SUMMARY BOX  */}
+        {/* ========================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* ========================================================= */}
-          {/* LEFT COLUMN (8 cols): Title, Visual, Scope, Workflow, FAQ */}
+          {/* LEFT COLUMN (8 cols): Title, Visual, Scope, Parts, Workflow*/}
           {/* ========================================================= */}
           <div className="lg:col-span-8 space-y-10 sm:space-y-12">
             {/* Header Area */}
             <div className="space-y-4">
               <div className="flex items-center gap-2.5 flex-wrap">
-                <span className="text-xs font-medium text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
-                  {tc(service.category?.name || "Professional Service")}
+                <span className="text-xs font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
+                  {tc(service.category?.name || "Automotive Engineering")}
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  {isHi ? "30 दिन लिखित वारंटी" : "30-Day Doorstep Warranty"}
+                  {isHi ? "30 दिन लिखित वारंटी" : "30-Day Workmanship Warranty"}
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-3 py-1 rounded-full">
+                  <Radio className="w-3.5 h-3.5 text-cyan-400" />
+                  {isHi ? "< 28 मिनट डिस्पैच SLA" : "< 28 Min Dispatch SLA"}
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.18]">
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.16]">
                 {ts(service.title)}
               </h1>
 
-              {/* Rating & Duration Bar */}
+              {/* Rating, Duration & Standards Bar */}
               <div className="flex items-center gap-5 text-xs sm:text-sm text-slate-400 font-normal pt-1 flex-wrap">
                 <div className="flex items-center gap-1.5 text-slate-200">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  <span className="font-semibold text-white">{service.rating || 4.9}</span>
+                  <span className="font-semibold text-white">{service.rating || 4.95}</span>
                   <span className="text-slate-400">
-                    ({service.reviewsCount || 184} {isHi ? "सत्यापित समीक्षाएं" : "verified reviews"})
+                    ({service.reviewsCount || 236} {isHi ? "सत्यापित समीक्षाएं" : "audited reviews"})
                   </span>
                 </div>
                 <span className="text-slate-700">•</span>
                 <div className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-slate-400" />
+                  <Clock className="w-4 h-4 text-cyan-400" />
                   <span>{service.durationMinutes || 45} {isHi ? "मिनट अनुमानित अवधि" : "mins typical duration"}</span>
                 </div>
                 <span className="text-slate-700 hidden sm:inline">•</span>
                 <div className="hidden sm:flex items-center gap-1.5 text-slate-300">
-                  <BadgeCheck className="w-4 h-4 text-cyan-400" />
-                  <span>{isHi ? "ओरिजिनल OEM उपकरण" : "OEM Diagnostic Standards"}</span>
+                  <BadgeCheck className="w-4 h-4 text-amber-400" />
+                  <span>{isHi ? "OEM डायग्नोस्टिक मानक" : "OEM Diagnostic Standards"}</span>
                 </div>
               </div>
             </div>
 
-            {/* Service Banner Image */}
-            <div className="relative rounded-3xl overflow-hidden aspect-[16/9] bg-white/[0.02] border border-white/[0.08] shadow-2xl group">
+            {/* Service Banner Image with Dark Vignette */}
+            <div className="relative rounded-3xl overflow-hidden aspect-[16/9] bg-[#0d121c] border border-white/[0.08] shadow-2xl group">
               <img
                 src={
                   service.image ||
@@ -368,85 +468,53 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
                 onError={handleImageError}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#080b11]/90 via-[#080b11]/20 to-transparent flex items-end p-6 sm:p-8">
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-200 font-medium backdrop-blur-md bg-black/40 px-3.5 py-1.5 rounded-full border border-white/[0.1]">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#080b11]/90 via-[#080b11]/25 to-transparent flex items-end p-6 sm:p-8">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-200 font-medium backdrop-blur-md bg-black/60 px-4 py-2 rounded-full border border-white/[0.1]">
                   <Wrench className="w-3.5 h-3.5 text-amber-400" />
                   <span>
                     {isHi
-                      ? "प्रमाणित तकनीशियन द्वारा आधुनिक टूल्स से निष्पादन"
-                      : "Executed using industrial-grade diagnostic & sanitization equipment"}
+                      ? "सत्यापित मास्टर मैकेनिक द्वारा आधुनिक टूल्स से निष्पादन"
+                      : "Executed using calibrated diagnostic equipment and OEM genuine parts"}
                   </span>
                 </div>
               </div>
             </div>
 
             {/* Service Overview */}
-            <div className="p-7 sm:p-9 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-4">
-              <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
-                {isHi ? "सर्विस विवरण" : "Service Overview"}
+            <div className="p-7 sm:p-8 rounded-3xl bg-[#0d121c]/70 border border-white/[0.06] backdrop-blur-md space-y-3">
+              <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                {isHi ? "सर्विस विवरण व तकनीकी मानक" : "Service Overview & Diagnostic Standards"}
               </h2>
-              <p className="text-sm sm:text-base text-slate-400 leading-relaxed font-normal">
+              <p className="text-sm sm:text-base text-slate-300/90 leading-relaxed font-normal">
                 {service.description ||
-                  "Professional doorstep service provided by verified local technicians. Every booking is backed by genuine spare parts, transparent quotes, and full workmanship warranty."}
+                  "Professional doorstep service provided by verified local master mechanics. Every booking is backed by genuine spare parts, transparent upfront rate cards, and full 30-day workmanship warranty."}
               </p>
             </div>
 
-            {/* 1-2-3 Service Process (Workflow) */}
-            <div className="space-y-6">
+            {/* ========================================================= */}
+            {/* TRANSPARENT SCOPE OF WORK: INCLUDED & EXCLUDED BREAKDOWN  */}
+            {/* ========================================================= */}
+            <div className="p-7 sm:p-8 rounded-3xl bg-[#0d121c]/70 border border-white/[0.06] backdrop-blur-md space-y-6">
               <div className="space-y-1">
-                <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  {isHi ? "प्रक्रिया" : "Service Execution"}
+                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
+                  {isHi ? "पारदर्शिता केंद्र" : "Transparency Standard"}
                 </span>
-                <h2 className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
-                  {isHi ? "यह सर्विस कैसे काम करती है (3 चरण)" : "How This Service Works"}
-                </h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {processSteps.map((step) => (
-                  <div
-                    key={step.step}
-                    className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between"
-                  >
-                    <div>
-                      <span className="text-2xl font-mono font-medium text-slate-600 block mb-2">
-                        {step.step}
-                      </span>
-                      <h3 className="text-sm font-semibold text-white">
-                        {step.title}
-                      </h3>
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed font-normal">
-                        {step.desc}
-                      </p>
-                    </div>
-                    <div className="pt-3 border-t border-white/[0.04] flex items-center gap-1.5 text-[11px] text-slate-500">
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>{isHi ? "गारंटीकृत मानक" : "Guaranteed standard"}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* What's Included & Excluded (Scope of Work) */}
-            <div className="p-7 sm:p-9 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-6">
-              <div className="space-y-1">
-                <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
-                  {isHi ? "कार्य का दायरा (Scope of Work)" : "Scope of Work"}
+                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  {isHi ? "कार्य का दायरा (Scope of Work)" : "Detailed Scope of Work Breakdown"}
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-400 font-normal">
                   {isHi
-                    ? "पारदर्शी सर्विस नियम—जानें क्या शामिल है और क्या नहीं"
-                    : "Clear boundaries to eliminate guesswork and surprise charges."}
+                    ? "पारदर्शी सर्विस नियम—स्पष्ट जानें क्या शामिल है और क्या नहीं, शून्य अनपेक्षित बिलिंग।"
+                    : "Zero guesswork or roadside surprises. Clear itemized breakdown of what will be performed on your vehicle."}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-                {/* Included */}
-                <div className="p-5 rounded-2xl bg-white/[0.015] border border-white/[0.05] space-y-3.5">
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+                {/* What is Included */}
+                <div className="p-5 rounded-2xl bg-white/[0.02] border border-emerald-500/20 space-y-3.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>{isHi ? "क्या शामिल है" : "What is Included"}</span>
+                    <span>{isHi ? "क्या शामिल है (Included)" : "What is Included"}</span>
                   </h3>
                   <ul className="space-y-3 text-xs sm:text-sm text-slate-300">
                     {includedWork.map((item, idx) => (
@@ -458,11 +526,11 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
                   </ul>
                 </div>
 
-                {/* Excluded */}
-                <div className="p-5 rounded-2xl bg-white/[0.015] border border-white/[0.05] space-y-3.5">
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                {/* What is Excluded */}
+                <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-3.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                     <XCircle className="w-4 h-4 text-slate-400" />
-                    <span>{isHi ? "क्या शामिल नहीं है" : "What is Not Included"}</span>
+                    <span>{isHi ? "क्या शामिल नहीं है (Excluded)" : "What is Not Included"}</span>
                   </h3>
                   <ul className="space-y-3 text-xs sm:text-sm text-slate-400">
                     {excludedWork.map((item, idx) => (
@@ -476,11 +544,104 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
               </div>
             </div>
 
+            {/* ========================================================= */}
+            {/* PARTS & CONSUMABLES USED (TRANSPARENCY FOCUS)             */}
+            {/* ========================================================= */}
+            <div className="p-7 sm:p-8 rounded-3xl bg-[#0d121c]/70 border border-white/[0.06] backdrop-blur-md space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-400">
+                    {isHi ? "मूल पार्ट्स प्रमाणन" : "Genuine Consumables & Spares"}
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                    {isHi ? "उपयोग किए जाने वाले स्पेयर पार्ट्स" : "OEM Parts & Consumables Specification"}
+                  </h2>
+                </div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-xs font-mono text-cyan-400 self-start sm:self-auto">
+                  <PackageCheck className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>100% FACTORY SEALED</span>
+                </div>
+              </div>
+
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                {isHi
+                  ? "सभी स्पेयर पार्ट्स संबंधित वाहन निर्माता (OEM) द्वारा अनुशंसित ग्रेड के होते हैं और आधिकारिक वारंटी के साथ आते हैं।"
+                  : "All replacement parts and fluids match or exceed vehicle OEM specifications, supplied in tamper-evident sealed packaging."}
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                {partsUsed.map((part, idx) => (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] transition-colors space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono text-amber-400 font-semibold uppercase">
+                        Part 0{idx + 1}
+                      </span>
+                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full font-mono">
+                        VERIFIED
+                      </span>
+                    </div>
+                    <h4 className="text-sm font-semibold text-white tracking-tight">
+                      {part.name}
+                    </h4>
+                    <p className="text-xs text-slate-400 font-mono">
+                      {part.spec}
+                    </p>
+                    <div className="pt-2 border-t border-white/[0.04] flex items-center justify-between text-[11px] text-slate-300">
+                      <span>Brand: <strong>{part.brand}</strong></span>
+                    </div>
+                    <p className="text-[10px] text-cyan-400 font-mono">
+                      ✓ {part.warranty}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 1-2-3 Service Execution Workflow */}
+            <div className="p-7 sm:p-8 rounded-3xl bg-[#0d121c]/70 border border-white/[0.06] backdrop-blur-md space-y-6">
+              <div className="space-y-1">
+                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
+                  {isHi ? "निष्पादन प्रक्रिया" : "Execution Protocol"}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  {isHi ? "यह सर्विस कैसे काम करती है (3 चरण)" : "How This Service Works in 3 Steps"}
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {processSteps.map((step) => (
+                  <div
+                    key={step.step}
+                    className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-2.5 flex flex-col justify-between"
+                  >
+                    <div>
+                      <span className="text-2xl font-mono font-bold text-white/[0.15] block mb-1">
+                        {step.step}
+                      </span>
+                      <h3 className="text-sm font-semibold text-white">
+                        {step.title}
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1 leading-relaxed font-normal">
+                        {step.desc}
+                      </p>
+                    </div>
+                    <div className="pt-3 border-t border-white/[0.04] flex items-center gap-1.5 text-[11px] text-emerald-400 font-mono">
+                      <Check className="w-3.5 h-3.5" />
+                      <span>{isHi ? "सत्यापित मानक" : "Guaranteed SLA"}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Related Certified Technicians */}
             <div className="space-y-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
+                  <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
                     {isHi ? "इस सर्विस हेतु उपलब्ध तकनीशियन" : "Available Technicians For This Service"}
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-400 mt-0.5 font-normal">
@@ -502,7 +663,7 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
                 {relatedTechnicians.map((tech) => (
                   <div
                     key={tech.id}
-                    className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 shadow-sm flex flex-col justify-between space-y-4 group"
+                    className="p-5 rounded-2xl bg-[#0d121c]/70 border border-white/[0.06] hover:border-white/[0.14] hover:-translate-y-1 transition-all duration-300 shadow-sm flex flex-col justify-between space-y-4 group"
                   >
                     <div>
                       <div className="flex items-center gap-3 mb-3">
@@ -543,11 +704,11 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
             </div>
 
             {/* Customer Reviews for Service */}
-            <div className="p-7 sm:p-9 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-6">
+            <div className="p-7 sm:p-8 rounded-3xl bg-[#0d121c]/70 border border-white/[0.06] backdrop-blur-md space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
-                    {isHi ? "ग्राहकों की समीक्षाएं" : "Customer Reviews"}
+                  <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                    {isHi ? "ग्राहकों की समीक्षाएं" : "Customer Reviews & Field Reports"}
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-400 mt-0.5 font-normal">
                     {isHi
@@ -557,7 +718,7 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
                 </div>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-medium text-white self-start sm:self-auto">
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  <span>4.9 / 5.0 Rating</span>
+                  <span>4.95 / 5.0 Rating</span>
                 </div>
               </div>
 
@@ -565,7 +726,7 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
                 {serviceReviews.map((rev) => (
                   <div
                     key={rev.id}
-                    className="p-5 rounded-2xl bg-white/[0.015] border border-white/[0.05] space-y-3"
+                    className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] space-y-3"
                   >
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-1">
@@ -591,8 +752,8 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
             </div>
 
             {/* Service FAQs */}
-            <div className="p-7 sm:p-9 rounded-3xl bg-white/[0.02] border border-white/[0.06] shadow-sm space-y-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
+            <div className="p-7 sm:p-8 rounded-3xl bg-[#0d121c]/70 border border-white/[0.06] backdrop-blur-md space-y-6">
+              <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
                 {isHi ? "अक्सर पूछे जाने वाले प्रश्न" : "Frequently Asked Questions"}
               </h2>
 
@@ -602,7 +763,7 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
                   return (
                     <div
                       key={idx}
-                      className="rounded-2xl border border-white/[0.06] bg-white/[0.015] overflow-hidden transition-colors"
+                      className="rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden transition-colors"
                     >
                       <button
                         onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
@@ -628,61 +789,204 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
           </div>
 
           {/* ========================================================= */}
-          {/* RIGHT COLUMN (4 cols): Sticky Pricing & Booking Card      */}
+          {/* RIGHT COLUMN (4 cols): STICKY SUMMARY BOX WITH SCHEDULING */}
+          {/* & INSTANT PRICE TALLY (TRANSPARENCY FOCUS)                */}
           {/* ========================================================= */}
           <div className="lg:col-span-4 sticky top-24 space-y-6">
-            <div className="p-7 sm:p-8 rounded-3xl bg-white/[0.02] border border-white/[0.08] shadow-2xl relative overflow-hidden space-y-6">
+            <div className="p-6 sm:p-7 rounded-3xl bg-[#0d121c]/90 border border-white/[0.08] backdrop-blur-xl shadow-2xl relative overflow-hidden space-y-5">
               {/* Subtle ambient amber accent glow inside card */}
               <div className="absolute top-0 right-0 w-44 h-44 bg-amber-500/10 rounded-full blur-3xl pointer-events-none -z-0" />
 
-              {/* Pricing breakdown */}
-              <div className="relative z-10 space-y-1.5">
+              {/* Instant Price Tally Box */}
+              <div className="relative z-10 space-y-3 pb-5 border-b border-white/[0.06]">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs uppercase font-medium tracking-wider text-slate-400">
-                    {isHi ? "पारदर्शी तय मूल्य" : "Transparent Rate"}
+                  <span className="text-xs uppercase font-mono font-semibold tracking-wider text-slate-400">
+                    {isHi ? "पारदर्शी मूल्य निर्धारण" : "Instant Price Tally"}
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    {isHi ? "कोई छिपा शुल्क नहीं" : "Zero Hidden Fees"}
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {isHi ? "शून्य गुप्त शुल्क" : "Zero Hidden Surcharges"}
                   </span>
                 </div>
 
-                <div className="flex items-baseline gap-2 pt-1">
-                  <span className="text-4xl font-black tracking-tight text-white">
-                    ₹{service.defaultPrice}
-                  </span>
-                  <span className="text-xs text-slate-400 font-normal">
-                    {isHi ? "(जीएसटी व इंस्पेक्शन सहित)" : "(Incl. GST & Doorstep Visit)"}
-                  </span>
+                {/* Line Item Breakdown */}
+                <div className="space-y-1.5 text-xs text-slate-300 pt-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Base Service & Diagnostics:</span>
+                    <span className="font-mono text-white">₹{service.defaultPrice}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Doorstep Inspection Fee:</span>
+                    <span className="font-mono text-slate-400 line-through">₹149</span>
+                  </div>
+                  <div className="flex items-center justify-between text-emerald-400">
+                    <span>100% Inspection Fee Credit:</span>
+                    <span className="font-mono font-semibold">-₹149 (WAIVED)</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Applicable Taxes (GST):</span>
+                    <span className="font-mono text-slate-400">Included</span>
+                  </div>
                 </div>
-                <p className="text-xs text-slate-400 font-normal leading-relaxed pt-1">
-                  {isHi
-                    ? "सर्विस पूर्ण होने और टेस्ट करने के बाद ही भुगतान करें।"
-                    : "Pay securely after the job is completed and tested."}
-                </p>
+
+                {/* Total Tally Line */}
+                <div className="pt-3 border-t border-white/[0.06] flex items-baseline justify-between">
+                  <div>
+                    <span className="text-xs text-slate-400 uppercase font-medium block">
+                      {isHi ? "कुल देय राशि:" : "Total Payable:"}
+                    </span>
+                    <p className="text-[10px] text-slate-500">
+                      {isHi ? "संतुष्टि के बाद ही भुगतान करें" : "Pay strictly post-testing"}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-3xl font-black font-mono tracking-tight text-white">
+                      ₹{service.defaultPrice}
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              {/* Booking Highlights */}
-              <div className="relative z-10 space-y-3 pt-5 border-t border-white/[0.06] text-xs sm:text-sm text-slate-300">
-                <div className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span>{isHi ? "30 मिनट के भीतर त्वरित डिस्पैच" : "Instant dispatch within 30 minutes"}</span>
+              {/* Interactive Scheduling Options */}
+              <div className="relative z-10 space-y-3.5">
+                <span className="text-xs uppercase font-mono font-semibold tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{isHi ? "सर्विस शेड्यूलिंग" : "Select Appointment Slot"}</span>
+                </span>
+
+                {/* Date Selection Pills */}
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedDate("today")}
+                    className={`py-2 px-2.5 rounded-xl border text-center transition-all ${
+                      selectedDate === "today"
+                        ? "bg-amber-500 text-slate-950 font-bold border-amber-400 shadow-sm"
+                        : "bg-white/[0.02] border-white/[0.06] text-slate-300 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <p className="text-xs font-semibold">{isHi ? "आज" : "Today"}</p>
+                    <p className="text-[10px] opacity-75 font-mono">Earliest</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedDate("tomorrow")}
+                    className={`py-2 px-2.5 rounded-xl border text-center transition-all ${
+                      selectedDate === "tomorrow"
+                        ? "bg-amber-500 text-slate-950 font-bold border-amber-400 shadow-sm"
+                        : "bg-white/[0.02] border-white/[0.06] text-slate-300 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <p className="text-xs font-semibold">{isHi ? "कल" : "Tomorrow"}</p>
+                    <p className="text-[10px] opacity-75 font-mono">Scheduled</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedDate("dayAfter")}
+                    className={`py-2 px-2.5 rounded-xl border text-center transition-all ${
+                      selectedDate === "dayAfter"
+                        ? "bg-amber-500 text-slate-950 font-bold border-amber-400 shadow-sm"
+                        : "bg-white/[0.02] border-white/[0.06] text-slate-300 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <p className="text-xs font-semibold">{isHi ? "परसों" : "Day After"}</p>
+                    <p className="text-[10px] opacity-75 font-mono">Flexible</p>
+                  </button>
                 </div>
-                <div className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span>{isHi ? "100% पुलिस व क्रेडेंशियल सत्यापित मैकेनिक" : "100% background-checked master technician"}</span>
+
+                {/* Time Slot Selection */}
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSlot("urgent")}
+                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                      selectedSlot === "urgent"
+                        ? "bg-cyan-950/40 border-cyan-400/60 text-cyan-300 shadow-sm"
+                        : "bg-white/[0.02] border-white/[0.06] text-slate-300 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 font-semibold text-[11px]">
+                      <Radio className="w-3 h-3 text-cyan-400 animate-pulse" />
+                      <span>&lt; 28 Min Dispatch</span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5">High-priority triage</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSlot("morning")}
+                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                      selectedSlot === "morning"
+                        ? "bg-white/[0.08] border-amber-400/60 text-white shadow-sm"
+                        : "bg-white/[0.02] border-white/[0.06] text-slate-300 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <p className="font-semibold text-[11px]">09:00 AM - 11:00 AM</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Morning Slot</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSlot("afternoon")}
+                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                      selectedSlot === "afternoon"
+                        ? "bg-white/[0.08] border-amber-400/60 text-white shadow-sm"
+                        : "bg-white/[0.02] border-white/[0.06] text-slate-300 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <p className="font-semibold text-[11px]">01:00 PM - 03:00 PM</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Afternoon Slot</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSlot("evening")}
+                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                      selectedSlot === "evening"
+                        ? "bg-white/[0.08] border-amber-400/60 text-white shadow-sm"
+                        : "bg-white/[0.02] border-white/[0.06] text-slate-300 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <p className="font-semibold text-[11px]">04:30 PM - 06:30 PM</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Evening Slot</p>
+                  </button>
                 </div>
-                <div className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span>{isHi ? "30 दिन की लिखित निःशुल्क वारंटी" : "30-day post-service free warranty"}</span>
+
+                {/* Location indicator */}
+                <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/[0.04]">
+                  <div className="flex items-center gap-1.5 text-slate-300 truncate">
+                    <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                    <span className="truncate">{location.city || "NCR Metro"}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => detectCurrentLocation()}
+                    className="text-[11px] text-amber-400 hover:text-amber-300 font-medium underline underline-offset-2 shrink-0 ml-2"
+                  >
+                    {isLoadingGPS ? "..." : t("nav.gpsDetect")}
+                  </button>
                 </div>
-                <div className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span>{isHi ? "UPI, कार्ड या कैश से सुरक्षित भुगतान" : "Pay securely via UPI / Cash upon satisfaction"}</span>
+              </div>
+
+              {/* Guarantees Checklist */}
+              <div className="relative z-10 space-y-2 pt-4 border-t border-white/[0.06] text-xs text-slate-300">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>30-Day Written Workmanship Warranty</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>4-Digit Secure OTP Work Authorization</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Pay Post-Satisfaction via UPI / Card / Cash</span>
                 </div>
               </div>
 
               {/* Main Booking Action */}
-              <div className="relative z-10 space-y-3 pt-5 border-t border-white/[0.06]">
+              <div className="relative z-10 space-y-2.5 pt-4 border-t border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => setBookingModalOpen(true)}
@@ -706,12 +1010,12 @@ export const ServiceDetailsPage: React.FC<ServiceDetailsPageProps> = ({
       </div>
 
       {/* Sticky Mobile Bottom Booking Bar */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-[#080b11]/90 backdrop-blur-xl border-t border-white/[0.08] p-3.5 lg:hidden flex items-center justify-between shadow-2xl">
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-[#080b11]/95 backdrop-blur-xl border-t border-white/[0.08] p-3.5 lg:hidden flex items-center justify-between shadow-2xl">
         <div>
           <span className="text-[10px] text-slate-400 uppercase font-medium block">
-            {isHi ? "तय मूल्य" : "Starting Price"}
+            {isHi ? "कुल देय राशि" : "Total Tally"}
           </span>
-          <span className="text-xl font-bold tracking-tight text-white">
+          <span className="text-xl font-bold font-mono tracking-tight text-white">
             ₹{service.defaultPrice}
           </span>
         </div>
