@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation as useRouterLocation } from "react-router-dom";
 import {
   Wrench,
   MapPin,
@@ -12,11 +12,7 @@ import {
   CalendarCheck,
   ShieldAlert,
   Languages,
-  Radio,
-  Clock,
-  Sparkles,
   ArrowRight,
-  ShieldCheck,
   LifeBuoy,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -32,6 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const routerLocation = useRouterLocation();
   const { language, toggleLanguage, t } = useLanguage();
   const isHi = language === "hi";
   const { location, detectCurrentLocation, isLoadingGPS } = useLocation();
@@ -39,6 +36,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const isActive = (path: string) => routerLocation.pathname === path;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,99 +73,106 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
       }`}
     >
       <div
-        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 transition-all duration-300 ${
-          isScrolled ? "h-16" : "h-18 sm:h-20"
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 xl:gap-6 transition-all duration-300 ${
+          isScrolled ? "h-16" : "h-[72px]"
         }`}
       >
         {/* ========================================================= */}
         {/* BRAND IDENTITY                                            */}
         {/* ========================================================= */}
-        <Link to="/" className="flex items-center gap-3 group shrink-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white/[0.04] border border-white/[0.1] flex items-center justify-center text-white group-hover:border-amber-400/50 group-hover:bg-amber-500/10 transition-all duration-300 shadow-sm">
-            <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 stroke-[2.2] group-hover:rotate-12 transition-transform duration-300" />
+        <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/[0.1] flex items-center justify-center text-white group-hover:border-amber-400/50 group-hover:bg-amber-500/10 transition-all duration-300 shadow-sm shrink-0">
+            <Wrench className="w-4 h-4 text-amber-400 stroke-[2.2] group-hover:rotate-12 transition-transform duration-300" />
           </div>
-          <div>
-            <span className="text-lg sm:text-xl font-bold tracking-tight text-white block leading-none">
+          <div className="whitespace-nowrap">
+            <span className="text-lg font-bold tracking-tight text-white block leading-none">
               Janta<span className="text-slate-400 font-normal">Garaj</span>
             </span>
             <span className="hidden sm:block text-[10px] text-slate-400 font-normal tracking-wide mt-0.5">
-              {isHi ? "डोरस्टेप ऑटोमोटिव सर्विस" : "Next-Gen Auto Care"}
+              {isHi ? "डोरस्टेप ऑटो सर्विस" : "Next-Gen Auto Care"}
             </span>
           </div>
         </Link>
 
         {/* ========================================================= */}
-        {/* DIAGNOSTIC GEO-ZONE PILL (DESKTOP)                        */}
+        {/* DESKTOP NAVIGATION LINKS (CLEAN SINGLE-LINE)              */}
         {/* ========================================================= */}
-        <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs text-slate-300 hover:border-white/[0.15] transition-all">
-          <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-          <span className="max-w-[130px] truncate font-medium text-white">
-            {location.city || (isHi ? "स्थान खोजें" : "NCR Metro")}
-          </span>
-          <span className="text-white/[0.15]">•</span>
-          <button
-            onClick={() => detectCurrentLocation()}
-            disabled={isLoadingGPS}
-            className="text-amber-400 hover:text-amber-300 font-medium text-[11px] disabled:opacity-50 transition-colors underline underline-offset-2"
-            title="Auto detect location via GPS"
-          >
-            {isLoadingGPS ? "..." : t("nav.gpsDetect")}
-          </button>
-        </div>
-
-        {/* ========================================================= */}
-        {/* DESKTOP NAVIGATION LINKS                                  */}
-        {/* ========================================================= */}
-        <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-slate-300">
+        <nav className="hidden lg:flex items-center gap-1 text-[13px] font-medium text-slate-300 whitespace-nowrap">
           <Link
             to="/services"
-            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.04] transition-all"
+            className={`px-3.5 h-9 inline-flex items-center rounded-full whitespace-nowrap shrink-0 transition-all ${
+              isActive("/services")
+                ? "text-white bg-white/[0.08]"
+                : "hover:text-white hover:bg-white/[0.04]"
+            }`}
           >
             {isHi ? "सेवाएं" : "Services"}
           </Link>
           <Link
             to="/pricing"
-            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.04] transition-all"
+            className={`px-3.5 h-9 inline-flex items-center rounded-full whitespace-nowrap shrink-0 transition-all ${
+              isActive("/pricing")
+                ? "text-white bg-white/[0.08]"
+                : "hover:text-white hover:bg-white/[0.04]"
+            }`}
           >
             {isHi ? "रेट कार्ड" : "Rate Card"}
           </Link>
           <Link
             to="/technicians"
-            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.04] transition-all"
+            className={`px-3.5 h-9 inline-flex items-center rounded-full whitespace-nowrap shrink-0 transition-all ${
+              isActive("/technicians")
+                ? "text-white bg-white/[0.08]"
+                : "hover:text-white hover:bg-white/[0.04]"
+            }`}
           >
             {isHi ? "मैकेनिक" : "Mechanics"}
           </Link>
           <a
             href="/#how-it-works"
-            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.04] transition-all"
+            className="px-3.5 h-9 inline-flex items-center rounded-full whitespace-nowrap shrink-0 hover:text-white hover:bg-white/[0.04] transition-all"
           >
             {isHi ? "प्रक्रिया" : "How It Works"}
           </a>
           <Link
             to="/help"
-            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.04] transition-all"
+            className={`px-3.5 h-9 inline-flex items-center rounded-full whitespace-nowrap shrink-0 transition-all ${
+              isActive("/help")
+                ? "text-white bg-white/[0.08]"
+                : "hover:text-white hover:bg-white/[0.04]"
+            }`}
           >
             {isHi ? "सहायता" : "Help Desk"}
           </Link>
         </nav>
 
         {/* ========================================================= */}
-        {/* RIGHT SECTION: ACTIONS & AUTH                             */}
+        {/* RIGHT SECTION: GEO-ZONE, LANG & ACTIONS (UNIFORM h-9)     */}
         {/* ========================================================= */}
-        <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Live Fleet Beacon (Desktop) */}
-          <div className="hidden xl:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/20 text-cyan-400 text-xs font-mono font-medium">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          {/* Compact Geo-Zone Pill */}
+          <div className="hidden xl:inline-flex items-center gap-2 h-9 px-3.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs text-slate-300 hover:border-white/[0.15] transition-all whitespace-nowrap shrink-0">
+            <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+            <span className="max-w-[110px] truncate font-medium text-white">
+              {location.city || (isHi ? "स्थान चुनें" : "NCR Metro")}
             </span>
-            <span>RADAR ACTIVE</span>
+            <span className="text-white/[0.15]">•</span>
+            <button
+              type="button"
+              onClick={() => detectCurrentLocation()}
+              disabled={isLoadingGPS}
+              className="text-amber-400 hover:text-amber-300 font-medium text-[11px] disabled:opacity-50 transition-colors"
+              title="Auto detect location via GPS"
+            >
+              {isLoadingGPS ? "..." : t("nav.gpsDetect")}
+            </button>
           </div>
 
           {/* Language Switcher Pill */}
           <button
+            type="button"
             onClick={toggleLanguage}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] hover:bg-white/[0.08] text-xs font-medium text-slate-300 hover:text-white transition-all"
+            className="hidden sm:inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-full border border-white/[0.08] bg-white/[0.04] hover:bg-white/[0.08] text-xs font-medium text-slate-300 hover:text-white transition-all whitespace-nowrap shrink-0"
             title="भाषा बदलें / Switch Language"
             aria-label="Toggle between Hindi and English"
           >
@@ -181,7 +187,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="h-9 px-3 rounded-full bg-white/[0.04] border border-white/[0.1] hover:border-amber-400/50 text-white font-medium flex items-center gap-2 text-xs transition-all focus:outline-none"
+                className="h-9 px-3 rounded-full bg-white/[0.04] border border-white/[0.1] hover:border-amber-400/50 text-white font-medium inline-flex items-center gap-2 text-xs transition-all focus:outline-none whitespace-nowrap shrink-0"
                 title={user.fullName}
                 aria-label="User Profile Menu"
               >
@@ -265,23 +271,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
               <button
                 type="button"
                 onClick={onOpenAuthModal}
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-full border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white text-xs font-medium transition-all"
+                className="hidden sm:inline-flex items-center justify-center gap-1.5 h-9 px-4 sm:px-5 rounded-full border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white text-xs font-medium whitespace-nowrap shrink-0 transition-all"
               >
-                <UserIcon className="w-3.5 h-3.5 text-slate-400" />
+                <UserIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <span>{isHi ? "लॉग इन" : "Sign In"}</span>
               </button>
 
-              <Link to="/services">
+              <Link to="/services" className="shrink-0">
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center gap-1.5 px-5 sm:px-6 py-2 sm:py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs tracking-wide shadow-[0_4px_18px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_24px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-1.5 h-9 px-5 sm:px-6 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs tracking-wide shadow-[0_4px_18px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_24px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap shrink-0"
                 >
                   <span>{isHi ? "सर्विस बुक करें" : "Book a Service"}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                 </button>
               </Link>
             </div>
@@ -289,13 +295,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuthModal }) => {
 
           {/* Quick Book CTA for Authenticated Users */}
           {isAuthenticated && (
-            <Link to="/services" className="hidden sm:block">
+            <Link to="/services" className="hidden sm:block shrink-0">
               <button
                 type="button"
-                className="inline-flex items-center justify-center gap-1.5 px-5 sm:px-6 py-2 sm:py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs tracking-wide shadow-[0_4px_18px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_24px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-1.5 h-9 px-5 sm:px-6 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs tracking-wide shadow-[0_4px_18px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_24px_rgba(245,158,11,0.35)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap shrink-0"
               >
                 <span>{isHi ? "सर्विस बुक करें" : "Book a Service"}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
               </button>
             </Link>
           )}
