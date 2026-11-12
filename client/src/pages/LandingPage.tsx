@@ -578,43 +578,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuthModal }) => 
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:36px_36px] opacity-40 pointer-events-none -z-0" />
 
       {/* ========================================================= */}
-      {/* 01 TOP OPERATIONAL DISPATCH STRIP                         */}
-      {/* ========================================================= */}
-      <div className="relative z-20 border-b border-white/[0.06] bg-[#0e131d]/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-2">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 font-mono font-medium text-[11px] shadow-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
-              </span>
-              <span>FLEET RADAR ACTIVE</span>
-            </span>
-            <span className="text-slate-400 hidden sm:inline text-xs font-mono tracking-wide">
-              {isHi
-                ? "500+ पुलिस व केवाईसी सत्यापित मैकेनिक ऑन-ड्यूटी"
-                : "500+ POLICE & KYC VERIFIED MECHANICS READY FOR DISPATCH"}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 ml-auto text-slate-400 text-xs">
-            <div className="flex items-center gap-1.5 text-slate-300 font-medium">
-              <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-              <span>ZONE: {location.city || "NCR METRO"}</span>
-            </div>
-            <span className="text-white/[0.15]">|</span>
-            <a
-              href="tel:+918439616833"
-              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-medium font-mono transition-colors"
-            >
-              <Phone className="w-3.5 h-3.5 shrink-0" />
-              <span>SOS: +91 84396 16833</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* ========================================================= */}
       {/* 02 HERO SECTION: SPLIT VIEW WITH QUICK VEHICLE-BOOKING BAR */}
       {/* ========================================================= */}
       <section
